@@ -6,14 +6,14 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"
 	default-lazy-init="true">
 
-	<context:property-placeholder location="classpath*:/ezshop.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
+	<context:property-placeholder location="classpath*:/system.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
 
 	<context:component-scan base-package="net.ezshop" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 <!-- http://www.121ask.com/thread-5495-1.html -->
 	<mvc:annotation-driven validator="validator" />
-
+<!-- 
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/order/**" />
@@ -25,12 +25,14 @@
 			<mvc:exclude-mapping path="/payment/**" />
 			<bean id="tokenInterceptor" class="net.ezshop.interceptor.TokenInterceptor" />
 		</mvc:interceptor>
+		-->
 		<!-- 
 		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
 			<bean id="executeTimeInterceptor" class="net.ezshop.interceptor.ExecuteTimeInterceptor" />
 		</mvc:interceptor>
 		-->
+		<!-- 
 		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
 			<bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
@@ -52,7 +54,7 @@
 			<bean id="logInterceptor" class="net.ezshop.interceptor.LogInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
-
+-->
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
 		<property name="validationMessageSource" ref="messageSource" />
 	</bean>

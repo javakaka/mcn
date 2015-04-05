@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezcloud.framework.controller.BaseController;
-import com.ezcloud.framework.controller.Page;
-import com.ezcloud.framework.controller.Pageable;
+import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.vo.Row;

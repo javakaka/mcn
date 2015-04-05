@@ -1,9 +1,6 @@
 package com.mcn.controller.admin;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +8,7 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.Assert;
@@ -21,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezcloud.framework.controller.BaseController;
-import com.ezcloud.framework.controller.Page;
 import com.ezcloud.framework.controller.Pageable;
+import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.service.system.Bureau;
 import com.ezcloud.framework.service.system.ProjectParameter;
 import com.ezcloud.framework.service.system.Staff;

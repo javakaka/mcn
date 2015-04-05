@@ -68,12 +68,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr val="${row.ROLE_ID}">
 				<c:forEach items="${role_dataset}" var="srow" varStatus="status">
 					<td>
-						<input type="checkbox" name="use_state_box" id="use_state_box${row.ROLE_ID}" <c:if test="${srow.ROLE_ID == row.ROLE_ID && srow.USE_STATE == 1}">checked</c:if>/>
+						<input type="checkbox" name="use_state_box" id="use_state_box${row.ROLE_ID}" 
+						<c:if test="${srow.ROLE_ID == row.ROLE_ID && srow.USE_STATE == 1}">checked</c:if>/>
 					</td>
 					<td>
 						<input type="checkbox" name="assign_state_box" id="assign_state_box${row.ROLE_ID}" <c:if test="${srow.ROLE_ID == row.ROLE_ID && srow.ASSIGN_STATE == 1}">checked</c:if> />
 					</td>
 				</c:forEach>
+				<c:if test="${role_dataset.size() ==0 }">
+					<td><input type="checkbox" name="use_state_box" id="use_state_box${row.ROLE_ID}" ></input></td>
+					<td><input type="checkbox" name="assign_state_box" id="assign_state_box${row.ROLE_ID}" ></input></td>
+				</c:if>
 					<td>
 						${row.ROLE_NAME}
 					</td>
@@ -95,7 +100,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	var auth_type ="${type}";
 	var posi_no ="${posi_no}";
 	var staff_no ="${staff_no}";
-	
 	$().ready(function() {
 		var $TR_LIST=$("#listTable tbody tr");
 		$TR_LIST.click(function(){
@@ -116,8 +120,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$("#authBtn").click(function (){
 			saveRoleAuth();
 		});
-		
-		
 	});
 	
 	function  selectAllUseCheckBox()
@@ -142,7 +144,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			{
 				box[i].checked =false;
 			}
-			
 		}
 	}
 	function  selectAllAsignCheckBox()
@@ -167,7 +168,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			{
 				box[i].checked =false;
 			}
-			
 		}
 	}
 	
@@ -212,19 +212,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 		
 		var params=null;
+		var tipMsg ="";
 		//posi
 		if(auth_type == "1"){
 			params={type:auth_type,id:posi_no,items:auth_item};	
+			tipMsg ="未勾选角色授权与角色使用，此岗位将不能使用之前的权限";
 		}
 		else if(auth_type == "4" )
 		{
 			params={type:auth_type,id:staff_no,items:auth_item};
+			tipMsg ="未勾选角色授权与角色使用，此人员将不能使用之前的权限";
 		}
 		//alert(auth_item);
 		if(auth_item == "")
 		{
-			alert("请选择角色！");
-			return false;
+			//alert("请选择角色！");
+			if(!confirm(tipMsg))
+			{
+				return false;
+			}
+			else
+			{
+				params.items ="";
+				alert(params.items);
+			}
 		}
 		/**/
 		$.ajax({
@@ -250,11 +261,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						alert('error...');
 					}
 				});
-				
-				
 	}
-	
-
 	
 	function refreshFun()
 	{

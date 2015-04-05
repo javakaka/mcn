@@ -79,7 +79,7 @@ $().ready( function() {
 if(typeof(KindEditor) != "undefined") {
 	KindEditor.ready(function(K) {
 		editor = K.create("#editor", {
-			height: "350px",
+			height: "650px",
 			items: [
 				"source", "|", "undo", "redo", "|", "preview", "print", "template", "cut", "copy", "paste",
 				"plainpaste", "wordpaste", "|", "justifyleft", "justifycenter", "justifyright",
@@ -90,14 +90,14 @@ if(typeof(KindEditor) != "undefined") {
 				"flash", "media", "insertfile", "table", "hr", "emoticons", "baidumap", "pagebreak",
 				"anchor", "link", "unlink"
 			],
-			langType: ezshop.locale,
+			langType: framework.locale,
 			syncType: "form",
 			filterMode: false,
 			pagebreakHtml: '<hr class="pageBreak" \/>',
 			allowFileManager: true,
 			filePostName: "file",
-			fileManagerJson: ezshop.base + "/admin/file/browser.jhtml",
-			uploadJson: ezshop.base + "/admin/file/upload.jhtml",
+			fileManagerJson: framework.base + "/upload/file/browser.do",
+			uploadJson: framework.base + "/upload/file/upload.do",
 			uploadImageExtension: setting.uploadImageExtension,
 			uploadFlashExtension: setting.uploadFlashExtension,
 			uploadMediaExtension: setting.uploadMediaExtension,

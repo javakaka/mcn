@@ -1,18 +1,11 @@
 package com.mcn.test;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.vo.IVO;
 import com.ezcloud.framework.vo.VOConvert;
 import com.ezcloud.utility.Base64Util;
 import com.ezcloud.utility.DateUtil;
 import com.ezcloud.utility.NetUtil;
-import sun.misc.BASE64Decoder;  
-import sun.misc.BASE64Encoder;
 public class TestApi {
 //	String url ="http://211.154.151.145:8080/mcn/api/action/changePassword.do";
 	

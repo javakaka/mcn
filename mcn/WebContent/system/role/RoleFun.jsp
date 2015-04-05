@@ -65,11 +65,20 @@ function onLoadPage()
 function getRoleFuns(id)
 {
 	var frame=window.frames["DIFRAME"];
+	var isSafari =$.browser.safari;
 	//frame.contentWindow.getRoleFuns(id);
 	if(typeof id !="undefined" && id != ""){
+		if(isSafari){
+			frame.location.href ="SelectRoleFun.do?role_id="+id;
+		}
+		else
 		frame.src ="SelectRoleFun.do?role_id="+id;
 	}
 	else{
+		if(isSafari){
+			frame.location.href ="SelectRoleFun.do";
+		}
+		else
 		frame.src ="SelectRoleFun.do";
 	}
 }

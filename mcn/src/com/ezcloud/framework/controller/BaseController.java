@@ -4,14 +4,14 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
-import net.ezshop.DateEditor;
-
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ezcloud.framework.common.DateEditor;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.util.SpringUtils;
 import com.ezcloud.framework.vo.Row;
@@ -26,7 +26,13 @@ public class BaseController {
 
 	/** 错误消息 */
 	protected static final Message ERROR_MESSAGE = Message.error("framework.message.error");
-
+	/** 瞬时消息*/
+	protected void addFlashMessage(RedirectAttributes redirectAttributes, Message message) {
+		String type =message.getType().toString();
+		String content =message.getContent();
+		String flash_message_js  ="$.message(\""+type+"\",\""+content+"\");";
+		redirectAttributes.addFlashAttribute("flash_message", flash_message_js);
+	}
 	/** 成功消息 */
 	protected static final Message SUCCESS_MESSAGE = Message.success("framework.message.success");
 	/** 封装请求参数 **/

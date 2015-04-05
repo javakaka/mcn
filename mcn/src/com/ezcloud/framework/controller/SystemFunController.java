@@ -101,16 +101,4 @@ public class SystemFunController {
 		rowNum=systemFunService.delete();
 		return rowNum;
 	}
-	
-	//版本升级
-	@RequestMapping(value = "/BBSJ")
-	public @ResponseBody String BanSj(){
-		return systemFunService.BBSJ();
-	}
-	//版本升级修改
-	@RequestMapping(value = "/BBSJUpdate")
-	public @ResponseBody String BanSjUpdate(String bb){
-		systemFunService.BBSJUpdate(bb);
-		return null;
-	}
 }

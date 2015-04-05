@@ -36,45 +36,9 @@ $().ready(function() {
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo; <cc:message key="framework.moudle.edit"/>
+		<cc:message key="framework.nav.index" /> &raquo; 组织机构图
 	</div>
 	<form id="inputForm" action="update.do" method="post">
-		<input type="hidden" name="MOUDLE_ID" value="${moudle.MOUDLE_ID}" />
-		<table class="input">
-			<tr>
-				<th>
-					<span class="requiredField">*</span><cc:message key="framework.moudle.moudle_name" />:
-				</th>
-				<td>
-					<input type="text" name="MOUDLE_NAME" class="text" value="${moudle.MOUDLE_NAME}" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<cc:message key="framework.moudle.moudle_begin_tab" />:
-				</th>
-				<td>
-					<input type="text" name="MOUDLE_BEGIN_TAB" class="text" value="${moudle.MOUDLE_BEGIN_TAB}" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<cc:message key="framework.moudle.moudle_desc" />:
-				</th>
-				<td>
-					<input type="text" name="MOUDLE_DESC" class="text" value="${moudle.MOUDLE_DESC}" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					&nbsp;
-				</th>
-				<td>
-					<input type="submit" class="button" value="<cc:message key="admin.common.submit" />" />
-					<input type="button" id="backButton" class="button" value="<cc:message key="admin.common.back" />" />
-				</td>
-			</tr>
-		</table>
 	</form>
 </body>
 </html>

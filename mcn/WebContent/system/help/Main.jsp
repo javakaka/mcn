@@ -1,36 +1,47 @@
-<%@ page contentType="text/html; charset=GBK"%>
-<%@ include file="/include/Head.jsp"%>
-<body bgcolor="whitesmoke">
-<table width="100%" height="95%" border="0" cellpadding="0" cellspacing="3">
-  <tr> 
-    <td width="25%" valign="top">
-	<link type="text/css" rel="stylesheet" href="xtree.css">
-	<script src="<%=GlobalUtil._WEB_PATH%>/res/js/Tree.js"></script>
-	<table width="100%" border="0" cellpadding="0" cellspacing="2">
-	  <tr>
-		<td valign="top" bordercolor="#FFFFFF" bgcolor="#eeeeee" class="Solid-ALL"> <input type="button" name="btnadd" value="ä¯ÀÀ°ïÖúÎÄµµ"  onclick="$E.open('<%=GlobalUtil._WEB_PATH%>/help/Index.jsp')">
-			<$:A service="GetFaqTree" dynamic="true"/>
-			<$:M dtype="1"/>
-			<%
-				if(ServletUtil.getResult(request,"FaqTree") !=null)
-				{
-					DataSet alTree =(DataSet)ServletUtil.getResult(request,"FaqTree");
-					%>
-	               <$:Tree treeData="<%=alTree%>" head="<%=com.juts.framework.license.SystemInfo._SOFTNAME+"°ïÖúÎÄµµ"%>" pidF="PFAQ_NO" idF="FAQ_NO" pid="0" titleF="SUBJECT" hiddenF="FAQ_NO,SUBJECT " icon="aq.gif"/>
-					<%
-				}
-			%>
-		</td>
-	  </tr>
-	</table>
-	</td>
-    <td valign="top">
-		<iframe src="Child.jsp" id="DIFRAME" height="100%" width="100%" scrolling="auto" frameborder="0"></iframe>
-	</td>
-  </tr>
-</table>
-</body>
-</html>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" isELIgnored="false" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/cctaglib" prefix="cc"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title><cc:message key="framework.nav.i18n" /></title>
+<link href="<%=basePath%>/res/admin/css/common_pop.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="<%=basePath%>/res/css/xtree2.css" />
+<script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
+<script src="<%=basePath%>/res/js/xtree2.js"></script>
+<script type="text/javascript">
+$().ready(function() {
+
+	//[@flash_message /]
+
+});
+</script>
+</head>
+<body>
+	<div class="path">
+		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.i18n" />
+	</div>
+
+<div style="width:100%;height:95%;position: absolute;">
+	<div id="treeDiv" style="width:20%;float: left;">
+		<input type="button" value="æ”¶èµ·/å±•å¼€" onclick="tree.toggle()" />
+		<input type="button" value="å…¨éƒ¨å±•å¼€" onclick="tree.expandAll()" />
+		<input type="button" value="ä¸€çº§ç›®å½•" onclick="tree.collapseChildren()" />
+		<input type="button" value="åˆ·æ–°ç›®å½•" onclick="javascript:window.location.reload();" />
+		<cc:xtree treeData="${treeData}" head="å¸®åŠ©æ–‡æ¡£" pidF="PFAQ_NO" idF="FAQ_NO" pid="0" titleF="SUBJECT" hiddenF="FAQ_NO,SUBJECT " icon="aq.gif" />
+	</div>
+	<div id="includeDiv" style="width:78%;float: left;height:100%;border: 1px solid #d7e8f1;">
+		<iframe src="Child.do" id="DIFRAME" height="100%" width="100%" scrolling="auto" frameborder="0"></iframe>
+	</div>
+</div>
 <script>
 function selectChange(handle)
 {
@@ -40,15 +51,26 @@ function selectChange(handle)
 		ftmp.submit();
 	}
 }
-function action(){
-  if(tree.getSelected().parentNode!= null){
-      var info =tree.getSelected().info;
-      var node =info.split(",");
-      document.all.DIFRAME.src ="Child.jsp?pfaq_no="+node[0];
+var SELECTED_FUN_ID="";
+function action(val){
+   var url="";
+   if(tree.getSelected().parentNode!= null)
+   {
+	   if(typeof val !="undefined" && val !=null && val !=""){
+		var info =val;
+		var node =info.split(",");
+		url="Child.do?pfaq_no="+node[0];
+		SELECTED_FUN_ID=node[1];
+	   }
    }
-   else{
-      document.all.DIFRAME.src ="Child.jsp";
+   else
+   {
+	  url="Child.do";
+	  SELECTED_FUN_ID="";
    }
+   document.getElementById("DIFRAME").src=url;
+   
 }
-
 </script>
+</body>
+</html>

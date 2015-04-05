@@ -72,9 +72,6 @@ function onPageLoad()
 	Tabs.select(sSelectTab);
 
 }
-
-
-
 </SCRIPT>
 </BODY>
 </HTML>

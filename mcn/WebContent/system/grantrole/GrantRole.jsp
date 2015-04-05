@@ -12,6 +12,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><cc:message key="framework.nav.i18n" /></title>
 <link href="<%=basePath%>/res/admin/css/common_pop.css" rel="stylesheet" type="text/css" />
+	<link type="text/css" rel="stylesheet" href="<%=basePath%>/res/css/xtree2.css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
@@ -27,19 +28,19 @@ $().ready(function() {
 	<div class="path">
 		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.i18n" />
 	</div>
-	<link type="text/css" rel="stylesheet" href="<%=basePath%>/res/css/xtree2.css">
 	<script src="<%=basePath%>/res/js/xtree2.js"></script>
 
 <div style="width:100%;height:95%;position: absolute;">
 <div id="treeDiv" style="width:20%;float: left;">
-	<input type="button" value="收起/展开" onclick="tree.toggle()" >
-	<input type="button" value="全部展开" onclick="tree.expandAll()" >
-	<input type="button" value="一级目录" onclick="tree.collapseChildren()" >
-	<input type="button" value="刷新目录" onclick="javascript:window.location.reload();" >
+	<input type="button" value="收起/展开" onclick="tree.toggle()" />
+	<input type="button" value="全部展开" onclick="tree.expandAll()" />
+	<input type="button" value="一级目录" onclick="tree.collapseChildren()" />
+	<input type="button" value="刷新目录" onclick="javascript:window.location.reload();" />
 	<cc:xtree treeData="${treeData}" head="企业结构树" pidF="UP_ID" idF="ID" pid="-1" titleF="NAME" hiddenF="UP_ID,ID,NAME,TYPE" typeF="TYPE" icon="pic.gif"/>
 </div>
-<div id="includeDiv" style="width:78%;float: left;height:100%;border: 1px solid #A8EBD4;">
+<div id="includeDiv" style="width:78%;float: left;height:100%;border: 1px solid #d7e8f1;">
 <iframe src="RoleAuth.do" id="DIFRAME" height="100%" width="100%" scrolling="auto" frameborder="0"></iframe>
+</div>
 </div>
 <script>
 var SELECTED_FUN_ID="";

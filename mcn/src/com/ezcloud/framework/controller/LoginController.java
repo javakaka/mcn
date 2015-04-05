@@ -8,7 +8,6 @@
  */
 package com.ezcloud.framework.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import javax.annotation.Resource;
@@ -23,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.service.login.Login;
 import com.ezcloud.framework.vo.Row;
-import com.ezcloud.utility.Base64Util;
 
 /**
  * 系统用户登陆控制器
@@ -41,8 +39,7 @@ public class LoginController extends BaseController {
 	private Login loginService;
 
 	@RequestMapping(value = "/login")
-	public String login(String username, String password, String captcha, String isRememberUsername, String token ,RedirectAttributes redirectAttributes, HttpSession session, ModelMap model) throws UnsupportedEncodingException {
-		System.out.println("token:" + token);
+	public String login(String username, String password, String captcha, String isRememberUsername, String token ,RedirectAttributes redirectAttributes, HttpSession session, ModelMap model) {
 		System.out.println("username:" + username);
 		System.out.println("password:" + password);
 		System.out.println("captcha:" + captcha);
@@ -62,10 +59,7 @@ public class LoginController extends BaseController {
 			if(token == null || token.replace(" ", "").length() == 0){
 				token ="";
 			}
-			System.out.println("========token======================"+token);
 			token =URLDecoder.decode(token);
-			//token = new String(Base64Util.decode(token));
-			System.out.println("========token???????==============="+token);
 			loginService.getRow().put("token", token);
 			loginService.login();
 		} catch (JException e) {

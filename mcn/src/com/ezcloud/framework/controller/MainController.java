@@ -14,8 +14,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezcloud.framework.service.system.Permission;
+import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
@@ -32,11 +34,12 @@ public class MainController extends BaseController {
 	private Permission permissionService;
 
 	@RequestMapping(value = "/menu/main")
-	public String getMainMenu(ModelMap model, HttpSession session) {
+	public String getMainMenu(ModelMap model, HttpSession session,RedirectAttributes redirectAttributes) {
 		Row staff = (Row) session.getAttribute("staff");
 		if (staff == null) {
 			model.addAttribute("error", message("framework.not.login"));
-			return "/login/Login";
+			addFlashMessage(redirectAttributes, Message.error("请先登陆"));
+			return "redirect:/login/Login.jsp";
 		}
 		String staff_no = staff.getString("staff_no");
 		System.out.println("staff_no:" + staff_no);

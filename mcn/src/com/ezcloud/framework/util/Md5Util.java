@@ -37,11 +37,11 @@ public class Md5Util {
 
 	public static void main(String[] args) {
 
-		String ssss = Md5("10004");
+		String ssss = Md5("123456");
 		String s3 = "21218CCA77804D2BA1922C33E0151105";
 		// Md5("ezcloud");
 		System.out.println(ssss);
-		System.out.println(Md5Util.Md5("10004"));
+		System.out.println(Md5Util.Md5("123456"));
 		System.out.println(ssss.equals(s3));
 	}
 

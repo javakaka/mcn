@@ -1,115 +1,318 @@
-<%@ page contentType="text/html; charset=GBK"%>
-<%@ include file="/include/Head.jsp"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" isELIgnored="false" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/cctaglib" prefix="cc"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title><cc:message key="framework.nav.i18n" /></title>
+<link href="<%=basePath%>/res/admin/css/common_pop.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
+<link href="<%=basePath%>/res/css/diymen/tipswindown.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<%=basePath%>/res/css/diymen/tipswindown.js?version=1.4"></script>
+
+</head>
 <body>
-<$:G title="°ïÖúÏµÍ³">
-<$:A service="GetFaq" dynamic="true">
-   <$:P name="faq_no" aliasName="pfaq_no" default="0"/>
-</$:A>
-<$:M dtype="1"/>
-<table cellpadding="2" cellspacing="1" class="table_c" width=100%>
-   <tr class="tr_c"><td colspan=2 width=100%>
-      <$:T var="faq" name="FaqInfo">
-            <FONT COLOR="#0000CC" size=4><U><B><$:C item="faq.SUBJECT"/></B></U>[<input type=button value="±à¼­" onClick='onEditFaq("<$:C item="faq.FAQ_NO"/>")']</FONT>
-             <table width=95% align=right border=0><tr><td width=95%>
-               <$:C item="faq.CONTENT"/>&nbsp;
-            </td></tr>
-         </table>
-      </$:T>
-   </td></tr>
-   <tr class="tr_c"><td align=right valign=top>°ïÖúÄÚÈİ£º</td><td>&nbsp;&nbsp;
-      <$:T var="faq" name="ReferFaq">
-         <$:C item="faq.ROWID"/>:<a href='Child.jsp?pfaq_no=<$:C item="faq.FAQ_NO"/>'><$:C item="faq.SUBJECT"/></a>
-      </$:T>
-   </td></tr>
-   <tr class="tr_c"> 
-    <td class="td_c" >ÏÂÊô°ïÖúÖ÷Ìâ£º</td>
-    <td height="1" align=right nowrap>
-      <input type="button" name="btnadd" value=<$:I item="html.button.add"/> class="btTopfirst" onclick=modify('<$:W name="pfaq_no" default="0" from="request"/>',0)><input type="button" name="btndel" value=<$:I item="html.button.del"/> onclick=modify('<$:W name="pfaq_no" default="0" from="request"/>',2) disabled><input type="button" name="btnupdate" value=<$:I item="html.button.update"/> onclick=modify('<$:W name="pfaq_no" default="0" from="request"/>',1) disabled></td>
-   </tr>
-   <tr class="tr_c"><td width=100% colspan=2>
-      <table id="tabMain" onClick="row()" cellpadding="2" cellspacing="1" class="table_c">
-      <tr class="tr_title"> 
-         <td class="td_c" width=1%>&nbsp;</td>
-         <td class="td_c" width=1% nowrap>Ö÷Ìâ±àºÅ</td>
-         <td class="td_c">Ö÷Ìâ</td>
-      </tr>
-      <$:T var="faq" name="SubFaqList">
-      <tr class="tr_c" <$:R item="faq.FAQ_NO,PFAQ_NO"/>>
-         <td nowrap>&nbsp;<$:C item="faq.ROWID"/> </td>
-         <td nowrap>&nbsp;<$:C item="faq.FAQ_NO"/> </td>
-         <td nowrap><a href='FaqInfo.jsp?faq_no=<$:C item="faq.FAQ_NO"/>'><$:C item="faq.SUBJECT"/></a></td>
-      </tr>
-      </$:T>
-      <tr class="tr_c">
-         <td>&nbsp;</td>
-         <td>&nbsp;</td>
-         <td>&nbsp;</td>
-      </tr>
-      </table>
-   </td></tr>
-</table>
-</$:G>   
+	<form id="listForm" action="" method="get">
+		<div class="bar">
+			<a href="add.do?pfaq_no=${pfaq_no}" class="iconButton">
+				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
+			</a>
+			<div class="buttonWrap">
+				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
+					<span class="deleteIcon">&nbsp;</span><cc:message key="admin.common.delete" />
+				</a>
+				<a href="javascript:;" id="refreshButton" class="iconButton">
+					<span class="refreshIcon">&nbsp;</span><cc:message key="admin.common.refresh" />
+				</a>
+				<div class="menuWrap">
+					<a href="javascript:;" id="pageSizeSelect" class="button">
+						<cc:message key="admin.page.pageSize" /><span class="arrow">&nbsp;</span>
+					</a>
+					<div class="popupMenu">
+						<ul id="pageSizeOption">
+							<li>
+								<a href="javascript:;" <c:if test="${page.pageSize == 10}">class="current"</c:if> val="10" >10</a>
+							</li>
+							<li>
+								<a href="javascript:;" <c:if test="${page.pageSize == 20}">class="current"</c:if> val="20">20</a>
+							</li>
+							<li>
+								<a href="javascript:;" <c:if test="${page.pageSize == 50}"> class="current"</c:if>val="50">50</a>
+							</li>
+							<li>
+								<a href="javascript:;"  <c:if test="${page.pageSize == 100}">class="current"</c:if>val="100">100</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="menuWrap">
+				<div class="search">
+					<span id="searchPropertySelect" class="arrow">&nbsp;</span>
+					<input type="text" id="searchValue" name="searchValue" value="${page.searchValue}" maxlength="200" />
+					<button type="submit">&nbsp;</button>
+				</div>
+				<div class="popupMenu">
+					<ul id="searchPropertyOption">
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_NAME'}"> class="current"</c:if> val="ROLE_NAME">è§’è‰²åç§°</a>
+						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_BEGINTIME'}">class="current"</c:if> val="ROLE_BEGINTIME">æœ‰æ•ˆèµ·å§‹æ—¶é—´</a>
+						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_ENDTIME'}">class="current"</c:if> val="ROLE_ENDTIME">æœ‰æ•ˆç»“æŸæ—¶é—´</a>
+						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'STATE'}">class="current"</c:if> val="STATE">è§’è‰²çŠ¶æ€</a>
+						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_DESC'}">class="current"</c:if> val="ROLE_DESC">åŠŸèƒ½ç®€ä»‹</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<table id="listTable" class="list" >
+		<thead>
+			<tr>
+				<th class="check">
+					<input type="checkbox" id="selectAll" />
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="LAN_NO">ä¸»é¢˜ç¼–å·</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="RES">ä¸»é¢˜</a>
+				</th>
+				<th>
+					<span><cc:message key="admin.common.handle" /></span>
+				</th>
+			</tr>
+			</thead>
+			<tbody>
+			<c:forEach items="${data_list}" var="row" varStatus="status">
+				<tr val="${row.FAQ_NO}">
+					<td>
+						<input type="checkbox" name="ids" value="${row.FAQ_NO}" />
+					</td>
+					<td>
+						${row.FAQ_NO}
+					</td>
+					<td>
+						${row.SUBJECT}
+					</td>
+					<td>
+						<a href="edit.do?faq_no=${row.FAQ_NO}&pfaq_no=${row.PFAQ_NO}"><cc:message key="admin.common.edit" /></a>
+					</td>
+				</tr>
+			</c:forEach>
+			</tbody>
+		</table>
+	</form>
+	<script type="text/javascript">
+	$().ready(function() {
+		var $TR_LIST=$("#listTable tbody tr");
+		$TR_LIST.click(function(){
+			var $this = $(this);
+			$TR_LIST.css("background-color","");
+			$this.css("background-color"," rgb(163, 189, 236)");
+			var fid=$this.attr("val");
+			getFunDetail(fid);
+		});
+	});
+
+	var pic_path="<%=basePath%>images/icons/";
+	var win_id;
+	function getFunDetail(fun_id){
+		var params={fun_id:fun_id};
+		$.ajax({
+					url: "FunEdit.do",
+					type: "POST",
+					data: params,
+					dataType: "json",
+					cache: false,
+					success: function(message) {
+						var f_id=message.FUN_ID;
+						var f_up_id=message.UP_FUN_ID;
+						var level_index=message.LEVEL_INDEX;
+						var f_name=message.FUN_NAME;
+						var f_ename=message.FUN_ENAME;
+						var f_win_id=message.WIN_ID;
+						var f_win_target=message.WIN_TARGET;
+						var f_ico_name=message.ICO_NAME;
+						var f_desc=message.FUN_DESC;
+						$("#f_id").val(f_id);
+						$("#f_up_id").val(f_up_id);
+						$("#level_index").val(level_index);
+						$("#f_name").val(f_name);
+						$("#f_ename").val(f_ename);
+						$("#f_win_id").val(f_win_id);
+						win_id=f_win_id;
+						$("#f_win_target").val(f_win_target);
+						$("#f_ico_name").val(f_ico_name);
+						$("#ico_preview_id").attr("src",pic_path+f_ico_name);
+						$("#f_desc").val(f_desc);
+					}
+				});
+	}
+
+
+	var title;
+	var url;
+	var width=520;
+	var height=400;
+	var drag="true";
+	var time="";
+	var showBg="true";
+	var cssName="leotheme";
+	var iframeName="selectIframeId";
+	function popWindow(title,url,width,height,drag,time,showBg,cssName,iframeName)
+	{
+		tipsWindown(title,url,width,height,drag,time,showBg,cssName,iframeName);
+	}
+
+	 function closeTipWindow()
+	 {
+		tipsWindown.close();
+	 }
+
+	 function iframeSelectTarget()
+	 {
+	 	//var iframe =window.frames["selectWindowIframeId"].document.selectTarget;
+	 	//window.frames["selectWindowIframeId"].document.selectTarget();
+	 	window.frames["selectWindowIframeId"].selectTarget();
+	 	
+	 }
+	 
+	 function selectTarget(){
+		title ="é€‰æ‹©çª—å£";
+		url="iframe:<%=basePath%>system/window/SelectWindow.do?win_id="+win_id;
+		iframeName="selectWindowIframeId";
+		popWindow(title,url,width,height,drag,time,showBg,cssName,iframeName);
+	}
+
+	function selectIcon(){
+		title ="é€‰æ‹©å›¾æ ‡";
+		url="iframe:<%=basePath%>system/icon/SelectIcon.do?win_id="+win_id;
+		width=720;
+		iframeName="selectIconIframeId";
+		popWindow(title,url,width,height,drag,time,showBg,cssName,iframeName);
+	}
+	
+	function setSelectedWindow(id,target)
+	{
+		$("#f_win_id").val(id);
+		$("#f_win_target").val(target);
+	}
+	
+	function setSelectedImg(imgName)
+	{
+		$("#f_ico_name").val(imgName);
+		$("#ico_preview_id").attr("src",pic_path+imgName);
+	
+	}
+	
+	function addFun()
+	{
+		$("#f_id").val("");
+		//alert(window.parent.SELECTED_FUN_ID);
+		$("#f_up_id").val(window.parent.SELECTED_FUN_ID);
+		$("#level_index").val("");
+		$("#f_name").val("");
+		$("#f_ename").val("");
+		$("#f_win_id").val("");
+		$("#f_win_target").val("");
+		$("#f_ico_name").val("");
+		$("#ico_preview_id").attr("src","");
+		$("#f_desc").val("");
+		$("#level_index").focus();
+	}
+	
+	function saveFun()
+	{
+		var f_id=$("#f_id").val();
+		var f_up_id=$("#f_up_id").val();
+		var level_index=$("#level_index").val();
+		var f_name=$("#f_name").val();
+		var f_ename=$("#f_ename").val();
+		var f_win_id=$("#f_win_id").val();
+		var f_win_target=$("#f_win_target").val();
+		var f_ico_name=$("#f_ico_name").val();
+		var f_desc=$("#f_desc").val();
+		if(typeof f_name == "undefined" || f_name == ""){
+			alert("è¯·è¾“å…¥åŠŸèƒ½é¡¹åç§°!");
+			$("#f_name").focus();
+			return false;
+		}
+		var params={f_id:f_id,f_up_id:f_up_id,level_index:level_index,f_name:f_name,f_ename:f_ename,f_win_id:f_win_id,f_win_target:f_win_target,f_ico_name:f_ico_name,f_desc:f_desc};
+		$.ajax({
+					url: "FunSave.do",
+					type: "POST",
+					data: params,
+					dataType: "json",
+					cache: false,
+					beforeSend: function (XMLHttpRequest){
+						//alert('.....');
+					},
+					success: function(data, textStatus) {
+						var id=data.oForm.FUN_ID;
+						$("#f_id").val(id);
+					},
+					complete: function (XMLHttpRequest, textStatus){
+						//alert("complete...");
+					},
+					error: function (){
+						alert('error...');
+					}
+				});
+	}
+	
+	function deleteFun()
+	{
+		var fun_id=window.parent.SELECTED_FUN_ID;
+		var params={fun_id:fun_id};
+		if(!confirm('å°†åˆ é™¤èŠ‚ç‚¹ä»¥åŠå­èŠ‚ç‚¹ç¡®è®¤')){
+							return ;
+						}
+		$.ajax({
+					url: "FunDelete.do",
+					type: "POST",
+					data: params,
+					dataType: "json",
+					cache: false,
+					beforeSend: function (XMLHttpRequest){
+						$("#deleteButton").addClass("disabled");
+					},
+					success: function (data, textStatus){
+						if(data >0){
+							window.parent.location.reload();
+						}
+						else
+						alert('failure');
+					},
+					complete: function (XMLHttpRequest, textStatus){
+						$("#deleteButton").removeClass("disabled");
+					},
+					error: function (){
+						alert('error...');
+					}
+				});
+		
+	}
+	
+	function refreshFun()
+	{
+		window.location.reload();
+	}
+	</script>
 </body>
 </html>
-<script>
-function modify(pfaq_no, type)
-{
-   if(type=='0')
-   {
-      //window.open ('<%=GlobalUtil._WEB_PATH%>/system/help/faq_mod.jsp', 'edit', 'height=600, width=600, top=50, left=50, toolbar=no, menubar=no, resizable=yes,location=no, status=no');
-      document.location='<%=GlobalUtil._WEB_PATH%>/system/help/FaqMod.jsp?pfaq_no='+pfaq_no;
-      //runOpen('<%=GlobalUtil._WEB_PATH%>/system/help/faq_mod.jsp', false, 600, 500);
-   }
-   else if(type =="1")
-   {//ĞŞ¸Ä
-		if(typeof Table.clickRow(document.all.tabMain).FAQ_NO !='undefined')
-      {
-         var faq_no =Table.clickRow(document.all.tabMain).FAQ_NO;
-			document.location='<%=GlobalUtil._WEB_PATH%>/system/help/FaqMod.jsp?faq_no='+faq_no+"&operate=1";
-		}
-	}
-	else if(type =="2")
-	{//É¾³ı
-      if(typeof Table.clickRow(document.all.tabMain).FAQ_NO !='undefined')
-      {
-         var faq_no =Table.clickRow(document.all.tabMain).FAQ_NO;
-         var pfaq_no =Table.clickRow(document.all.tabMain).PFAQ_NO;
-			if(confirm("È·ÈÏÒªÉ¾³ı´Ë°ïÖúÖ÷ÌâÒÔ¼°ÆäÏÂÊôµÄ°ïÖúÖ÷ÌâĞÅÏ¢Âğ£¿"))
-			{
-				var s=new Server("editSysFaq");
-				s.setParam("faq_no", faq_no);
-				s.setParam("pfaq_no", pfaq_no);
-				s.setParam("operate", type);
-				s.send(s, false, function(){
-					alert("É¾³ı³É¹¦£¡");
-					$E.loca(WEB_PATH+"/system/help/Child.jsp?pfaq_no="+$E.getParameter("pfaq_no"));
-				}
-				);
-			}
-      }
-      else
-         $E.message("ÇëÑ¡ÔñÒ»ÌõÒªĞŞ¸ÄµÄ¼ÇÂ¼");
-   }
-   return ;
-}
-function row()
-{
-   Table.click();
-   if(typeof Table.clickRow(document.all.tabMain).FAQ_NO !='undefined')
-   {
-      var faq_no =Table.clickRow(document.all.tabMain).FAQ_NO;
-      document.all.btndel.disabled=false;
-      document.all.btnupdate.disabled=false;
-   }
-   else
-   {
-      document.all.btndel.disabled=true;
-      document.all.btnupdate.disabled=true;
-   }
-}
-//±à¼­faq
-function onEditFaq(sFaqNo)
-{
-	$E.loca("FaqMod.jsp?faq_no="+sFaqNo+"&operate=1");
-}
-</script>

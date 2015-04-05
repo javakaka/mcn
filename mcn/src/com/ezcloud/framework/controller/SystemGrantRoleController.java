@@ -107,39 +107,55 @@ public class SystemGrantRoleController extends BaseController{
 		ResponseVO  ovo =new ResponseVO();
 		Assert.notNull(type,"type not null");
 		Assert.notNull(id,"id not null");
-		Assert.notNull(items,"items not null");
+//		Assert.notNull(items,"items not null");
 //		String use_state = null;
 //		String assign_state = null;
-		String arr [] =items.split(",");
+		String arr [] =null;
 		String item[] =null;
 		DataSet roleDataSet =new DataSet();
 		Row roleRow =null;
 		//posi
 		if(type.equals("1"))
 		{
-			for(int i=0; i< arr.length; i++)
+			if(items == null || items.replace(" ", "").length() == 0)
 			{
-				item =arr[i].split("@");
-				roleRow =new Row();
-				roleRow.put("posi_no", id);
-				roleRow.put("role_id", item[0]);
-				roleRow.put("use_state", item[1]);
-				roleRow.put("assign_state", item[2]);
-				roleDataSet.add(roleRow);
+				roleDataSet =null;
+			}
+			else
+			{
+				arr  =items.split(",");
+				for(int i=0; i< arr.length; i++)
+				{
+					item =arr[i].split("@");
+					roleRow =new Row();
+					roleRow.put("posi_no", id);
+					roleRow.put("role_id", item[0]);
+					roleRow.put("use_state", item[1]);
+					roleRow.put("assign_state", item[2]);
+					roleDataSet.add(roleRow);
+				}
 			}
 			systemPositionRoleService.savePositionRoleAuth(id,roleDataSet);
 		}
 		else if(type.equals("4"))
 		{
-			for(int i=0; i< arr.length; i++)
+			if(items == null || items.replace(" ", "").length() == 0)
 			{
-				item =arr[i].split("@");
-				roleRow =new Row();
-				roleRow.put("staff_no", id);
-				roleRow.put("role_id", item[0]);
-				roleRow.put("use_state", item[1]);
-				roleRow.put("assign_state", item[2]);
-				roleDataSet.add(roleRow);
+				roleDataSet =null;
+			}
+			else
+			{
+				arr  =items.split(",");
+				for(int i=0; i< arr.length; i++)
+				{
+					item =arr[i].split("@");
+					roleRow =new Row();
+					roleRow.put("staff_no", id);
+					roleRow.put("role_id", item[0]);
+					roleRow.put("use_state", item[1]);
+					roleRow.put("assign_state", item[2]);
+					roleDataSet.add(roleRow);
+				}
 			}
 			systemStaffRoleService.saveStaffRoleAuth(id, roleDataSet);
 		}

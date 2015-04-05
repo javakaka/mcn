@@ -20,11 +20,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.ezcloud.framework.controller.Direction;
-import com.ezcloud.framework.controller.Filter;
-import com.ezcloud.framework.controller.Order;
-import com.ezcloud.framework.controller.Pageable;
-import com.ezcloud.framework.controller.Filter.Operator;
+
+import com.ezcloud.framework.page.jdbc.Direction;
+import com.ezcloud.framework.page.jdbc.Filter;
+import com.ezcloud.framework.page.jdbc.Filter.Operator;
+import com.ezcloud.framework.page.jdbc.Order;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.util.DBUtil;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
@@ -117,12 +118,15 @@ public class Service {
 		String colName = "";
 		String colValue = "";
 		for (int i = 0; i < colnums.length; i++) {
-			if (i > 0) {
-				sql += ",";
-			}
 			colName = (String) colnums[i];
-			colValue = row.getString(colName);
-			sql += colName + "='" + colValue + "' ";
+			colValue = row.getString(colName,null);
+			if(colValue != null && colValue.replace(" ", "").length() > 0)
+			{
+				if (i > 0) {
+					sql += ",";
+				}
+				sql += colName + "='" + colValue + "' ";
+			}
 		}
 		sql += " where " + where;
 		rowNum = jdbcTemplate.update(sql);
@@ -242,6 +246,10 @@ public class Service {
 					for (int i = 0; i < list.size(); i++) {
 						fieldName = list.get(i);
 						fieldValue = rs.getString(fieldName);
+						if(fieldValue == null || fieldValue.replace(" ", "").length() ==0)
+						{
+							fieldValue ="";
+						}
 						tempRow.put(fieldName, fieldValue);
 					}
 					return tempRow;
@@ -285,7 +293,7 @@ public class Service {
 		int sequence = 1000;
 		String sql = "select max(" + fieldName + ") from " + tableName;
 		sequence = jdbcTemplate.queryForInt(sql) + 1;
-		if (sequence == 0) {
+		if (sequence == 1) {
 			sequence = defaultSequenceValue;
 		}
 		return sequence;

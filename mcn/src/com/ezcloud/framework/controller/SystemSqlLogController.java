@@ -7,6 +7,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSqlLog;
 import com.ezcloud.framework.util.Message;
 
