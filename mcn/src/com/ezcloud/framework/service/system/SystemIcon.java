@@ -4,12 +4,11 @@ import java.io.File;
 
 import org.springframework.stereotype.Component;
 
-import com.ezcloud.framework.controller.Page;
-import com.ezcloud.framework.controller.Pageable;
+import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
-import com.ezcloud.utility.FileUtil;
 
 /**
  * 框架窗口维护

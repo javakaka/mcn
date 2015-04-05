@@ -135,6 +135,10 @@ public class SystemFun extends Service {
 //		System.out.println("ids=======>>>"+ids.toString());
 		sql ="delete from sm_fun where fun_id in ("+ids.toString()+")";
 		rowNum =update(sql);
+		//sm_role_fun
+		sql ="delete from sm_role_fun where fun_id in ("+ids.toString()+")";
+		rowNum =update(sql);
+		//
 		return rowNum;
 	}
 	
@@ -381,7 +385,8 @@ public class SystemFun extends Service {
 	public DataSet getFunByRoleId(String id)
 	{
 		DataSet ds=new DataSet();
-		String sql ="select b.* from sm_role_fun a left join sm_fun b on a.fun_id=b.fun_id  where a.ROLE_ID='"+id+"' ";
+//		String sql ="select b.* from sm_role_fun a left join sm_fun b on a.fun_id=b.fun_id  where a.ROLE_ID='"+id+"' ";
+		String sql ="select b.* from sm_role_fun a , sm_fun b where a.ROLE_ID='"+id+"' and a.fun_id=b.fun_id;";
 		ds =queryDataSet(sql);
 		return ds;
 	}
@@ -404,18 +409,9 @@ public class SystemFun extends Service {
 		}
 		return rowNum;
 	}
+	
 	public static void main(String args[])
 	{
 		System.out.println(Integer.parseInt("01221"));
-	}
-	
-	public String BBSJ(){
-		String sql ="select * from sm_ban";
-		return queryField(sql);
-	}
-	
-	public void BBSJUpdate(String bb){
-		String sql ="update sm_ban set content = '"+bb+"'";
-		update(sql);
 	}
 }

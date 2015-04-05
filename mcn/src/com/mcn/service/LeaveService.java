@@ -1,10 +1,9 @@
 package com.mcn.service;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.ezcloud.framework.controller.Page;
-import com.ezcloud.framework.controller.Pageable;
+import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;

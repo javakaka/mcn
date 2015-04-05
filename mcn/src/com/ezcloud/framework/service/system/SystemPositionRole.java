@@ -29,6 +29,8 @@ public class SystemPositionRole extends Service {
 	public void savePositionRoleAuth(String posi_no,  DataSet ds)
 	{
 		if(ds == null || ds.size() ==0 ){
+			sql ="update sm_position_role set use_state=0,assign_state=0 where posi_no ='"+posi_no+"'";
+			update(sql);
 			return ;
 		}
 		sql ="delete from sm_position_role where posi_no ='"+posi_no+"'";

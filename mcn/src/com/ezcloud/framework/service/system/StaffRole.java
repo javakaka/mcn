@@ -34,6 +34,8 @@ public class StaffRole extends Service{
 	public void saveStaffRoleAuth(String staff_no,DataSet ds)
 	{
 		if(ds == null || ds.size() ==0){
+			sql ="update sm_staff_role set use_state=0,assign_state=0 where staff_no='"+staff_no+"'";
+			update(sql);
 			return ;
 		}
 		sql ="delete from sm_staff_role where staff_no='"+staff_no+"'";

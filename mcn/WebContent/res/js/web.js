@@ -1,4 +1,4 @@
-var WEB_PATH ="http://localhost:8080/insurer/"
+var WEB_PATH ="http://localhost:8080/framework/"
 
 function dynIframeSize(iframe, overheight) 
 {
@@ -23,7 +23,7 @@ function dynIframeSize(iframe, overheight)
 		if (pTar.contentDocument && pTar.contentDocument.body.offsetHeight)
 		{
 		//ns6 syntax
-			pTar.height = pTar.contentDocument.body.offsetHeight+FFextraHeight +overheight; 
+			pTar.height = pTar.contentDocument.body.offsetHeight +overheight; 
 		}
 		else if (pTar.Document && pTar.Document.body.scrollHeight)
 		{
@@ -33,7 +33,7 @@ function dynIframeSize(iframe, overheight)
 	}
 }
 /**
- * ÑéÖ¤Êý×Ö
+ * éªŒè¯æ•°å­—
  * @param String
  * @return
  */
@@ -54,20 +54,20 @@ function checknumber(String)
 }
 
 /*
- * »ñµÃÊ±¼ä²î,Ê±¼ä¸ñÊ½Îª Äê-ÔÂ-ÈÕ Ð¡Ê±:·ÖÖÓ:Ãë »òÕß Äê/ÔÂ/ÈÕ Ð¡Ê±£º·ÖÖÓ£ºÃë
- * ÆäÖÐ£¬ÄêÔÂÈÕÎªÈ«¸ñÊ½£¬ÀýÈç £º 2010-10-12 01:00:00
- * ·µ»Ø¾«¶ÈÎª£ºÃë£¬·Ö£¬Ð¡Ê±£¬Ìì
+ * èŽ·å¾—æ—¶é—´å·®,æ—¶é—´æ ¼å¼ä¸º å¹´-æœˆ-æ—¥ å°æ—¶:åˆ†é’Ÿ:ç§’ æˆ–è€… å¹´/æœˆ/æ—¥ å°æ—¶ï¼šåˆ†é’Ÿï¼šç§’
+ * å…¶ä¸­ï¼Œå¹´æœˆæ—¥ä¸ºå…¨æ ¼å¼ï¼Œä¾‹å¦‚ ï¼š 2010-10-12 01:00:00
+ * è¿”å›žç²¾åº¦ä¸ºï¼šç§’ï¼Œåˆ†ï¼Œå°æ—¶ï¼Œå¤©
  */
  function GetDateDiff(startTime, endTime, diffType) 
  {
-     //½«xxxx-xx-xxµÄÊ±¼ä¸ñÊ½£¬×ª»»Îª xxxx/xx/xxµÄ¸ñÊ½
+     //å°†xxxx-xx-xxçš„æ—¶é—´æ ¼å¼ï¼Œè½¬æ¢ä¸º xxxx/xx/xxçš„æ ¼å¼
      startTime = startTime.replace(/\-/g, "/");
      endTime = endTime.replace(/\-/g, "/");
-     //½«¼ÆËã¼ä¸ôÀàÐÔ×Ö·û×ª»»ÎªÐ¡Ð´
+     //å°†è®¡ç®—é—´éš”ç±»æ€§å­—ç¬¦è½¬æ¢ä¸ºå°å†™
      diffType = diffType.toLowerCase();
-     var sTime = new Date(startTime);      //¿ªÊ¼Ê±¼ä
-     var eTime = new Date(endTime);  //½áÊøÊ±¼ä
-     //×÷Îª³ýÊýµÄÊý×Ö
+     var sTime = new Date(startTime);      //å¼€å§‹æ—¶é—´
+     var eTime = new Date(endTime);  //ç»“æŸæ—¶é—´
+     //ä½œä¸ºé™¤æ•°çš„æ•°å­—
      var divNum = 1;
      switch (diffType) {
          case "second":
@@ -103,31 +103,31 @@ function checknumber(String)
     var week;
     switch(weekNum){
        case 0:
-          week="ÐÇÆÚÌì";
+          week="æ˜ŸæœŸå¤©";
           break;
        case 1:
-          week="ÐÇÆÚÒ»";
+          week="æ˜ŸæœŸä¸€";
           break;
        case 2:
-          week="ÐÇÆÚ¶þ";
+          week="æ˜ŸæœŸäºŒ";
           break;
        case 3:
-          week="ÐÇÆÚÈý";
+          week="æ˜ŸæœŸä¸‰";
           break;
        case 4:
-          week="ÐÇÆÚËÄ";
+          week="æ˜ŸæœŸå››";
           break;
        case 5:
-          week="ÐÇÆÚÎå";
+          week="æ˜ŸæœŸäº”";
           break;
        case 6:
-          week="ÐÇÆÚÁù";
+          week="æ˜ŸæœŸå…­";
           break;
     }
     var getTimes ="";
     if(type == "1")
     {
-    	getTimes=year+"Äê"+getInfo((month+1))+"ÔÂ"+getInfo(day)+"ÈÕ"+" "+week+" "+getInfo(hour)+":"+getInfo(minute)+":"+getInfo(second);	
+    	getTimes=year+"å¹´"+getInfo((month+1))+"æœˆ"+getInfo(day)+"æ—¥"+" "+week+" "+getInfo(hour)+":"+getInfo(minute)+":"+getInfo(second);	
     }
     else if(type == "2")
     {
@@ -152,7 +152,7 @@ function checknumber(String)
 
 
  /**
-*È¡±í¸ñ
+*å–è¡¨æ ¼
 */
 function getTable(id)
 {
@@ -160,7 +160,7 @@ function getTable(id)
 	return TableHandle;
 }
 
-/*±í¸ñÇå³ý
+/*è¡¨æ ¼æ¸…é™¤
 */
 function clearTable(TableHandle, deleteAll)
 {
@@ -175,7 +175,7 @@ function clearTable(TableHandle, deleteAll)
 }
 
 /**
-*µã»÷±í¸ñ
+*ç‚¹å‡»è¡¨æ ¼
 */
 function clickTable(a)
 {
@@ -187,7 +187,7 @@ function clickTable(a)
 	 var onclick =temp.onclick;
 	 if(a==temp)
 	 {
-		 //Ñ¡ÖÐµÄ±êÇ©ÑùÊ½
+		 //é€‰ä¸­çš„æ ‡ç­¾æ ·å¼
 		 temp.style.background="#E4F1FA";
 	  }
 	  else
@@ -197,7 +197,7 @@ function clickTable(a)
 		 }
 		 else
 		 {
-			//»Ö¸´Ô­×´
+			//æ¢å¤åŽŸçŠ¶
 			temp.style.background="#FFFFFF";
 		 }
 	  }
@@ -216,7 +216,7 @@ function clickTableEvent(a)
 	 var onclick =temp.onclick;
 	 if(a==temp)
 	 {
-		 //Ñ¡ÖÐµÄ±êÇ©ÑùÊ½
+		 //é€‰ä¸­çš„æ ‡ç­¾æ ·å¼
 		 temp.className="tr_bg_over";
 	  }
 	  else
@@ -227,7 +227,7 @@ function clickTableEvent(a)
 		 }
 		 else
 		 {
-			//»Ö¸´Ô­×´
+			//æ¢å¤åŽŸçŠ¶
 			temp.className="tr_bg_out";
 		 }
 	  }
@@ -235,20 +235,20 @@ function clickTableEvent(a)
 }
 
 /**
-*ËøÆÁ
+*é”å±
 */
 function lockScreen(progressImgName) 
 { 
 var msgw,msgh,bordercolor; 
-msgw=400;//ÌáÊ¾´°¿ÚµÄ¿í¶È 
-msgh=100;//ÌáÊ¾´°¿ÚµÄ¸ß¶È 
-titleheight=25 //ÌáÊ¾´°¿Ú±êÌâ¸ß¶È 
-bordercolor="#336699";//ÌáÊ¾´°¿ÚµÄ±ß¿òÑÕÉ« 
-titlecolor="#99CCFF";//ÌáÊ¾´°¿ÚµÄ±êÌâÑÕÉ« 
+msgw=400;//æç¤ºçª—å£çš„å®½åº¦ 
+msgh=100;//æç¤ºçª—å£çš„é«˜åº¦ 
+titleheight=25 //æç¤ºçª—å£æ ‡é¢˜é«˜åº¦ 
+bordercolor="#336699";//æç¤ºçª—å£çš„è¾¹æ¡†é¢œè‰² 
+titlecolor="#99CCFF";//æç¤ºçª—å£çš„æ ‡é¢˜é¢œè‰² 
 var sWidth,sHeight; 
-sWidth=document.body.offsetWidth;//»ñÈ¡´°¿Ú¿í¶È 
-sHeight=screen.height;//»ñÈ¡ÆÁÄ»¸ß¶È 
-var bgObj=document.createElement("div");//¹Ø¼üÔÚÕâÀï£¬Ô­Àí£ºÔÚbodyÖÐ´´½¨Ò»¸ödiv£¬²¢½«Æä¿í¶ÈÓë¸ß¶ÈÉèÖÃÎª¸²¸ÇÕû¸ö´°Ìå£¬Èç´ËÒ»À´¾ÍÎÞ·¨¶ÔÆäËü´°¿ÚÊ±ÐÐ²Ù×÷ 
+sWidth=document.body.offsetWidth;//èŽ·å–çª—å£å®½åº¦ 
+sHeight=screen.height;//èŽ·å–å±å¹•é«˜åº¦ 
+var bgObj=document.createElement("div");//å…³é”®åœ¨è¿™é‡Œï¼ŒåŽŸç†ï¼šåœ¨bodyä¸­åˆ›å»ºä¸€ä¸ªdivï¼Œå¹¶å°†å…¶å®½åº¦ä¸Žé«˜åº¦è®¾ç½®ä¸ºè¦†ç›–æ•´ä¸ªçª—ä½“ï¼Œå¦‚æ­¤ä¸€æ¥å°±æ— æ³•å¯¹å…¶å®ƒçª—å£æ—¶è¡Œæ“ä½œ 
 bgObj.setAttribute('id','bgDiv'); 
 bgObj.style.position="absolute"; 
 bgObj.style.top="0"; 
@@ -259,8 +259,8 @@ bgObj.style.left="0";
 bgObj.style.width=sWidth + "px"; 
 bgObj.style.height=sHeight + "px"; 
 bgObj.style.zIndex = "10000"; 
-document.body.appendChild(bgObj);//ÉèÖÃÍê´Ëdivºó½«ÆäÏÔÊ¾³öÀ´ 
-var msgObj=document.createElement('div');//´´½¨Ò»¸öÏûÏ¢´°¿Ú 
+document.body.appendChild(bgObj);//è®¾ç½®å®Œæ­¤divåŽå°†å…¶æ˜¾ç¤ºå‡ºæ¥ 
+var msgObj=document.createElement('div');//åˆ›å»ºä¸€ä¸ªæ¶ˆæ¯çª—å£ 
 msgObj.setAttribute("id","msgDiv"); 
 msgObj.setAttribute("align","center"); 
 msgObj.style.background="white"; 
@@ -287,13 +287,13 @@ function unLockScreen()
 {
 	var bgObj =document.getElementById("bgDiv");
 	var msgObj =document.getElementById("msgDiv");
-	document.body.removeChild(bgObj);//ÒÆ³ý¸²¸ÇÕû¸ö´°¿ÚµÄdiv²ã 
-	document.body.removeChild(msgObj);//ÒÆ³ýÏûÏ¢²ã 
+	document.body.removeChild(bgObj);//ç§»é™¤è¦†ç›–æ•´ä¸ªçª—å£çš„divå±‚ 
+	document.body.removeChild(msgObj);//ç§»é™¤æ¶ˆæ¯å±‚ 
 }
 
 
 /**
-*»ñÈ¡ÇëÇó²ÎÊý
+*èŽ·å–è¯·æ±‚å‚æ•°
 */
   function getRequestParameter(paras)
  { 
@@ -312,7 +312,7 @@ function unLockScreen()
 }
 
 /**
-*ÑéÖ¤µç»°ºÅÂë
+*éªŒè¯ç”µè¯å·ç 
 */
 function checkPhone(val)
 {
@@ -326,7 +326,7 @@ function checkPhone(val)
 		return true;
 }
 /**
-*ÑéÖ¤ÊÖ»úºÅÂë
+*éªŒè¯æ‰‹æœºå·ç 
 */
 function checkMobile(val)
 {
@@ -346,11 +346,11 @@ function checkMobile(val)
 		return true;
 }
 /**
-*ÑéÖ¤ÓÊÏä
+*éªŒè¯é‚®ç®±
 */
 function checkEmail(val)
 {
-	//¶Ôµç×ÓÓÊ¼þµÄÑéÖ¤
+	//å¯¹ç”µå­é‚®ä»¶çš„éªŒè¯
 	var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 	if(!myreg.test(val))
 	{
@@ -358,4 +358,42 @@ function checkEmail(val)
 	}
 	else 
 		return true;
+}
+
+/**
+*èŽ·å–æµè§ˆå™¨ç±»åž‹
+*/
+function isIE(){
+    return navigator.appName.indexOf("Microsoft Internet Explorer")!=-1 && document.all;
+}
+
+function isIE6() {
+    return navigator.userAgent.split(";")[1].toLowerCase().indexOf("msie 6.0")=="-1"?false:true;
+}
+
+function isIE7(){
+    return navigator.userAgent.split(";")[1].toLowerCase().indexOf("msie 7.0")=="-1"?false:true;
+}
+
+function isIE8(){
+    return navigator.userAgent.split(";")[1].toLowerCase().indexOf("msie 8.0")=="-1"?false:true;
+}
+
+function isNN(){
+   return navigator.userAgent.indexOf("Netscape")!=-1;
+}
+
+function isOpera(){
+    return navigator.appName.indexOf("Opera")!=-1;
+}
+
+function isFF(){
+    return navigator.userAgent.indexOf("Firefox")!=-1;
+}
+
+function isChrome(){
+    return navigator.userAgent.indexOf("Chrome") > -1;
+}
+function isSafari(){
+    return navigator.userAgent.indexOf("Safari") > -1;
 }

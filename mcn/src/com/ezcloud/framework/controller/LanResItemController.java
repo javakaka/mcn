@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.LanResItem;
 import com.ezcloud.framework.util.Message;
 

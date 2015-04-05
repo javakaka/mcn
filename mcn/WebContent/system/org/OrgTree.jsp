@@ -10,71 +10,58 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><cc:message key="framework.moudle.edit"/></title>
-<link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
+<title><cc:message key="framework.nav.i18n" /></title>
+<link href="<%=basePath%>/res/admin/css/common_pop.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
-<script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 
-	var $inputForm = $("#inputForm");
-	
-	[@flash_message /]
-	
-	// 表单验证
-	$inputForm.validate({
-		rules: {
-			title: "required",
-			articleCategoryId: "required"
-		}
-	});
+	//[@flash_message /]
 
 });
 </script>
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo; <cc:message key="framework.moudle.edit"/>
+		<cc:message key="framework.nav.index" /> &raquo;部门维护
 	</div>
-	<form id="inputForm" action="update.do" method="post">
-		<input type="hidden" name="MOUDLE_ID" value="${moudle.MOUDLE_ID}" />
-		<table class="input">
-			<tr>
-				<th>
-					<span class="requiredField">*</span><cc:message key="framework.moudle.moudle_name" />:
-				</th>
-				<td>
-					<input type="text" name="MOUDLE_NAME" class="text" value="${moudle.MOUDLE_NAME}" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<cc:message key="framework.moudle.moudle_begin_tab" />:
-				</th>
-				<td>
-					<input type="text" name="MOUDLE_BEGIN_TAB" class="text" value="${moudle.MOUDLE_BEGIN_TAB}" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<cc:message key="framework.moudle.moudle_desc" />:
-				</th>
-				<td>
-					<input type="text" name="MOUDLE_DESC" class="text" value="${moudle.MOUDLE_DESC}" maxlength="200" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					&nbsp;
-				</th>
-				<td>
-					<input type="submit" class="button" value="<cc:message key="admin.common.submit" />" />
-					<input type="button" id="backButton" class="button" value="<cc:message key="admin.common.back" />" />
-				</td>
-			</tr>
-		</table>
-	</form>
+	<link type="text/css" rel="stylesheet" href="<%=basePath%>/res/css/xtree2.css">
+	<script src="<%=basePath%>/res/js/xtree2.js"></script>
+
+<div style="width:100%;height:95%;position: absolute;">
+<div id="treeDiv" style="width:20%;float: left;">
+	<input type="button" value="收起/展开" onclick="tree.toggle()" >
+	<input type="button" value="全部展开" onclick="tree.expandAll()" >
+	<input type="button" value="一级目录" onclick="tree.collapseChildren()" >
+	<input type="button" value="刷新目录" onclick="javascript:window.location.reload();" >
+	<cc:xtree treeData="${treeData}" head="功能菜单" pidF="UP_FUN_ID" idF="FUN_ID" pid="0" titleF="FUN_NAME" hiddenF="UP_FUN_ID,FUN_ID,FUN_NAME" icon="menu.gif"/>
+</div>
+<div id="includeDiv" style="width:78%;float: left;height:100%;border: 1px solid #A8EBD4;">
+<iframe src="FunInclude.do" id="DIFRAME" height="100%" width="100%" scrolling="auto" frameborder="0"></iframe>
+</div>
+<script>
+var SELECTED_FUN_ID="";
+function action(val){
+   var url="";
+   if(tree.getSelected().parentNode!= null)
+   {
+	   if(typeof val !="undefined" && val !=null && val !=""){
+		var info =val;
+		var node =info.split(",");
+		url="FunInclude.do?fun_id="+node[1];
+		SELECTED_FUN_ID=node[1];
+	   }
+   }
+   else
+   {
+	  url="FunInclude.do";
+	  SELECTED_FUN_ID="";
+   }
+   document.getElementById("DIFRAME").src=url;
+   
+}
+</script>
 </body>
 </html>

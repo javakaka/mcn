@@ -4,8 +4,8 @@ import java.net.URLEncoder;
 
 import org.springframework.stereotype.Component;
 
-import com.ezcloud.framework.controller.Page;
-import com.ezcloud.framework.controller.Pageable;
+import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.AesUtil;
 import com.ezcloud.framework.vo.DataSet;
@@ -25,7 +25,8 @@ public class SystemSite  extends Service{
 	 * @Title: queryPage
 	 * @return Page
 	 */
-	public Page queryPage() {
+	public Page queryPage() 
+	{
 		Page page = null;
 		Pageable pageable = (Pageable) row.get("pageable");
 		String org_id =row.getString("org_id",null);
@@ -33,6 +34,45 @@ public class SystemSite  extends Service{
 		if (org_id != null && org_id.replace(" ", "").length() >0){
 			sql +="  and a.bureau_no='"+org_id+"'";
 		}
+		String restrictions = addRestrictions(pageable);
+		String orders = addOrders(pageable);
+		sql += restrictions;
+		sql += orders;
+		String countSql = "select count(*) from sm_site where 1=1 ";
+		if (org_id != null && org_id.replace(" ", "").length() >0){
+			countSql +="  and bureau_no='"+org_id+"'";
+		}
+		countSql += restrictions;
+//		countSql += orders;
+		long total = count(countSql);
+		int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
+		if (totalPages < pageable.getPageNumber()) {
+			pageable.setPageNumber(totalPages);
+		}
+		int startPos = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+		sql += " limit " + startPos + " , " + pageable.getPageSize();
+		dataSet = queryDataSet(sql);
+		page = new Page(dataSet, total, pageable);
+		return page;
+	}
+	
+	public Page queryPageForTree() 
+	{
+		Page page = null;
+		Pageable pageable = (Pageable) row.get("pageable");
+		String org_id =row.getString("org_id");
+		String up_id =row.getString("up_id");
+		sql = "select a.bureau_no,a.site_no, a.site_name ,a.up_site_no ,a.rela_phone,a.notes,a.state,a.addr,b.site_name as up_site_name "
+				+ "from sm_site a left join sm_site b on a.up_site_no=b.site_no where 1=1 ";
+		if (org_id != null && org_id.replace(" ", "").length() >0)
+		{
+			sql +="  and a.bureau_no='"+org_id+"'";
+		}
+		if (up_id != null && up_id.replace(" ", "").length() >0 && !up_id.replace(" ", "").equals("0"))
+		{
+			sql +="  and a.up_site_no='"+up_id+"'";
+		}
+		System.out.println("===========>>"+sql);
 		String restrictions = addRestrictions(pageable);
 		String orders = addOrders(pageable);
 		sql += restrictions;
@@ -182,6 +222,14 @@ public class SystemSite  extends Service{
 		sql ="select * from sm_site  where bureau_no='"+org_id+"'";
 		ds =queryDataSet(sql);
 		return ds;
+	}
+	
+	public String queryBureauNo(String id)
+	{
+		String bureau_no =null;
+		sql ="select bureau_no from sm_site  where site_no='"+id+"'";
+		bureau_no =queryField(sql);
+		return bureau_no;
 	}
 	
 	public void insertOrgSite(Row row)

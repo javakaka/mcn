@@ -19,7 +19,8 @@ html {
 body {
 	_width: 100%;
 	_height: 100%;
-	min-width: 1000px;
+	/*min-width: 1000px;*/
+	min-width: 600px;
 	_width: expression(document.body.clientWidth <= 1000 ? "1000px": "auto");
 	font: 12px tahoma, Arial, Verdana, sans-serif;
 	color: #666666;

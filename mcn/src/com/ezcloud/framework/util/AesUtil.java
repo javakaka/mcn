@@ -50,7 +50,6 @@ public class AesUtil {
 		try{
 			//Base64加密
 			String rBase64Encode=base64Encode(input.getBytes("UTF-8"));
-			System.out.println("base64===="+rBase64Encode);
 			//AES加密
 			byte[] rAESEncode=aesEncrypt(rBase64Encode.getBytes("UTF-8"));
 			//Base64加密
@@ -129,12 +128,12 @@ public class AesUtil {
 	/**/
 	public static void main(String[] args) throws Exception {
 		
-		String input = "10007";
+		String input = "10004";
 		String encrptStr =  encode(input);
-		System.out.println("Decode:" +decode(encrptStr));
 		System.out.println("Encode:" +encrptStr);
 		System.out.println("Encode:" +URLEncoder.encode(encrptStr));
-		System.out.println(aesEncrypt(input.getBytes("UTF-8")));
+		System.out.println("Decode:" + decode(encrptStr));
+		
 		
 	}
 	
