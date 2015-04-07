@@ -26,9 +26,10 @@ public class CompanySite  extends Service{
 	public boolean parseExcel(String id)
 	{
 		boolean b=false;
+		//增量解析方式，每次解析时只解析最新上传的部门人员excel文件
 		String sSql ="select b.FILE_PATH from file_attach_control a,file_attach_upload b "+
 				" where a.DEAL_CODE='"+id+"' and a.DEAL_TYPE='company_user' and a.TYPE='user_excel' and a.SUB_TYPE='user_excel'"+
-				" and a.CONTROL_ID=b.CONTROL_ID";
+				" and a.CONTROL_ID=b.CONTROL_ID order by a.UPLOAD_DATE desc limit 0,1";
 		Row row =queryRow(sSql);
 		if(row ==null)
 			return b;
@@ -158,7 +159,7 @@ public class CompanySite  extends Service{
 				break;
 			}
 			System.out.println("upname"+upname);
-			if(upname != null || upname.replace(" ", "").length() != 0)
+			if(upname == null || upname.replace(" ", "").length() == 0)
 			{
 				System.out.println("uoname2"+upname);
 //				String site_no =String.valueOf(getTableSequence("sm_site", "site_no", 1));
@@ -171,7 +172,7 @@ public class CompanySite  extends Service{
 				insert("sm_site", siteRow);
 				temp.put("site_no", site_no);
 				ds.set(i, temp);
-				//insertChildDepartment(dname,site_no,ds);
+				insertChildDepartment(dname,site_no,ds);
 			}
 		}
 		return result;

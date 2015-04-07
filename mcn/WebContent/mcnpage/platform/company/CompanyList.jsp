@@ -98,8 +98,22 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="LINKS">企业域名</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="NOTES">备注</a>
+					<a href="javascript:;" class="sort" name="BEGIN_DATE">开始日期</a>
 				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="END_DATE">结束日期</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="USER_SUM">用户数</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="STATUS">状态</a>
+				</th>
+				<!-- 
+				<th>
+					<a href="javascript:;" class="sort" name="NOTES">企业登录网址</a>
+				</th>
+				-->
 				<th>
 					<span><cc:message key="admin.common.handle" /></span>
 				</th>
@@ -122,8 +136,29 @@ $().ready(function() {
 						<span>${row.LINKS}</span>
 					</td>
 					<td>
+						<span>${row.BEGIN_DATE}</span>
+					</td>
+					<td>
+						<span>${row.END_DATE}</span>
+					</td>
+					<td>
+						<span>${row.USER_SUM}</span>
+					</td>
+					<td>
+						<span>${row.STATUS}
+						<c:choose>
+						<c:when test="${row.STATUS == 1}">正常</c:when>
+						<c:when test="${row.STATUS == 2}">停用</c:when>
+						<c:when test="${row.STATUS == 3}">删除</c:when>
+						<c:otherwise>--</c:otherwise>
+						</c:choose>
+						</span>
+					</td>
+					<!-- 
+					<td>
 						<span>${row.NOTES}</span>
 					</td>
+					-->
 					<td>
 						<a href="edit.do?id=${row.BUREAU_NO}"><cc:message key="admin.common.edit" /></a>
 						<a href="view.do" target="_blank"><cc:message key="admin.common.view" /></a>

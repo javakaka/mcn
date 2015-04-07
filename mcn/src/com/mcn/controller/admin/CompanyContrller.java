@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezcloud.framework.controller.BaseController;
-import com.ezcloud.framework.controller.Pageable;
 import com.ezcloud.framework.page.jdbc.Page;
+import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.Bureau;
 import com.ezcloud.framework.service.system.ProjectParameter;
 import com.ezcloud.framework.service.system.Staff;
@@ -77,7 +77,8 @@ public class CompanyContrller  extends BaseController{
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	//public String save(String BUREAU_NAME, String UP_BUREAU_NO, String AREA_CODE, String LINKS,String NOTES ,ServletRequest request,RedirectAttributes redirectAttributes) {
-	public String save(String BUREAU_NAME, String UP_BUREAU_NO, MultipartFile fileElem, String LINKS,String NOTES ,ServletRequest request,RedirectAttributes redirectAttributes) {
+	public String save(String BUREAU_NAME, String UP_BUREAU_NO, MultipartFile fileElem, String LINKS,
+			String NOTES ,String BEGIN_DATE,String END_DATE,String USER_SUM,String STATUS,ServletRequest request,RedirectAttributes redirectAttributes) {
 		String AREA_CODE = "";
 		System.out.println("fileElemFileName=="+fileElem.getOriginalFilename());
 		if(!(fileElem.getOriginalFilename() ==null || "".equals(fileElem.getOriginalFilename()))) {   
@@ -96,6 +97,26 @@ public class CompanyContrller  extends BaseController{
 		bureau.getRow().put("UP_BUREAU_NO", UP_BUREAU_NO);
 		bureau.getRow().put("AREA_CODE", AREA_CODE);
 		bureau.getRow().put("LINKS", LINKS);
+		if(BEGIN_DATE !=null && BEGIN_DATE.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("BEGIN_DATE", BEGIN_DATE);
+		}
+		if(END_DATE !=null && END_DATE.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("END_DATE", END_DATE);
+		}
+		if(USER_SUM !=null && USER_SUM.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("USER_SUM", USER_SUM);
+		}
+		else
+		{
+			bureau.getRow().put("USER_SUM", "0");
+		}
+		if(STATUS !=null && STATUS.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("STATUS", STATUS);
+		}
 		//NOTES 字段为企业登陆 url,项目id为1
 		NOTES =projectParameterService.queryParamValue("1", "USER_LOGIN_URL");
 		if(NOTES == null)
@@ -144,7 +165,8 @@ public class CompanyContrller  extends BaseController{
 
 	@RequestMapping(value = "/update")
 	//public String update(String BUREAU_NO,String BUREAU_NAME, String UP_BUREAU_NO, String AREA_CODE, String LINKS,String NOTES ,  ServletRequest request,ModelMap model) {
-	public String update(String BUREAU_NO,String BUREAU_NAME, String UP_BUREAU_NO,String AREA_CODE, MultipartFile fileElem, String LINKS,String NOTES ,  ServletRequest request,ModelMap model) {
+	public String update(String BUREAU_NO,String BUREAU_NAME, String UP_BUREAU_NO,String AREA_CODE,
+			String BEGIN_DATE,String END_DATE,String USER_SUM,String STATUS,MultipartFile fileElem, String LINKS,String NOTES ,  ServletRequest request,ModelMap model) {
 		System.out.println("fileElemFileName=="+fileElem.getOriginalFilename());
 		if(!(fileElem.getOriginalFilename() ==null || "".equals(fileElem.getOriginalFilename()))) { 
 			 try {
@@ -163,6 +185,26 @@ public class CompanyContrller  extends BaseController{
 		bureau.getRow().put("AREA_CODE", AREA_CODE);
 		bureau.getRow().put("LINKS", LINKS);
 		bureau.getRow().put("NOTES", NOTES);
+		if(BEGIN_DATE !=null && BEGIN_DATE.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("BEGIN_DATE", BEGIN_DATE);
+		}
+		if(END_DATE !=null && END_DATE.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("END_DATE", END_DATE);
+		}
+		if(USER_SUM !=null && USER_SUM.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("USER_SUM", USER_SUM);
+		}
+		else
+		{
+			bureau.getRow().put("USER_SUM", "0");
+		}
+		if(STATUS !=null && STATUS.replace(" ", "").length() >0)
+		{
+			bureau.getRow().put("STATUS", STATUS);
+		}
 		bureau.update();
 		
 		String[] checkboxArr = request.getParameterValues("modules");
@@ -186,7 +228,9 @@ public class CompanyContrller  extends BaseController{
 	}
 
 	/**
-	 * 
+	 * 增量导入，每次解析excel文件，不会删除之前导入的部门以及人员
+	 * 用户需要保证不同的excel文件中，没有重复的部门以及人员
+	 * 避免重复导入部门以及人员
 	 * @param id
 	 * @return
 	 */
@@ -195,8 +239,8 @@ public class CompanyContrller  extends BaseController{
 	Message parseExcel(String id) {
 		System.out.println("通过Excel表"+id);
 		Assert.notNull(id, "id can not be null");
-		companySiteService.deteleSite(id);
-		companyUserService.delete(id);
+//		companySiteService.deteleSite(id);
+//		companyUserService.delete(id);
 		companySiteService.parseExcel(id);
 		return SUCCESS_MESSAGE;
 	}

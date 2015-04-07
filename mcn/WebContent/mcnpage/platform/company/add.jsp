@@ -16,6 +16,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 	var $inputForm = $("#inputForm");
@@ -51,7 +52,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<!--<input type="text" name="AREA_CODE" class="text" maxlength="200" />-->
-					<input type="file" id="fileElem" multiple accept="image/*" value='LOGO上传' name="fileElem" onchange="handleFiles(this)">
+					<input type="file" id="fileElem" multiple accept="image/*" value='LOGO上传' name="fileElem" onchange="handleFiles(this)" />
 				</td>
 			</tr>
 			<tr>
@@ -64,10 +65,46 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					备注:
+					企业登录网址:
 				</th>
 				<td>
-					<input type="text" name="NOTES" class="text" maxlength="200" />
+					<input type="text" name="NOTES" class="text" maxlength="600" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					开始日期:
+				</th>
+				<td>
+					<input type="text" name="BEGIN_DATE" maxlength="200" class="text Wdate" value="" onfocus="WdatePicker();" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					结束日期:
+				</th>
+				<td>
+					<input type="text" name="END_DATE"  maxlength="200" class="text Wdate" value="" onfocus="WdatePicker();" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					用户数:
+				</th>
+				<td>
+					<input type="text" name="USER_SUM" class="text" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					企业状态:
+				</th>
+				<td>
+					<select id="STATUS" name="STATUS" class="text" style="width:190px;" >
+						<option value="" selected>请选择...</option>
+						<option value="1" >有效</option>
+						<option value="2" >停用</option>
+					</select>
 				</td>
 			</tr>
 			<tr>

@@ -4,12 +4,11 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.ezshop.DateEditor;
-
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
+import com.ezcloud.framework.common.DateEditor;
 import com.ezcloud.framework.util.SpringUtils;
 import com.ezcloud.framework.vo.IVO;
 import com.ezcloud.framework.vo.OVO;
