@@ -72,7 +72,7 @@ $().ready(function() {
 					企业登录网址:
 				</th>
 				<td>
-					<input type="text" name="NOTES" class="text" value="${bureau.NOTES}" maxlength="600" />
+					<input type="text" name="NOTES" class="text" value="${bureau.NOTES}" style="width:600px;" maxlength="800" />
 				</td>
 			</tr>
 			<tr>

@@ -53,10 +53,8 @@ public class Bureau  extends Service{
 	 * 
 	 * @Title: save
 	 * @return void
-	 * @throws Exception 
 	 */
-	@SuppressWarnings("deprecation")
-	public void save() throws Exception {
+	public void save() {
 		Row row = new Row();
 		String BUREAU_NAME=getRow().getString("BUREAU_NAME","");
 		String UP_BUREAU_NO=getRow().getString("UP_BUREAU_NO","");
@@ -67,7 +65,14 @@ public class Bureau  extends Service{
 		row.put("UP_BUREAU_NO", UP_BUREAU_NO);
 		row.put("AREA_CODE", AREA_CODE);
 		row.put("LINKS", LINKS);
-		
+		String BEGIN_DATE=getRow().getString("BEGIN_DATE","");
+		String END_DATE=getRow().getString("END_DATE","");
+		String USER_SUM=getRow().getString("USER_SUM","");
+		String STATUS=getRow().getString("STATUS","");
+		row.put("BEGIN_DATE", BEGIN_DATE);
+		row.put("END_DATE", END_DATE);
+		row.put("USER_SUM", USER_SUM);
+		row.put("STATUS", STATUS);
 		int BUREAU_NO = getTableSequence("sm_bureau", "bureau_no", 10000);
 		row.put("BUREAU_NO", BUREAU_NO);
 		
@@ -112,6 +117,14 @@ public class Bureau  extends Service{
 		row.put("AREA_CODE", AREA_CODE);
 		row.put("LINKS", LINKS);
 		row.put("NOTES", NOTES);
+		String BEGIN_DATE=getRow().getString("BEGIN_DATE","");
+		String END_DATE=getRow().getString("END_DATE","");
+		String USER_SUM=getRow().getString("USER_SUM","");
+		String STATUS=getRow().getString("STATUS","");
+		row.put("BEGIN_DATE", BEGIN_DATE);
+		row.put("END_DATE", END_DATE);
+		row.put("USER_SUM", USER_SUM);
+		row.put("STATUS", STATUS);
 		update("sm_bureau", row, "BUREAU_NO='" + BUREAU_NO + "'");
 	}
 
@@ -131,6 +144,12 @@ public class Bureau  extends Service{
 				}
 				id += "'" + String.valueOf(ids[i]) + "'";
 			}
+			sql = "delete from mcn_users where org_id in(" + id + ")";
+			update(sql);
+			
+			sql = "delete from sm_site where bureau_no in(" + id + ")";
+			update(sql);
+			
 			sql = "delete from sm_bureau where bureau_no in(" + id + ")";
 			update(sql);
 			//delete staff_role

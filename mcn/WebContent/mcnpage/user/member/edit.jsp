@@ -48,7 +48,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>部门:
 				</th>
 				<td>
-					<select id="DEPART_ID" name="DEPART_ID" class="text" maxlength="200" >
+					<select id="DEPART_ID" name="DEPART_ID" class="text" maxlength="200"  style="width:190px;" >
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${sites}" var="opt" varStatus="status">
 							<c:choose>
@@ -90,10 +90,26 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					座机:
+				</th>
+				<td>
+					<input type="text" name="PHONE" class="text" maxlength="200" value="${row.PHONE}"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					邮箱:
+				</th>
+				<td>
+					<input type="text" name="EMAIL" class="text" maxlength="200" value="${row.EMAIL}"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					性别:
 				</th>
 				<td>
-					<select id="SEX" name="SEX" class="text" maxlength="200" >
+					<select id="SEX" name="SEX" class="text" maxlength="200" style="width:190px;">
 					<c:if test="${row.SEX =='男'}">
 						<option value="男" selected>男</option>
 						<option value="女" >女</option>
@@ -118,7 +134,7 @@ $().ready(function() {
 					部门负责人:
 				</th>
 				<td>
-					<select id="MANAGER_ID" name="MANAGER_ID" class="text" maxlength="200" >
+					<select id="MANAGER_ID" name="MANAGER_ID" class="text" maxlength="200"  style="width:190px;" >
 						<c:if test="${row.MANAGER_ID == '否'}">
 						<option value="否" selected>否</option>
 						<option value="是" >是</option>
@@ -128,6 +144,40 @@ $().ready(function() {
 						<option value="是" selected>是</option>
 					</c:if>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					状态:
+				</th>
+				<td>
+					<select id="STATUS" name="STATUS" class="text" maxlength="200"  style="width:190px;">
+						<c:choose>
+							<c:when test="${row.STATUS == 1}">
+								<option value="" >请选择...</option>
+								<option value="1" selected>正常</option>
+								<option value="2" >停用</option>
+								<option value="3" >删除</option>
+							</c:when>
+							<c:when test="${row.STATUS == 2}">
+								<option value="" >请选择...</option>
+								<option value="1" >正常</option>
+								<option value="2" selected>停用</option>
+								<option value="3" >删除</option>
+							</c:when>
+							<c:when test="${row.STATUS == 3}">
+								<option value="" >请选择...</option>
+								<option value="1" >正常</option>
+								<option value="2" >停用</option>
+								<option value="3" selected>删除</option>
+							</c:when>
+							<c:otherwise>
+								<option value="" selected>请选择...</option>
+								<option value="1" >正常</option>
+								<option value="2" >停用</option>
+								<option value="3" >删除</option>
+							</c:otherwise>
+						</c:choose>
 					</select>
 				</td>
 			</tr>

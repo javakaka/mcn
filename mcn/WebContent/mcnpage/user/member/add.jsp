@@ -47,7 +47,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>部门:
 				</th>
 				<td>
-					<select id="DEPART_ID" name="DEPART_ID" class="text" maxlength="200" >
+					<select id="DEPART_ID" name="DEPART_ID" class="text" maxlength="200"  style="width:190px;">
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${sites}" var="row" varStatus="status">
 							<option value="${row.SITE_NO}">${row.SITE_NAME}</option>
@@ -82,10 +82,26 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					座机:
+				</th>
+				<td>
+					<input type="text" name="PHONE" class="text" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					邮箱:
+				</th>
+				<td>
+					<input type="text" name="EMAIL" class="text" maxlength="200" />
+				</td>
+			</tr>
+			<tr>
+				<th>
 					性别:
 				</th>
 				<td>
-					<select id="SEX" name="SEX" class="text" maxlength="200" >
+					<select id="SEX" name="SEX" class="text" maxlength="200"  style="width:190px;">
 						<option value="男" selected>男</option>
 						<option value="女" >女</option>
 					</select>
@@ -104,9 +120,22 @@ $().ready(function() {
 					部门负责人:
 				</th>
 				<td>
-					<select id="MANAGER_ID" name="MANAGER_ID" class="text" maxlength="200" >
+					<select id="MANAGER_ID" name="MANAGER_ID" class="text" maxlength="200"  style="width:190px;">
 						<option value="否" selected>否</option>
 						<option value="是" >是</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					状态:
+				</th>
+				<td>
+					<select id="STATUS" name="STATUS" class="text" maxlength="200"  style="width:190px;">
+						<option value="" selected>请选择...</option>
+						<option value="1" >正常</option>
+						<option value="2" >停用</option>
+						<option value="3" >删除</option>
 					</select>
 				</td>
 			</tr>

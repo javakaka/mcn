@@ -98,6 +98,12 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="TELEPHONE">手机号</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="PHONE">座机</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="EMAIL">邮箱</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="SEX">性别</a>
 				</th>
 				<th>
@@ -105,6 +111,9 @@ $().ready(function() {
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="MANAGER_ID">部门负责人</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="STATUS">状态</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="REMARK">备注</a>
@@ -132,6 +141,12 @@ $().ready(function() {
 						${row.TELEPHONE}
 					</td>
 					<td>
+						${row.PHONE}
+					</td>
+					<td>
+						${row.EMAIL}
+					</td>
+					<td>
 						${row.SEX}
 					</td>
 					<td>
@@ -139,6 +154,14 @@ $().ready(function() {
 					</td>
 					<td>
 						${row.MANAGER_ID}
+					</td>
+					<td>
+						<c:choose>
+							<c:when test="${row.STATUS == 1}">正常</c:when>
+							<c:when test="${row.STATUS == 2}">停用</c:when>
+							<c:when test="${row.STATUS == 3}">删除</c:when>
+							<c:otherwise>--</c:otherwise>
+						</c:choose>
 					</td>
 					<td>
 						<span title="${row.REMARK}">${row.REMARK}</span>

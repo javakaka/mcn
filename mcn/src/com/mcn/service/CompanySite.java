@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.ExcelUtil;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
@@ -101,10 +102,12 @@ public class CompanySite  extends Service{
 			String password=(String)rowData.get(1);
 			String depart_name=(String)rowData.get(2);
 			String telephone=(String)rowData.get(3);
-			String sex=(String)rowData.get(4);
-			String pos_name=(String)rowData.get(5);
-			String is_manager=(String)rowData.get(6);
-			String remark=(String)rowData.get(7);
+			String phone=(String)rowData.get(4);
+			String email=(String)rowData.get(5);
+			String sex=(String)rowData.get(6);
+			String pos_name=(String)rowData.get(7);
+			String is_manager=(String)rowData.get(8);
+			String remark=(String)rowData.get(9);
 			String depart_id =null;
 			if(depart_name == null || depart_name.replace(" ", "").length() == 0)
 			{
@@ -113,6 +116,14 @@ public class CompanySite  extends Service{
 			else
 			{
 				depart_id =	findDepartmentId(depart_name,tempDepartDs);
+			}
+			if(StringUtils.isEmptyOrNull(phone))
+			{
+				phone ="";
+			}
+			if(StringUtils.isEmptyOrNull(email))
+			{
+				email ="";
 			}
 			String user_id =String.valueOf(getTableSequence("mcn_users", "id", 1));
 			String username= "100"+user_id;
@@ -123,6 +134,8 @@ public class CompanySite  extends Service{
 			tempRow.put("username", username);
 			tempRow.put("depart_id", depart_id);
 			tempRow.put("telephone",telephone ==null?"":telephone);
+			tempRow.put("phone",phone);
+			tempRow.put("email",email);
 			tempRow.put("sex", sex==null?"":sex);
 			tempRow.put("position", pos_name==null?"":pos_name);
 			tempRow.put("manager_id", is_manager==null?"否":is_manager);

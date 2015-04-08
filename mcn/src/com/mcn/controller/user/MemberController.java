@@ -16,6 +16,7 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.Row;
 import com.mcn.service.MemberService;
 
@@ -65,11 +66,27 @@ public class MemberController extends BaseController{
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(String DEPART_ID, String NAME,String PASSWORD, String USERNAME,String TELEPHONE,String SEX,String POSITION,String MANAGER_ID,String REMARK,  HttpSession session,RedirectAttributes redirectAttributes) {
+	public String save(String DEPART_ID, String NAME,String PASSWORD, 
+			String USERNAME,String TELEPHONE,String SEX,String POSITION,
+			String MANAGER_ID,String REMARK,String STATUS, 
+			String PHONE,String EMAIL,
+			HttpSession session,RedirectAttributes redirectAttributes) {
 		Assert.notNull(DEPART_ID, "DEPART_ID can not be null");
 		Assert.notNull(NAME, "NAME can not be null");
 		Assert.notNull(PASSWORD, "PASSWORD can not be null");
-		Assert.notNull(TELEPHONE, "TELEPHONE can not be null");
+//		Assert.notNull(TELEPHONE, "TELEPHONE can not be null");
+		if(StringUtils.isEmptyOrNull(STATUS))
+		{
+			STATUS ="";
+		}
+		if(StringUtils.isEmptyOrNull(PHONE))
+		{
+			PHONE ="";
+		}
+		if(StringUtils.isEmptyOrNull(EMAIL))
+		{
+			EMAIL ="";
+		}
 		memberService.getRow().put("DEPART_ID", DEPART_ID);
 		memberService.getRow().put("NAME", NAME);
 		memberService.getRow().put("PASSWORD", PASSWORD);
@@ -77,12 +94,17 @@ public class MemberController extends BaseController{
 			USERNAME ="";
 		}
 		memberService.getRow().put("USERNAME", USERNAME);//如果USERNAME为空，则系统自动生成
-		memberService.getRow().put("TELEPHONE", TELEPHONE);
+		if(!StringUtils.isEmptyOrNull(TELEPHONE))
+		{
+			memberService.getRow().put("TELEPHONE", TELEPHONE);
+		}
 		memberService.getRow().put("SEX", SEX);
 		memberService.getRow().put("POSITION", POSITION);
 		memberService.getRow().put("MANAGER_ID", MANAGER_ID);
 		memberService.getRow().put("REMARK", REMARK);
-		
+		memberService.getRow().put("STATUS", STATUS);
+		memberService.getRow().put("PHONE", PHONE);
+		memberService.getRow().put("EMAIL", EMAIL);
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id ==null  ||org_id.replace(" ", "").length() == 0)
@@ -104,13 +126,28 @@ public class MemberController extends BaseController{
 	}
 
 	@RequestMapping(value = "/update")
-	public String update(String ID,String DEPART_ID, String NAME,String PASSWORD, String USERNAME,String TELEPHONE,String SEX,String POSITION,String MANAGER_ID,String REMARK,  HttpSession session, ModelMap model) {
+	public String update(String ID,String DEPART_ID, String NAME,String PASSWORD, String USERNAME,
+			String TELEPHONE,String PHONE,String EMAIL,String SEX,
+			String POSITION,String MANAGER_ID,String REMARK,String STATUS, 
+			HttpSession session, ModelMap model) {
 		memberService.getRow().clear();
 		Assert.notNull(ID, "ID can not be null");
 		Assert.notNull(DEPART_ID, "DEPART_ID can not be null");
 		Assert.notNull(NAME, "NAME can not be null");
 		Assert.notNull(PASSWORD, "PASSWORD can not be null");
-		Assert.notNull(TELEPHONE, "TELEPHONE can not be null");
+//		Assert.notNull(TELEPHONE, "TELEPHONE can not be null");
+		if(StringUtils.isEmptyOrNull(STATUS))
+		{
+			STATUS ="";
+		}
+		if(StringUtils.isEmptyOrNull(PHONE))
+		{
+			PHONE ="";
+		}
+		if(StringUtils.isEmptyOrNull(EMAIL))
+		{
+			EMAIL ="";
+		}
 		memberService.getRow().put("ID", ID);
 		memberService.getRow().put("DEPART_ID", DEPART_ID);
 		memberService.getRow().put("NAME", NAME);
@@ -119,11 +156,17 @@ public class MemberController extends BaseController{
 			USERNAME ="";
 		}
 		memberService.getRow().put("USERNAME", USERNAME);//如果USERNAME为空，则系统自动生成
-		memberService.getRow().put("TELEPHONE", TELEPHONE);
+		if(!StringUtils.isEmptyOrNull(TELEPHONE))
+		{
+			memberService.getRow().put("TELEPHONE", TELEPHONE);
+		}
 		memberService.getRow().put("SEX", SEX);
 		memberService.getRow().put("POSITION", POSITION);
 		memberService.getRow().put("MANAGER_ID", MANAGER_ID);
 		memberService.getRow().put("REMARK", REMARK);
+		memberService.getRow().put("STATUS", STATUS);
+		memberService.getRow().put("PHONE", PHONE);
+		memberService.getRow().put("EMAIL", EMAIL);
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id ==null  ||org_id.replace(" ", "").length() == 0)

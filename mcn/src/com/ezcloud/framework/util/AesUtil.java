@@ -2,6 +2,7 @@
 package com.ezcloud.framework.util;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.security.Security;
 
 import javax.crypto.Cipher;
@@ -9,9 +10,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-
-import com.ezcloud.framework.vo.IVO;
-import com.ezcloud.framework.vo.VOConvert;
 
 
 /**
@@ -23,7 +21,7 @@ import com.ezcloud.framework.vo.VOConvert;
  */
 public class AesUtil {
 //	private static final byte[] aesKey="@365@gl@@shi@ke@".getBytes();
-	private static final byte[] aesKey="fang@zhu@bao@app".getBytes();
+	private static final byte[] aesKey="mcn@app@tong@jun".getBytes();
 	private static SecretKey secretKey=new SecretKeySpec(aesKey,"AES");
 	
 	static{
@@ -49,22 +47,32 @@ public class AesUtil {
 
 	
 	public static final String encrypt(String input) throws Exception {
-
+		try{
 			//Base64加密
 			String rBase64Encode=base64Encode(input.getBytes("UTF-8"));
+			System.out.println("base64===="+rBase64Encode);
 			//AES加密
 			byte[] rAESEncode=aesEncrypt(rBase64Encode.getBytes("UTF-8"));
 			//Base64加密
 			return base64Encode(rAESEncode);
+		}catch(Exception e){
+			throw e;
+		}finally{  
+	    } 
 	}
 
 	public static final String decrypt(String input) throws Exception {
+		try{
 		//Base64解密
 		byte[] rBase64Bytes = base64Decode(input);
 		//AES解密
 		String rAESDecode=new String(aesDecrypt(rBase64Bytes),"UTF-8");
 		//Base64解密
 		return new String(base64Decode(rAESDecode),"UTF-8");
+		}catch(Exception e){
+			throw e;
+		}finally{  
+	    } 
 	}
 
 	public static String base64Encode(byte[] s) throws Exception {
@@ -84,52 +92,49 @@ public class AesUtil {
 	 * encode
 	 * @param input
 	 * @return
-	 * @throws Exception 
 	 */
-	public static String encode(String input) throws Exception{
+	public static String encode(String input){
 		if(input==null || "".equals(input) || "null".equals(input)){
 			input = "";
 		}
+		try {
 			if(null!=input&&!"".equals(input)){
 				return encrypt(input);
 			}else{
 				return "";
 			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 	
 	/**
 	 * decode
 	 * @param input	
 	 * @return
-	 * @throws Exception 
 	 */
-	public static String decode(String input) throws Exception{
+	public static String decode(String input){
+		try {
 			if(null!=input&&!"".equals(input)){
 				return decrypt(input);
 			}else{
 				return "";
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
-	
 	/**/
 	public static void main(String[] args) throws Exception {
 		
-//		String input = "10004";
-		String input = "{\"SERVICE\":{\"TYPE\":\"0\"},\"HEADER\":{\"COMPANY\":\"易之云科技有限公司\",\"VERSION\":\"4.0\",\"COPYRIGHT\":\"COPYRIGHT2010-2020\"},\"REQUEST\":{\"ROW\":[],\"DEFAULT\":{\"VERSION\":\"1.0\",\"USERNAME\":\"13826531136\",\"PASSWORD\":\"E10ADC3949BA59ABBE56E057F20F883E\"},\"DATASET\":[]}}";
+		String input = "10007";
 		String encrptStr =  encode(input);
+		System.out.println("Decode:" +decode(encrptStr));
 		System.out.println("Encode:" +encrptStr);
-		System.out.println("Decode:" + decode(encrptStr));
-		String encode ="Ngn1aWQ+u1siNR+rQkMMkJbWYIGCZ1TsoMykxSMNwq5o1DFiS1vO3s59YYanc+CASepqMi7TfTfpN2MsyvLyPPk9VokIKztnrCqk6Z57gy9HqH6DxmEDF+xD2kUbry/i5T/0K2KmvJWWIBxhJi+4TU0xPNTQKFtTMRH/1IhEXbGGdYOFCmh917e+70Lj2QzNzL6VZN7t/bTTMi++DMEFD+qOkAX1QzpfWqFe9j+fzHxmkKYkRHCSWsdbujFzceojuozpAUQlYrff7vjk4MHV4uRQ2JpT3Xe7o8YhROpO872VHqpqYVbSR6pplF8B/YC0YAai6iMUNldyIPQxcw1HMX9sx3qbPuESrcj2ouXqP2eqjzzs9GfNTUy3sOnkcnjyvukUxrymScxO3FjHCUjxSjmosN7PbvWAEShAo9Rh2f5pXemtUniIji55hX+ieI2ufh3WWgB6/QPc/1r+wNPZfmedQt1Cr9vji7n1KmokDUQzcviL0Hb0he4mNajH+Otlf86s8wmkvKca7w3CX9GMkSmbotWHsXw1IwQzw/UUxHWq4jmjjJYcr9czsVFd3ftXPNhi+vDKNpHHSicGITKqsoOh0tkUKV1X+VgJHfLSnXcvYh5WglX+4hCjsfocgSgC";
-		String strr =decode(encode);
-		System.out.println("Decode:" +strr );
-		IVO ivo=VOConvert.jsonToIvo(strr);
-		System.out.println("name===>>"+ivo.getString("username"));
-		
-		String sss="430528198902101311x";
-		encrptStr =  encode(sss);
-		System.out.println("Encode:" +encrptStr);
-		System.out.println("decode:" +decode("fENe/+al176MS1OIvQ7zsQ=="));
+		System.out.println("Encode:" +URLEncoder.encode(encrptStr));
+		System.out.println(aesEncrypt(input.getBytes("UTF-8")));
 		
 	}
 	

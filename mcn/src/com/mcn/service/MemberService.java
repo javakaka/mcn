@@ -64,6 +64,7 @@ public class MemberService extends Service{
 		String MANAGER_ID=getRow().getString("MANAGER_ID","");
 		String REMARK=getRow().getString("REMARK","");
 		String ORG_ID=getRow().getString("ORG_ID","");
+		String STATUS=getRow().getString("STATUS","");
 		row.put("DEPART_ID", DEPART_ID);
 		row.put("NAME", NAME);
 		row.put("PASSWORD", PASSWORD);
@@ -73,6 +74,7 @@ public class MemberService extends Service{
 		row.put("MANAGER_ID", MANAGER_ID);
 		row.put("REMARK", REMARK);
 		row.put("ORG_ID", ORG_ID);
+		row.put("STATUS", STATUS);
 		String sql ="select max(username) from mcn_users where org_id='"+ORG_ID+"'";
 		String user_seq = queryField(sql);
 		if(user_seq == null)
@@ -119,6 +121,7 @@ public class MemberService extends Service{
 		String MANAGER_ID=getRow().getString("MANAGER_ID","");
 		String REMARK=getRow().getString("REMARK","");
 		String ORG_ID=getRow().getString("ORG_ID","");
+		String STATUS=getRow().getString("STATUS","");
 		row.put("DEPART_ID", DEPART_ID);
 		row.put("NAME", NAME);
 		row.put("PASSWORD", PASSWORD);
@@ -129,6 +132,7 @@ public class MemberService extends Service{
 		row.put("REMARK", REMARK);
 		row.put("ORG_ID", ORG_ID);
 		row.put("USERNAME", USERNAME);
+		row.put("STATUS", STATUS);
 		update("mcn_users", row, " id='" + ID + "'");
 	}
 
@@ -148,7 +152,8 @@ public class MemberService extends Service{
 				}
 				id += "'" + String.valueOf(ids[i]) + "'";
 			}
-			sql = "delete from mcn_users where id in(" + id + ")";
+//			sql = "delete from mcn_users where id in(" + id + ")";
+			sql = "update  mcn_users set status='3' where id in(" + id + ")";
 			update(sql);
 		}
 	}
