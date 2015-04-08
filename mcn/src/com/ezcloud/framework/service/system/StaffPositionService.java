@@ -3,7 +3,6 @@ package com.ezcloud.framework.service.system;
 import org.springframework.stereotype.Component;
 
 import com.ezcloud.framework.service.Service;
-import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 /**
  * 系统用户岗位

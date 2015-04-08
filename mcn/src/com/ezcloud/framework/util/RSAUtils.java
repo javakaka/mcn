@@ -111,6 +111,7 @@ public class RSAUtils {
 			byte[] encode = key.getEncoded();
 			// 注意，此处采用writeObject方法，读取时也要采用readObject方法
 			oos.writeObject(encode);
+			oos.close();
 			write = true;
 		} catch (IOException e) {
 			write = false;

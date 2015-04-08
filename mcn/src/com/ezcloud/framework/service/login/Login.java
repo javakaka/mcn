@@ -38,7 +38,11 @@ public class Login extends Service {
 		sql = "select * from sm_staff where staff_name='" + username + "'";
 		if(token != null && token.length() >0)
 		{
-			token =AesUtil.decode(token);
+			try {
+				token =AesUtil.decode(token);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			sql +=  " and bureau_no='"+token+"'";
 		}
 		Row staff = queryRow(sql);
@@ -74,6 +78,7 @@ public class Login extends Service {
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings({ "resource", "unused" })
 	public static void main(String args[]) {
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-jdbc.xml");
 		Login login = (Login) context.getBean("frameworkLoginService");

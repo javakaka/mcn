@@ -27,7 +27,7 @@ $().ready(function() {
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.i18n" />
+		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.faq" />
 	</div>
 
 <div style="width:100%;height:95%;position: absolute;">

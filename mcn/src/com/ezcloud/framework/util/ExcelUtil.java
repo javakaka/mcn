@@ -84,7 +84,8 @@ public class ExcelUtil {
 	                int columnCount = row.getLastCellNum();
 	                // 获得本行中各单元格中的数据
 	                for (short columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-	                    HSSFCell cell = row.getCell(columnIndex);
+	                    @SuppressWarnings("deprecation")
+						HSSFCell cell = row.getCell(columnIndex);
 	                    // 获得指定单元格中数据
 	                    Object cellStr = getCellString(cell);
 	                    rowData.add(cellStr);

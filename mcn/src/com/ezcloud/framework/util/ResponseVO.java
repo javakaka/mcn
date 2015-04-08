@@ -54,15 +54,21 @@ public class ResponseVO {
 		this.code = code;
 		this.msg = msg;
 		this.exp = exp;
+		oForm=new Row();
 	}
 	public ResponseVO(int code, String msg) {
 		super();
 		this.code = code;
 		this.msg = msg;
+		exp="";
+		oForm=new Row();
 	}
 	public ResponseVO(int code) {
 		super();
 		this.code = code;
+		msg="";
+		exp="";
+		oForm=new Row();
 	}
 	public ResponseVO() {
 		super();

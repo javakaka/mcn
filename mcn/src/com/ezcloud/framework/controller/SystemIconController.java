@@ -37,6 +37,7 @@ public class SystemIconController extends BaseController {
 	@Resource(name = "frameworkSystemIconService")
 	private SystemIcon systemIcon;
 
+	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/SystemIcon")
 	public String getWindowList(Pageable pageable,ServletRequest request, ModelMap model) {
 		String rootPath=request.getRealPath("/");
@@ -85,6 +86,7 @@ public class SystemIconController extends BaseController {
 		return SUCCESS_MESSAGE;
 	}
 
+	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/SelectIcon")
 	public String selectIcon(String win_id, ServletRequest request, ModelMap model) {
 		String rootPath=request.getRealPath("/");

@@ -196,7 +196,7 @@ public class PunchController extends BaseController{
 	
 	//通知公告
 	@RequestMapping("message")
-	public @ResponseBody String queryMessage(HttpServletRequest request) throws JException
+	public @ResponseBody String queryMessage(HttpServletRequest request) throws Exception
 	{
 		String json ="";
 		parseRequest(request);

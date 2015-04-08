@@ -75,6 +75,35 @@ public class SystemUpload extends Service{
 		return ds;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public  DataSet getAttachList(String deal_code,String deal_type,String type,String sub_type)
+	{
+		DataSet ds =new DataSet();
+		String sSql ="select a.*,b.FILE_CODE,b.FILE_PATH,b.FILE_SIZE from file_attach_control a "+ 
+		",file_attach_upload b where a.control_id =b.control_id " +
+		"and a.deal_code='"+deal_code+"' and DEAL_TYPE='"+deal_type+"' " +
+		"and a.type='"+type+"' and a.sub_type='"+sub_type+"' ";
+		String path ="";
+		String pre_path ="";
+		int iPos =-1;
+		ds =queryDataSet(sSql);
+		for(int i=0; i< ds.size(); i++)
+		{
+			Row row =(Row)ds.get(i);
+			path =row.getString("file_path");
+			iPos =path.indexOf("resources");
+			if(iPos !=-1)
+			{
+				pre_path =path.substring(0,iPos+"resources".length());
+				path ="../"+path.substring(iPos);
+			}
+			row.put("path", path);
+			row.put("pre_path", pre_path);
+			ds.set(i, row);
+		}
+		return ds;
+	}
+	
 	public  int deleteAttach(String id)
 	{
 		int rowNum =0;

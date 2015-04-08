@@ -59,7 +59,7 @@ $().ready(function() {
 		<table id="listTable" class="list" style="width:500px;">
 			<tr>
 				<th class="check">
-					<input type="checkbox" id="selectAll" />
+					<!-- <input type="checkbox" id="selectAll" />-->
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="WIN_TARGET">窗口地址</a>
@@ -118,17 +118,21 @@ function closeFrame()
 function addEventHandlers()
 {
 	var win_box =window.parent.document.getElementById("windown-box");
-	var b_div =window.parent.document.createElement("div");
-	b_div.id="window-bottom";
-	//b_div.style.width="";
-	b_div.style.height="30px";
-	b_div.style.border="1px solid #BDB9BA";
-	b_div.style.marginRight="10px";
-	
-	var html="<div style=\"float:right;\"><input type=\"button\" name=\"submitBtn\" id=\"submitBtn\" value=\"确定\" class=\"button\" onclick=\"iframeSelectTarget()\"/></div>";
-		html+="<div style=\"float:right;\"><input type=\"button\" name=\"closeBtn\" id=\"closeBtn\" value=\"取消\"  class=\"button\" onclick=\"closeTipWindow()\"/></div>";
-	b_div.innerHTML=html;
-	win_box.appendChild(b_div);
+	var is_window_bottom_existed =window.parent.document.getElementById("window-bottom");
+	if(typeof is_window_bottom_existed =="undefined" || is_window_bottom_existed == null || is_window_bottom_existed == "")
+	{
+		var b_div =window.parent.document.createElement("div");
+		b_div.id="window-bottom";
+		//b_div.style.width="";
+		b_div.style.height="30px";
+		b_div.style.border="1px solid #BDB9BA";
+		b_div.style.marginRight="10px";
+		
+		var html="<div style=\"float:right;\"><input type=\"button\" name=\"submitBtn\" id=\"submitBtn\" value=\"确定\" class=\"button\" onclick=\"iframeSelectTarget()\"/></div>";
+			html+="<div style=\"float:right;\"><input type=\"button\" name=\"closeBtn\" id=\"closeBtn\" value=\"取消\"  class=\"button\" onclick=\"closeTipWindow()\"/></div>";
+		b_div.innerHTML=html;
+		win_box.appendChild(b_div);
+	}
 }
 </script>
 </html>

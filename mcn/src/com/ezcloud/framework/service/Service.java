@@ -117,15 +117,17 @@ public class Service {
 		sql = "update " + tableName + " set ";
 		String colName = "";
 		String colValue = "";
+		int notNullValueIndex =0;
 		for (int i = 0; i < colnums.length; i++) {
 			colName = (String) colnums[i];
 			colValue = row.getString(colName,null);
 			if(colValue != null && colValue.replace(" ", "").length() > 0)
 			{
-				if (i > 0) {
+				if (notNullValueIndex > 0) {
 					sql += ",";
 				}
 				sql += colName + "='" + colValue + "' ";
+				notNullValueIndex ++;
 			}
 		}
 		sql += " where " + where;

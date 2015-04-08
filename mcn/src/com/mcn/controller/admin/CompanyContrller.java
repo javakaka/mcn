@@ -122,7 +122,11 @@ public class CompanyContrller  extends BaseController{
 		if(NOTES == null)
 			NOTES ="";
 		bureau.getRow().put("NOTES", NOTES);
-		bureau.save();
+		try {
+			bureau.save();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		String[] checkboxArr = request.getParameterValues("modules");
         if( checkboxArr!=null ){
         	Row mrow =new Row();

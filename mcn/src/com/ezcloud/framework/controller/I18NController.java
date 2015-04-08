@@ -12,7 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.I18N;
+import com.ezcloud.framework.service.system.LanResItem;
+import com.ezcloud.framework.service.system.Language;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.vo.DataSet;
 
 /**
  * 国际化
@@ -25,6 +28,13 @@ public class I18NController extends BaseController{
 
 	@Resource(name="frameworkI18NService")
 	private I18N i18nService;
+	
+	@Resource(name = "frameworkLanguageService")
+	private Language languageService;
+	
+	@Resource(name = "frameworkLanResItemService")
+	private LanResItem lanResItemService;
+	
 	@RequestMapping(value = "/International")
 	public String getMoudleList(Pageable pageable, ModelMap model) {
 		i18nService.getRow().put("pageable", pageable);
@@ -35,6 +45,12 @@ public class I18NController extends BaseController{
 
 	@RequestMapping(value = "/add")
 	public String add(ModelMap model) {
+		//language
+		DataSet lanDs =languageService.queryAllItems();
+		// res_item
+		DataSet itemDs =lanResItemService.queryAllResItem();
+		model.addAttribute("lan_list", lanDs);
+		model.addAttribute("item_list", itemDs);
 		return "/system/i18n/add";
 	}
 

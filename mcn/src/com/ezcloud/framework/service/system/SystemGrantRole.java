@@ -177,7 +177,7 @@ public class SystemGrantRole extends Service{
 	
 	 public void getSysNoPositionStaff()
 	 {
-		 String sql ="select a.* from sm_staff a where a.state=1 and a.staff_no not in (select staff_no from sm_staff_position)";
+//		 String sql ="select a.* from sm_staff a where a.state=1 and a.staff_no not in (select staff_no from sm_staff_position)";
 	 }
 	 
 }

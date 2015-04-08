@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><cc:message key="framework.nav.moudle" /></title>
+<title><cc:message key="framework.nav.role" /></title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
@@ -25,7 +25,7 @@ $().ready(function() {
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.moudle" />
+		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.role" />
 		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
 	<form id="listForm" action="RoleList.do" method="get">
@@ -138,7 +138,6 @@ $().ready(function() {
 					</td>
 					<td>
 						<a href="edit.do?id=${row.ROLE_ID}"><cc:message key="admin.common.edit" /></a>
-						<a href="#" target="_blank"><cc:message key="admin.common.view" /></a>
 					</td>
 				</tr>
 			</c:forEach>

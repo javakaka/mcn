@@ -1,7 +1,6 @@
 package com.ezcloud.framework.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +14,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-
 
 import com.ezcloud.framework.service.system.SystemUpload;
 import com.ezcloud.framework.util.ResponseVO;
@@ -51,6 +48,7 @@ public class SystemUploadFileController  extends BaseController{
 	 * @param staff_id
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("deprecation")
 	@RequestMapping("/upload")
 	public String upload(MultipartFile file,String deal_type,String deal_code,String type,String sub_type,String cover, String staff_id,ServletRequest request,ModelMap model) throws IOException
 	{
@@ -59,9 +57,9 @@ public class SystemUploadFileController  extends BaseController{
 				InputStream is = file.getInputStream();
 				String root =request.getRealPath("/resources");
 				String file_name =file.getOriginalFilename();
-				String oname = file.getOriginalFilename();
+//				String oname = file.getOriginalFilename();
 				String file_type ="";
-				String fileContentType =file.getContentType();
+//				String fileContentType =file.getContentType();
 				int iPos =file_name.lastIndexOf(".");
 				String file_title =file_name.substring(0,iPos);
 				file_type =file_name.substring(iPos+1);

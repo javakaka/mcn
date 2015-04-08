@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><cc:message key="framework.nav.i18n" /></title>
+<title><cc:message key="framework.nav.org" /></title>
 <link href="<%=basePath%>/res/admin/css/common_pop.css" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="<%=basePath%>/res/css/xtree2.css" ></link>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
@@ -27,7 +27,7 @@ $().ready(function() {
 </head>
 <body onload="onViewOrg()">
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo;部门维护
+		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.org" />
 	</div>
 	<div style="width:100%;height:95%;position: absolute;">
 		<div id="treeDiv" style="width:20%;float: left;">

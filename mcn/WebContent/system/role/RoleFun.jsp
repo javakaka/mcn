@@ -85,7 +85,7 @@ function getRoleFuns(id)
 </script>
 <body onLoad="onLoadPage()">
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.i18n" />
+		<cc:message key="framework.nav.index" /> &raquo;角色权限
 	</div>
 
 <div id="wrapper_div" style="width:100%;position: absolute;">
@@ -110,7 +110,7 @@ function getRoleFuns(id)
 	</div>
 </td>
 <td valign="top">
-<div id="iframeDiv" style="width:100%;height:500px;border: 1px solid #A8EBD4;">
+<div id="iframeDiv" style="width:100%;height:500px;border: 1px solid #d7e8f1;">
 		<iframe src="SelectRoleFun.do" id="DIFRAME" height="100%" width="100%" scrolling="scroll-y" frameborder="0"></iframe>
 	</div>
 </td>

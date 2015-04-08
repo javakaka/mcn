@@ -34,15 +34,46 @@ public class Md5Util {
 		}
 		return buf.toString().toUpperCase();
 	}
+	
+	/**
+	 * MD5 32位加密方法一 小写
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public final static String get32LowercaseMD5(String s) {
+		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','a', 'b', 'c', 'd', 'e', 'f' };
+		try {
+			byte[] strTemp = s.getBytes();
+			// 使用MD5创建MessageDigest对象
+			MessageDigest mdTemp = MessageDigest.getInstance("MD5");
+			mdTemp.update(strTemp);
+			byte[] md = mdTemp.digest();
+			int j = md.length;
+			char str[] = new char[j * 2];
+			int k = 0;
+			for (int i = 0; i < j; i++) {
+				byte b = md[i];
+				// 将没个数(int)b进行双字节加密
+				str[k++] = hexDigits[b >> 4 & 0xf];
+				str[k++] = hexDigits[b & 0xf];
+			}
+			return new String(str);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public static void main(String[] args) {
 
 		String ssss = Md5("123456");
-		String s3 = "21218CCA77804D2BA1922C33E0151105";
+//		String s3 = "E10ADC3949BA59ABBE56E057F20F883E";
 		// Md5("ezcloud");
 		System.out.println(ssss);
-		System.out.println(Md5Util.Md5("123456"));
-		System.out.println(ssss.equals(s3));
+		System.out.println(Md5Util.Md5("000000"));
+//		System.out.println(ssss.equals(s3));
+//		System.out.println(Md5Util.Md5("000000"));
+//		System.out.println(Md5Util.Md5("723096"));
 	}
 
 }

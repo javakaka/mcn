@@ -157,6 +157,9 @@ public class Setting implements Serializable {
 
 	/** 网站网址 */
 	private String siteUrl;
+	
+	/** 项目部署物理路径 */
+	private String physicalPath;
 
 	/** logo */
 	private String logo;
@@ -423,6 +426,18 @@ public class Setting implements Serializable {
 	 */
 	public void setSiteUrl(String siteUrl) {
 		this.siteUrl = StringUtils.removeEnd(siteUrl, "/");
+	}
+
+	/**
+	 * 项目物理路径
+	 * @return
+	 */
+	public String getPhysicalPath() {
+		return physicalPath;
+	}
+
+	public void setPhysicalPath(String physicalPath) {
+		this.physicalPath = physicalPath;
 	}
 
 	/**

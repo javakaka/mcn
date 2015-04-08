@@ -45,7 +45,11 @@ public class SystemBureauController  extends BaseController{
 		bureau.getRow().put("AREA_CODE", AREA_CODE);
 		bureau.getRow().put("LINKS", LINKS);
 		bureau.getRow().put("NOTES", NOTES);
-		bureau.save();
+		try {
+			bureau.save();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "redirect:Bureau.do";
 	}
 

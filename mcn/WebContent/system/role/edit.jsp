@@ -55,7 +55,7 @@ $().ready(function() {
 					请选择区域:
 				</th>
 				<td>
-					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200" >
+					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200" style="width:190px;">
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${bureau}" var="row" varStatus="status">
 							<c:choose>
@@ -75,7 +75,7 @@ $().ready(function() {
 					请选择状态:
 				</th>
 				<td>
-					<select id="STATE" name="STATE" class="text" maxlength="200" >
+					<select id="STATE" name="STATE" class="text" maxlength="200"  style="width:190px;">
 						<c:if test="${role.STATE ==1}">
 							<option value="1" selected>有效</option>
 							<option value="0">无效</option>

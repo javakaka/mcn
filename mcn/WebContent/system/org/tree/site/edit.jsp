@@ -56,7 +56,7 @@ $().ready(function() {
 					上级部门:
 				</th>
 				<td>
-					<select id="UP_SITE_NO" name="UP_SITE_NO" class="text" maxlength="200" >
+					<select id="UP_SITE_NO" name="UP_SITE_NO" class="text" maxlength="200"   style="width:190px;">
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${departs}" var="opt" varStatus="status">
 							<c:choose>

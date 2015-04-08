@@ -138,7 +138,6 @@ public class SystemFun extends Service {
 		//sm_role_fun
 		sql ="delete from sm_role_fun where fun_id in ("+ids.toString()+")";
 		rowNum =update(sql);
-		//
 		return rowNum;
 	}
 	
@@ -386,7 +385,7 @@ public class SystemFun extends Service {
 	{
 		DataSet ds=new DataSet();
 //		String sql ="select b.* from sm_role_fun a left join sm_fun b on a.fun_id=b.fun_id  where a.ROLE_ID='"+id+"' ";
-		String sql ="select b.* from sm_role_fun a , sm_fun b where a.ROLE_ID='"+id+"' and a.fun_id=b.fun_id;";
+		String sql ="select b.* from sm_role_fun a,sm_fun b where a.ROLE_ID='"+id+"' and a.fun_id=b.fun_id ";
 		ds =queryDataSet(sql);
 		return ds;
 	}
@@ -409,7 +408,6 @@ public class SystemFun extends Service {
 		}
 		return rowNum;
 	}
-	
 	public static void main(String args[])
 	{
 		System.out.println(Integer.parseInt("01221"));

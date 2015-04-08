@@ -40,7 +40,13 @@ public class SystemConfigService extends Service{
 		}
 		
 		return configArr;
-		
+	}
+	
+	public DataSet getConfigData(String busiType)
+	{
+		String sql = "select busi_code,busi_code_set,set_memo from comm_system_signle_data_set  where busi_type='"+ busiType+ "' ";
+		DataSet ds =queryDataSet(sql);
+		return ds;
 	}
 	
 	/**
@@ -93,7 +99,7 @@ public class SystemConfigService extends Service{
 			if (data_set_id != null) {
 				oRow.put("BUSI_CODE_SET", busi_code_set);
 				oRow.put("SET_MEMO", set_memo);
-				update("COMM_SYSTEM_SIGNLE_DATA_SET", oRow,"data_set_id=" + data_set_id);
+				update("comm_system_signle_data_set", oRow,"data_set_id=" + data_set_id);
 			} 
 			else 
 			{

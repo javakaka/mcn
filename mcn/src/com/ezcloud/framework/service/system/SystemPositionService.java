@@ -77,6 +77,7 @@ public class SystemPositionService extends Service {
 	 * 查询部门下属岗位
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Page querySitePositions() 
 	{
 		Page page = null;

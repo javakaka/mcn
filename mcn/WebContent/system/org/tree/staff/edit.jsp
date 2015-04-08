@@ -58,7 +58,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>所属部门:
 				</th>
 				<td>
-					<select id="SITE_NO" name="SITE_NO" class="text" maxlength="200" >
+					<select id="SITE_NO" name="SITE_NO" class="text" maxlength="200"  style="width:190px;">
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${departs}" var="opts" varStatus="status">
 							<c:choose>
@@ -112,7 +112,7 @@ $().ready(function() {
 					状态:
 				</th>
 				<td>
-					<select id="STATE" name="STATE" class="text" maxlength="200" >
+					<select id="STATE" name="STATE" class="text" maxlength="200"   style="width:190px;">
 						<c:choose>
 								<c:when test="${row.STATE == 1}">
 									<option value="1" selected>有效</option>

@@ -73,9 +73,6 @@ $().ready(function() {
 						<li>
 							<a href="javascript:;" <c:if test="${page.searchProperty == 'RES_ITEM'}"> class="current"</c:if> val="RES_ITEM"><cc:message key="framework.lan_res_item.res_item" /></a>
 						</li>
-						<li>
-							<a href="javascript:;" <c:if test="${page.searchProperty == 'RES_ITEM'}">class="current"</c:if> val="RES_ITEM"><cc:message key="framework.lan_res_item.res_type" /></a>
-						</li>
 					</ul>
 				</div>
 			</div>
@@ -110,7 +107,6 @@ $().ready(function() {
 					
 					<td>
 						<a href="edit.do?RES_ITEM=${row.RES_ITEM}"><cc:message key="admin.common.edit" /></a>
-						<a href="base}article.path}" target="_blank"><cc:message key="admin.common.view" /></a>
 					</td>
 				</tr>
 			</c:forEach>

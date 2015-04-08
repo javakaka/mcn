@@ -108,7 +108,6 @@ $().ready(function() {
 					</td>
 					<td>
 						<a href="edit.do?id=${row.WIN_ID}"><cc:message key="admin.common.edit" /></a>
-						<a href="base}article.path}" target="_blank"><cc:message key="admin.common.view" /></a>
 					</td>
 				</tr>
 			</c:forEach>

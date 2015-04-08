@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
 @Component("frameworkLanResItemService")
@@ -101,5 +102,13 @@ public class LanResItem  extends Service{
 			sql = "delete from fm_international_res_item where res_item in(" + id + ")";
 			update(sql);
 		}
+	}
+	
+	public DataSet queryAllResItem()
+	{
+		DataSet ds =new DataSet();
+		String sql ="select * from fm_international_res_item ";
+		ds =queryDataSet(sql);
+		return ds;
 	}
 }

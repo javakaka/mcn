@@ -100,8 +100,10 @@ public class SystemSite  extends Service{
 	 * 
 	 * @Title: save
 	 * @return void
+	 * @throws Exception 
 	 */
-	public void save() {
+	@SuppressWarnings("deprecation")
+	public void save() throws Exception {
 		Row row = new Row();
 		String BUREAU_NAME=getRow().getString("BUREAU_NAME","");
 		String UP_BUREAU_NO=getRow().getString("UP_BUREAU_NO","");

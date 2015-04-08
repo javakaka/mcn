@@ -47,6 +47,7 @@ public class MainController extends BaseController {
 		permissionService.getStaffPermission();
 		ovo = dealPermissionData(permissionService.getDataSet());
 		model.addAttribute("ovo", ovo);
+		model.addAttribute("staff", staff);
 		return "/main/menu/main";
 	}
 
@@ -104,7 +105,7 @@ public class MainController extends BaseController {
 		ovo.put("top_nav", topNavDs);
 		ovo.put("menu_nav", menubNavDs);
 		ovo.put("fun_nav", funDs);
-		System.out.print("ovo=====================>>>:" + ovo);
+//		System.out.print("ovo=====================>>>:" + ovo);
 		return ovo;
 	}
 }

@@ -151,7 +151,9 @@ public class SystemOrgQuery extends Service {
 //		}
 		sql = "select bureau_no, bureau_name from sm_bureau";
 		if (bureau_no != null)
-		sql = sql + " where bureau_no='" + bureau_no + "'";
+		{
+			sql = sql + " where bureau_no='" + bureau_no + "'";
+		}
 		DataSet tempDataSet = queryDataSet(sql);
 		for(int i=0; i<tempDataSet.size(); i++)
 		{

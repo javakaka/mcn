@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
 @Component("frameworkLanguageService")
@@ -105,5 +106,13 @@ public class Language  extends Service{
 			sql = "delete from fm_international_language where lan_no in(" + id + ")";
 			update(sql);
 		}
+	}
+	
+	public DataSet queryAllItems()
+	{
+		DataSet ds =new DataSet();
+		String sql ="select * from fm_international_language where lan_state='1' ";
+		ds =queryDataSet(sql);
+		return ds;
 	}
 }

@@ -126,7 +126,6 @@ $().ready(function() {
 					</td>
 					<td>
 						<a href="edit.do?id=${row.PROJECT_ID}"><cc:message key="admin.common.edit" /></a>
-						<a href="#" target="_blank"><cc:message key="admin.common.view" /></a>
 					</td>
 				</tr>
 			</c:forEach>

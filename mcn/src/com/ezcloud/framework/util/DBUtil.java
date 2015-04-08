@@ -26,7 +26,6 @@ public class DBUtil {
 	 * @return DataSet
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("unchecked")
 	public static ArrayList<String> getResultSetColnumNames(ResultSet rs) throws SQLException {
 		ArrayList<String> list = null;
 		if (rs == null)

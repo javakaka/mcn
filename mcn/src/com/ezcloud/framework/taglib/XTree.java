@@ -82,7 +82,7 @@ public class XTree extends TagSupport {
 					// this.html.append(localRow.get(this.titleF) + "',action('"
 					// + hiddenValue + "')");
 					hiddenValue = "javascript:action(\"" + hiddenValue + "\")";
-					System.out.println("hidden value:===>>" + hiddenValue);
+//					System.out.println("hidden value:===>>" + hiddenValue);
 					this.html.append(localRow.get(this.titleF) + "','" + hiddenValue + "'");
 				}
 				if ((this.icon != null) && (this.icon.trim().length() > 0)) {

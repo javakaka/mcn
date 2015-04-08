@@ -246,6 +246,7 @@ public abstract class PaymentPlugin implements Comparable<PaymentPlugin> {
 	 * 
 	 * @return 手续费
 	 */
+	@SuppressWarnings("unused")
 	public BigDecimal getFee() {
 		Row pluginConfig = getPluginConfig();
 		String id=pluginConfig.getString("id");
