@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=GBK"%>
-<%@ include file="/include/Head2.jsp"%>
 <HTML><HEAD><TITLE>Untitled Document</TITLE>
 <META http-equiv=Content-Type content="text/html; charset=gb2312">
 <LINK href="res/css.css" type=text/css rel=stylesheet>
@@ -14,7 +13,7 @@
         <TR>
           <TD background=images/helpimgbg.gif>&nbsp;</TD></TR>
 			<TR>
-				<TD align=center class="font24"><B><%=SystemInfo._SOFTNAME%></B></TD></TR>
+				<TD align=center class="font24"><B>系统帮助</B></TD></TR>
 			<TR>
 				<TD align=right><font style="font-size:16px"><!--%=GlobalNames.COMPANY_NAME%-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></TD></TR>
 			 </TBODY></TABLE>

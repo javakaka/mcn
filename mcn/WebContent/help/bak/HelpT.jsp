@@ -1,8 +1,5 @@
 <%@ page contentType="text/html; charset=GBK"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
+<%@ include file="/include/Head2.jsp"%>
 <HTML><HEAD><TITLE>Untitled Document</TITLE>
 <META http-equiv=Content-Type content="text/html; charset=gb2312">
 <SCRIPT language=JavaScript type=text/JavaScript>
@@ -85,23 +82,19 @@ onload="top.focus();MM_preloadImages('images/help03a.gif','images/help03.gif','i
     <TD width=55><A 
       onmouseover="MM_nbGroup('over','help05a','images/help05.gif','',1)" 
       onclick="MM_nbGroup('down','group1','help05a','images/help05a.gif',1)" 
-      onmouseout="MM_nbGroup('out')" href="<%=basePath%>index.html" 
+      onmouseout="MM_nbGroup('out')" href="<%=GlobalUtil._WEB_PATH%>" 
       target=_blank><IMG height=39 src="images/help05a.gif" width=55 
       border=0 name=help05a></A></TD>
-    <!--
-	<TD width=55><A 
+    <TD width=55><A 
       onmouseover="MM_nbGroup('over','help06a','images/help06.gif','',1)" 
       onclick="MM_nbGroup('down','group1','help06a','images/help06a.gif',1)" 
       onmouseout="MM_nbGroup('out')" href="javascript:$E.message('暂没实现！');" 
       target=_top><IMG height=40 src="images/help06a.gif" width=55 
       border=0 name=help06a></A></TD>
-	  -->
-    <!--
-	<TD width=55><A 
+    <TD width=55><A 
       onmouseover="MM_nbGroup('over','help01a','images/help01.gif','',1)" 
-      onclick="window.close();" 
-      onmouseout="MM_nbGroup('out')" href="javascript:void(0)" 
+      onclick="MM_nbGroup('down','group1','help01a','images/help01a.gif',1)" 
+      onmouseout="MM_nbGroup('out')" href="javascript:window.close();" 
       target=_top><IMG height=40 src="images/help01a.gif" width=55 
       border=0 name=help01a></A></TD>
-	  -->
     <TD width=55>&nbsp;</TD></TR></TBODY></TABLE></BODY></HTML>

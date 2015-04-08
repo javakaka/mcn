@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=GBK"%>
+<%@ include file="/include/Head2.jsp"%>
 <HTML><HEAD><TITLE>Untitled Document</TITLE>
 <META http-equiv=Content-Type content="text/html; charset=gb2312"><LINK 
 href="res/css.css" type=text/css rel=stylesheet>

@@ -112,7 +112,6 @@ if(callback == null || callback.equals(""))
 			url +="&deal_code="+deal_code;
 			url +="&deal_type="+deal_type;
 			url +="&file_type="+file_type;
-			alert(url);
 			window.open(url);
 		}
 	    
@@ -179,7 +178,7 @@ if(callback == null || callback.equals(""))
 			upload_times +=1;
 			if(callback !="" && upload_times >1)
 			{
-				alert(window.opener);
+				//alert(window.opener);
 				window.opener.<%=callback%>();
 			}
 		}

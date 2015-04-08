@@ -1,8 +1,10 @@
-<%@ page contentType="text/html; charset=GBK"%>
-<%@ include file="/include/Head2.jsp"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" isELIgnored="false" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/cctaglib" prefix="cc"%>
 <html>
 <head>
-<title><%=SystemInfo._SOFTNAME%>在线帮助</title>
+<title>鍦ㄧ嚎甯姪</title>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 </head>
 <frameset rows="41,*" cols="*" framespacing="0" frameborder="no" border="0">
@@ -11,7 +13,7 @@
     <frameset rows="44,*" cols="*" framespacing="0" frameborder="no" border="0">
       <frame src="HelpT1.jsp" name="topFrame1" scrolling="no" noresize >
       <frameset rows="*,10" cols="*" framespacing="0" frameborder="no" border="0">
-        <frame src="HelpI.jsp" name="leftFrame" scrolling="yes">
+        <frame src="HelpI.do" name="leftFrame" scrolling="yes">
         <frame src="HelpT2.jsp" name="bottomFrame" scrolling="NO">
       </frameset>
     </frameset>
