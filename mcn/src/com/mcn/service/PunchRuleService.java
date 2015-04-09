@@ -73,6 +73,11 @@ public class PunchRuleService extends Service{
 		insert("mcn_punch_rule", row);
 	}
 
+	public void insert(Row row) {
+		int id = getTableSequence("mcn_punch_rule", "id", 1);
+		row.put("ID", id);
+		insert("mcn_punch_rule", row);
+	}
 	/**
 	 * 根据id查找
 	 * 
@@ -106,6 +111,18 @@ public class PunchRuleService extends Service{
 		row.put("PM_END", PM_END);
 		row.put("ID", ID);
 		update("mcn_punch_rule", row, " id='" + ID + "'");
+	}
+	
+	
+	/**
+	 * 查询一条部门打卡时间数据
+	 * 
+	 * @return void
+	 */
+	public Row queryOneDepartPunchTime(String org_id) {
+		String sql ="select * from mcn_punch_rule where org_id='"+org_id+"' limit 0,1";
+		Row row =queryRow(sql);
+		return row;
 	}
 
 	/**

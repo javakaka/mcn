@@ -113,6 +113,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="MANAGER_ID">部门负责人</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="DEFAULT_MANAGER">默认审批人</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="STATUS">状态</a>
 				</th>
 				<th>
@@ -154,6 +157,13 @@ $().ready(function() {
 					</td>
 					<td>
 						${row.MANAGER_ID}
+					</td>
+					<td>
+						<c:choose>
+							<c:when test="${row.DEFAULT_MANAGER == 0}">否</c:when>
+							<c:when test="${row.DEFAULT_MANAGER == 1}">是</c:when>
+							<c:otherwise>--</c:otherwise>
+						</c:choose>
 					</td>
 					<td>
 						<c:choose>

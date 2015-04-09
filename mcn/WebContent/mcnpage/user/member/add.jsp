@@ -128,6 +128,17 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
+					默认审批人:
+				</th>
+				<td>
+					<select id="DEFAULT_MANAGER" name="DEFAULT_MANAGER" class="text" maxlength="200"  style="width:190px;">
+						<option value="0" selected>否</option>
+						<option value="1" >是</option>
+					</select>(每个部门只有一个默认审批人,如果新设置默认审批人，新的会自动覆盖原来的审批人)
+				</td>
+			</tr>
+			<tr>
+				<th>
 					状态:
 				</th>
 				<td>

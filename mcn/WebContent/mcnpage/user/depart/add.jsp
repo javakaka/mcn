@@ -53,12 +53,56 @@ $().ready(function() {
 					上级部门:
 				</th>
 				<td>
-					<select id="UP_SITE_NO" name="UP_SITE_NO" class="text" maxlength="200" >
+					<select id="UP_SITE_NO" name="UP_SITE_NO" class="text" maxlength="200" style="width:190px;" >
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${departs}" var="row" varStatus="status">
 							<option value="${row.SITE_NO}">${row.SITE_NAME}</option>
 						</c:forEach>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					状态:
+				</th>
+				<td>
+					<select id="STATE" name="STATE" class="text" maxlength="200"  style="width:190px;" >
+						<option value="" selected>请选择...</option>
+						<option value="1" >启用</option>
+						<option value="0" >停用</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>上午上班时间:
+				</th>
+				<td>
+					<input type="text" name="AM_START" class="text Wdate" maxlength="200" value="${am_start }" onfocus="WdatePicker({dateFmt:'HH:mm'});" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>上午下班时间:
+				</th>
+				<td>
+					<input type="text" name="AM_END" class="text Wdate" maxlength="200" value="${am_end }" onfocus="WdatePicker({dateFmt:'HH:mm'});" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>下午上班时间:
+				</th>
+				<td>
+					<input type="text" name="PM_START" class="text Wdate" maxlength="200" value="${pm_start }" onfocus="WdatePicker({dateFmt:'HH:mm'});" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<span class="requiredField">*</span>下午下班时间:
+				</th>
+				<td>
+					<input type="text" name="PM_END" class="text Wdate" maxlength="200" value="${pm_end }" onfocus="WdatePicker({dateFmt:'HH:mm'});" />
 				</td>
 			</tr>
 			<tr>

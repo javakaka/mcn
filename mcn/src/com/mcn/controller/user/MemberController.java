@@ -68,7 +68,7 @@ public class MemberController extends BaseController{
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(String DEPART_ID, String NAME,String PASSWORD, 
 			String USERNAME,String TELEPHONE,String SEX,String POSITION,
-			String MANAGER_ID,String REMARK,String STATUS, 
+			String MANAGER_ID,String REMARK,String STATUS, String DEFAULT_MANAGER,
 			String PHONE,String EMAIL,
 			HttpSession session,RedirectAttributes redirectAttributes) {
 		Assert.notNull(DEPART_ID, "DEPART_ID can not be null");
@@ -110,6 +110,11 @@ public class MemberController extends BaseController{
 		if(org_id ==null  ||org_id.replace(" ", "").length() == 0)
 			return "redirect:MemberList.do";
 		memberService.getRow().put("org_id", org_id);
+		memberService.getRow().put("DEFAULT_MANAGER", DEFAULT_MANAGER);
+		if(DEFAULT_MANAGER.equals("1"))
+		{
+			memberService.resetDefaultManager(DEPART_ID);
+		}
 		memberService.save();
 		return "redirect:MemberList.do";
 	}
@@ -128,7 +133,7 @@ public class MemberController extends BaseController{
 	@RequestMapping(value = "/update")
 	public String update(String ID,String DEPART_ID, String NAME,String PASSWORD, String USERNAME,
 			String TELEPHONE,String PHONE,String EMAIL,String SEX,
-			String POSITION,String MANAGER_ID,String REMARK,String STATUS, 
+			String POSITION,String MANAGER_ID,String REMARK,String STATUS, String DEFAULT_MANAGER,
 			HttpSession session, ModelMap model) {
 		memberService.getRow().clear();
 		Assert.notNull(ID, "ID can not be null");
@@ -156,10 +161,11 @@ public class MemberController extends BaseController{
 			USERNAME ="";
 		}
 		memberService.getRow().put("USERNAME", USERNAME);//如果USERNAME为空，则系统自动生成
-		if(!StringUtils.isEmptyOrNull(TELEPHONE))
+		if(StringUtils.isEmptyOrNull(TELEPHONE))
 		{
-			memberService.getRow().put("TELEPHONE", TELEPHONE);
+			TELEPHONE ="";
 		}
+		memberService.getRow().put("TELEPHONE", TELEPHONE);
 		memberService.getRow().put("SEX", SEX);
 		memberService.getRow().put("POSITION", POSITION);
 		memberService.getRow().put("MANAGER_ID", MANAGER_ID);
@@ -172,6 +178,11 @@ public class MemberController extends BaseController{
 		if(org_id ==null  ||org_id.replace(" ", "").length() == 0)
 			return "redirect:MemberList.do";
 		memberService.getRow().put("org_id", org_id);
+		memberService.getRow().put("DEFAULT_MANAGER", DEFAULT_MANAGER);
+		if(DEFAULT_MANAGER.equals("1"))
+		{
+			memberService.resetDefaultManager(DEPART_ID);
+		}
 		memberService.update();
 		return "redirect:MemberList.do";
 	}

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.Row;
 
 @Component("mcnMemberService")
@@ -65,6 +66,7 @@ public class MemberService extends Service{
 		String REMARK=getRow().getString("REMARK","");
 		String ORG_ID=getRow().getString("ORG_ID","");
 		String STATUS=getRow().getString("STATUS","");
+		String DEFAULT_MANAGER=getRow().getString("DEFAULT_MANAGER","");
 		row.put("DEPART_ID", DEPART_ID);
 		row.put("NAME", NAME);
 		row.put("PASSWORD", PASSWORD);
@@ -75,6 +77,7 @@ public class MemberService extends Service{
 		row.put("REMARK", REMARK);
 		row.put("ORG_ID", ORG_ID);
 		row.put("STATUS", STATUS);
+		row.put("DEFAULT_MANAGER", DEFAULT_MANAGER);
 		String sql ="select max(username) from mcn_users where org_id='"+ORG_ID+"'";
 		String user_seq = queryField(sql);
 		if(user_seq == null)
@@ -122,6 +125,7 @@ public class MemberService extends Service{
 		String REMARK=getRow().getString("REMARK","");
 		String ORG_ID=getRow().getString("ORG_ID","");
 		String STATUS=getRow().getString("STATUS","");
+		String DEFAULT_MANAGER=getRow().getString("DEFAULT_MANAGER","");
 		row.put("DEPART_ID", DEPART_ID);
 		row.put("NAME", NAME);
 		row.put("PASSWORD", PASSWORD);
@@ -133,8 +137,17 @@ public class MemberService extends Service{
 		row.put("ORG_ID", ORG_ID);
 		row.put("USERNAME", USERNAME);
 		row.put("STATUS", STATUS);
+		row.put("DEFAULT_MANAGER", DEFAULT_MANAGER);
+		System.out.println("DEFAULT_MANAGER:"+DEFAULT_MANAGER);
+		
 		update("mcn_users", row, " id='" + ID + "'");
 	}
+	
+	public void resetDefaultManager(String depart_id) {
+		String sql ="update mcn_users set default_manager='0' where depart_id='"+depart_id+"'";
+		update(sql);
+	}
+	
 
 	/**
 	 * 删除

@@ -30,7 +30,7 @@ public class SystemSite  extends Service{
 		Page page = null;
 		Pageable pageable = (Pageable) row.get("pageable");
 		String org_id =row.getString("org_id",null);
-		sql = "select a.site_no, a.site_name ,a.up_site_no ,b.site_name as up_site_name from sm_site a left join sm_site b on a.up_site_no=b.site_no where 1=1 ";
+		sql = "select a.site_no, a.site_name ,a.state ,a.up_site_no ,b.site_name as up_site_name from sm_site a left join sm_site b on a.up_site_no=b.site_no where 1=1 ";
 		if (org_id != null && org_id.replace(" ", "").length() >0){
 			sql +="  and a.bureau_no='"+org_id+"'";
 		}

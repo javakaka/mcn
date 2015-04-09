@@ -70,7 +70,32 @@ $().ready(function() {
 					</select>
 				</td>
 			</tr>
-
+			<tr>
+				<th>
+					状态:
+				</th>
+				<td>
+					<select id="STATE" name="STATE" class="text" maxlength="200"  style="width:190px;" >
+						<c:choose>
+								<c:when test="${row.STATE == 1}">
+									<option value="" >请选择...</option>
+									<option value="1" selected>启用</option>
+									<option value="0" >停用</option>
+								</c:when>
+								<c:when test="${row.STATE == 0}">
+									<option value="" >请选择...</option>
+									<option value="1" >启用</option>
+									<option value="0" selected>停用</option>
+								</c:when>
+								<c:otherwise>
+									<option value="" selected>请选择...</option>
+									<option value="1" >启用</option>
+									<option value="0" >停用</option>
+								</c:otherwise>
+							</c:choose>
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<th>
 					&nbsp;

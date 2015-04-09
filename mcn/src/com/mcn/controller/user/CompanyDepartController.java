@@ -15,6 +15,7 @@ import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.vo.Row;
+import com.mcn.service.PunchRuleService;
 
 @Controller("mcnCompanyDepartController")
 @RequestMapping("/mcnpage/user/depart")
@@ -23,6 +24,8 @@ public class CompanyDepartController extends BaseController{
 	@Resource(name ="frameworkSystemSiteService")
 	private SystemSite systemSiteService;
 	
+	@Resource(name ="mcnPunchRuleService")
+	private PunchRuleService punchRuleService;
 	
 	/**
 	 * 企业查询自己的用户
@@ -61,12 +64,32 @@ public class CompanyDepartController extends BaseController{
 			return "/mcnpage/user/depart/DepartList";
 		}
 		model.addAttribute("departs", systemSiteService.queryOrgSite(org_id));
+		//默认打卡时间
+		Row punch_time_row =null;
+		if(org_id != null)
+		{
+			punch_time_row =punchRuleService.queryOneDepartPunchTime(org_id);
+		}
+		String am_start =punch_time_row.getString("am_start","");
+		String am_end =punch_time_row.getString("am_end","");
+		String pm_start =punch_time_row.getString("pm_start","");
+		String pm_end =punch_time_row.getString("pm_end","");
+		model.addAttribute("am_start", am_start);
+		model.addAttribute("am_end", am_end);
+		model.addAttribute("pm_start", pm_start);
+		model.addAttribute("pm_end", pm_end);
 		return  "/mcnpage/user/depart/add";
 	}
 	
 	@RequestMapping(value = "/save")
-	public String save(String SITE_NAME,String UP_SITE_NO,  ModelMap model )
+	public String save(String SITE_NAME,String UP_SITE_NO,String STATE,
+			String AM_START,String AM_END,
+			String PM_START,String PM_END, ModelMap model )
 	{
+		Assert.notNull(AM_START,"AM_START can not be null" );
+		Assert.notNull(AM_END,"AM_END can not be null");
+		Assert.notNull(PM_START,"PM_START can not be null");
+		Assert.notNull(PM_END, "PM_END can not be null");
 		HttpSession session = getSession();
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id =null;
@@ -80,12 +103,21 @@ public class CompanyDepartController extends BaseController{
 		Row siteRow =new Row();
 		siteRow.put("SITE_NAME", SITE_NAME);
 		siteRow.put("BUREAU_NO", org_id);
+		siteRow.put("STATE", STATE);
 		if(UP_SITE_NO!= null && UP_SITE_NO.replace(" ", "").length() >0)
 		{
 			siteRow.put("UP_SITE_NO", UP_SITE_NO);
 		}
-		
 		systemSiteService.insertOrgSite(siteRow);
+		String site_no =siteRow.getString("site_no","");
+		Row punch_time_row =new Row();
+		punch_time_row.put("org_id", org_id);
+		punch_time_row.put("depart_id", site_no);
+		punch_time_row.put("AM_START", AM_START);
+		punch_time_row.put("AM_END", AM_END);
+		punch_time_row.put("PM_START", PM_START);
+		punch_time_row.put("PM_END", PM_END);
+		punchRuleService.insert(punch_time_row);
 		return "redirect:DepartList.do";
 	}
 	
@@ -109,13 +141,14 @@ public class CompanyDepartController extends BaseController{
 	}
 	
 	@RequestMapping(value = "/update")
-	public String update(String SITE_NO,String SITE_NAME,String UP_SITE_NO,  ModelMap model )
+	public String update(String SITE_NO,String SITE_NAME,String UP_SITE_NO,String STATE,  ModelMap model )
 	{
 		Assert.notNull(SITE_NO, "SITE_NO can not be null");
 		Assert.notNull(SITE_NAME, "SITE_NAME can not be null");
 		Row siteRow =new Row();
 		siteRow.put("SITE_NO", SITE_NO);
 		siteRow.put("SITE_NAME", SITE_NAME);
+		siteRow.put("STATE", STATE);
 		if(UP_SITE_NO!= null && UP_SITE_NO.replace(" ", "").length() >0)
 		{
 			siteRow.put("UP_SITE_NO", UP_SITE_NO);

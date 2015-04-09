@@ -96,6 +96,9 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="UP_SITE_NAME">上级部门</a>
 				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="STATE">状态</a>
+				</th>
 				
 				<th>
 					<span><cc:message key="admin.common.handle" /></span>
@@ -111,6 +114,13 @@ $().ready(function() {
 					</td>
 					<td>
 						<span title="${row.UP_SITE_NAME}">${row.UP_SITE_NAME}</span>
+					</td>
+					<td>
+						<c:choose>
+							<c:when test="${row.STATE == 1}">启用</c:when>
+							<c:when test="${row.STATE == 0}">停用</c:when>
+							<c:otherwise>--</c:otherwise>
+						</c:choose>
 					</td>
 					<td>
 						<a href="edit.do?id=${row.SITE_NO}"><cc:message key="admin.common.edit" /></a>
