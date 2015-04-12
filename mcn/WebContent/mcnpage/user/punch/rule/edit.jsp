@@ -27,7 +27,11 @@ $().ready(function() {
 	// 表单验证
 	$inputForm.validate({
 		rules: {
-			DEPART_ID: "required"
+			DEPART_ID: "required",
+			AM_START: "required",
+			AM_END: "required",
+			PM_START: "required",
+			PM_END: "required"
 		}
 	});
 	
@@ -63,7 +67,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					上午上班:
+					<span class="requiredField">*</span>上午上班:
 				</th>
 				<td>
 					<input type="text" name="AM_START" class="text Wdate" value="${row.AM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"  maxlength="200" />
@@ -71,7 +75,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					上午下班:
+					<span class="requiredField">*</span>上午下班:
 				</th>
 				<td>
 					<input type="text" name="AM_END" class="text Wdate" value="${row.AM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
@@ -79,7 +83,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					下午上班:
+					<span class="requiredField">*</span>下午上班:
 				</th>
 				<td>
 					<input type="text" name="PM_START" class="text Wdate" value="${row.PM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
@@ -87,7 +91,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					下午上班:
+					<span class="requiredField">*</span>下午上班:
 				</th>
 				<td>
 					<input type="text" name="PM_END" class="text Wdate" value="${row.PM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />

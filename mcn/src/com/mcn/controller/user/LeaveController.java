@@ -37,7 +37,7 @@ public class LeaveController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "/LeaveList")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String status,String start_date,String end_date ,Pageable pageable, ModelMap model) {
 		HttpSession session = getSession();
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id =null;
@@ -48,9 +48,15 @@ public class LeaveController extends BaseController{
 			return "/mcnpage/user/punch/leave/LeaveList";
 		}
 		leaveService.getRow().put("org_id", org_id);
+		leaveService.getRow().put("status", status);
+		leaveService.getRow().put("start_date", start_date);
+		leaveService.getRow().put("end_date", end_date);
 		leaveService.getRow().put("pageable", pageable);
 		Page page = leaveService.queryPageForCompany();
 		model.addAttribute("page", page);
+		model.addAttribute("status", status);
+		model.addAttribute("start_date", start_date);
+		model.addAttribute("end_date", end_date);
 		return "/mcnpage/user/punch/leave/LeaveList";
 	}
 

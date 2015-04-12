@@ -15,10 +15,94 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
+<style type="text/css">
+.moreTable th {
+	width: 80px;
+	line-height: 25px;
+	padding: 5px 10px 5px 0px;
+	text-align: right;
+	font-weight: normal;
+	color: #333333;
+	background-color: #f8fbff;
+}
+
+.moreTable td {
+	line-height: 25px;
+	padding: 5px;
+	color: #666666;
+}
+
+.promotion {
+	color: #cccccc;
+}
+</style>
 <script type="text/javascript">
 $().ready(function() {
 
-	[@flash_message /]
+	${flash_message}
+	var $listForm = $("#listForm");
+	var $moreButton = $("#moreButton");
+	var $filterSelect = $("#filterSelect");
+	var $filterOption = $("#filterOption a");
+	
+	// 更多选项
+	$moreButton.click(function() {
+		$.dialog({
+			title: "更多选项",
+			content:'<table id="moreTable" class="moreTable">'
+					+'<tr>'
+					+'<th>开始日期:<\/th>'
+					+'<td>'
+					+'<input id="start_date" name="start_date" class="text Wdate" onfocus="WdatePicker();" value="${start_date}" />'
+					+'<\/td>'
+					+'<\/tr>'
+					+'<tr>'
+					+'<th>结束日期:<\/th>'
+					+'<td>'
+					+'<input id="end_date" name="end_date" class="text Wdate" onfocus="WdatePicker();" value="${end_date}" />'
+					+'<\/td>'
+					+'<\/tr>'
+					+'<\/table>',
+			width: 470,
+			modal: true,
+			ok: "确定",
+			cancel: "取消",
+			onOk: function() {
+				$("#moreTable :input").each(function() {
+					var $this = $(this);
+					$("#" + $this.attr("name")).val($this.val());
+				});
+				$listForm.submit();
+			}
+		});
+	});
+	
+	// 筛选
+	$filterSelect.mouseover(function() {
+		var $this = $(this);
+		var offset = $this.offset();
+		var $menuWrap = $this.closest("div.menuWrap");
+		var $popupMenu = $menuWrap.children("div.popupMenu");
+		$popupMenu.css({left: offset.left, top: offset.top + $this.height() + 2}).show();
+		$menuWrap.mouseleave(function() {
+			$popupMenu.hide();
+		});
+	});
+	
+	// 筛选选项
+	$filterOption.click(function() {
+		var $this = $(this);
+		var $dest = $("#" + $this.attr("name"));
+		if ($this.hasClass("checked")) {
+			$dest.val("");
+		} else {
+			$dest.val($this.attr("val"));
+		}
+		$listForm.submit();
+		return false;
+	});
 
 });
 </script>
@@ -40,17 +124,44 @@ response.setHeader("Content-disposition","attachment; filename=excel.xls");//下
 		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
 	<form id="listForm" action="LeaveList.do" method="get">
+	<input type="hidden" id="status" name="status" value="<c:if test="${status !=''}">${status}</c:if>" />
+	<input type="hidden" id="start_date" name="start_date" value="${start_date}" />
+	<input type="hidden" id="end_date" name="end_date" value="${end_date}" />
+	
 		<div class="bar">
+			<!-- 
 			<a href="add.do" class="iconButton">
 				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
 			</a>
+			-->
 			<div class="buttonWrap">
+				<!-- 
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span><cc:message key="admin.common.delete" />
 				</a>
+				-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span><cc:message key="admin.common.refresh" />
 				</a>
+				<div class="menuWrap">
+					<a href="javascript:;" id="filterSelect" class="button">
+						审批状态<span class="arrow">&nbsp;</span>
+					</a>
+					<div class="popupMenu">
+						<ul id="filterOption" class="check">
+							<li>
+								<a href="javascript:;" name="status" val="1" <c:if test="${status == '1'}"> class="checked" </c:if> >审批中</a>
+							</li>
+							<li>
+								<a href="javascript:;" name="status" val="2" <c:if test="${status == '2'}"> class="checked" </c:if> >审批通过</a>
+							</li>
+							<li class="separator">
+								<a href="javascript:;" name="status" val="3" <c:if test="${status == '3'}"> class="checked" </c:if> >审批不通过</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<a href="javascript:;" id="moreButton" class="button">更多选项</a>
 				<div class="menuWrap">
 					<a href="javascript:;" id="pageSizeSelect" class="button">
 						<cc:message key="admin.page.pageSize" /><span class="arrow">&nbsp;</span>

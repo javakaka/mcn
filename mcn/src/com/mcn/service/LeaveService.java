@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
@@ -22,18 +23,46 @@ public class LeaveService extends Service{
 		Page page = null;
 		Pageable pageable = (Pageable) row.get("pageable");
 		String org_id =row.getString("org_id",null);
+		String status =row.getString("status",null);
+		String start_date =row.getString("start_date",null);
+		String end_date =row.getString("end_date",null);
 		sql = "select a.*, b.name  from mcn_leave_log a left join mcn_users b on a.user_id=b.id where 1=1 ";
 		if(org_id == null || org_id.replace(" ", "").length() == 0)
 		{
 			return page;
 		}
-		sql +=" and a.org_id='"+org_id+"'  ORDER BY a.id DESC ";
+		sql +=" and a.org_id='"+org_id+"'  ";
+		if(! StringUtils.isEmptyOrNull(status))
+		{
+			sql +=" and a.status='"+status+"' ";
+		}
+		if(! StringUtils.isEmptyOrNull(start_date))
+		{
+			sql +=" and a.start_date >='"+start_date+"' ";
+		}
+		if(! StringUtils.isEmptyOrNull(end_date))
+		{
+			sql +=" and a.end_date < '"+end_date+"' ";
+		}
+		sql += "ORDER BY a.id DESC ";
 		String restrictions = addRestrictions(pageable);
 		String orders = addOrders(pageable);
 		sql += restrictions;
 		sql += orders;
 		String countSql = "select count(*) from mcn_leave_log a left join mcn_users b  on a.user_id=b.id  where 1=1 ";
-		countSql +=" and a.org_id='"+org_id+"'";
+		countSql +=" and a.org_id='"+org_id+"' ";
+		if(! StringUtils.isEmptyOrNull(status))
+		{
+			countSql +=" and a.status='"+status+"' ";
+		}
+		if(! StringUtils.isEmptyOrNull(start_date))
+		{
+			countSql +=" and a.start_date >='"+start_date+"' ";
+		}
+		if(! StringUtils.isEmptyOrNull(end_date))
+		{
+			countSql +=" and a.end_date < '"+end_date+"' ";
+		}
 		countSql += restrictions;
 //		countSql += orders;
 		long total = count(countSql);

@@ -18,10 +18,91 @@ String month = time.substring(5,7);
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
+<style type="text/css">
+.moreTable th {
+	width: 80px;
+	line-height: 25px;
+	padding: 5px 10px 5px 0px;
+	text-align: right;
+	font-weight: normal;
+	color: #333333;
+	background-color: #f8fbff;
+}
+
+.moreTable td {
+	line-height: 25px;
+	padding: 5px;
+	color: #666666;
+}
+
+.promotion {
+	color: #cccccc;
+}
+</style>
 <script type="text/javascript">
 $().ready(function() {
 	 $('#year').val("<%=year%>");
 	 $('#month').val("<%=month%>");
+	 ${flash_message}
+		var $listForm = $("#listForm");
+		var $moreButton = $("#moreButton");
+		var $filterSelect = $("#filterSelect");
+		var $filterOption = $("#filterOption a");
+		
+		// 更多选项
+		$moreButton.click(function() {
+			$.dialog({
+				title: "更多选项",
+				content:'<table id="moreTable" class="moreTable">'
+						+'<tr>'
+						+'<th>111:<\/th>'
+						+'<td>'
+						+'<select name="productCategoryId">'
+						+'<option value="">请选择...<\/option>'
+						+'<option value="1" selected="selected">11<\/option>'
+						+'<option value="2" >22<\/option><option value="3" >33<\/option>'
+						+'<\/select>'
+						+'<\/td>'
+						+'<\/tr>'
+						+'<\/table>',
+				width: 470,
+				modal: true,
+				ok: "ok",
+				cancel: "cancel",
+				onOk: function() {
+					$("#moreTable :input").each(function() {
+						var $this = $(this);
+						$("#" + $this.attr("name")).val($this.val());
+					});
+					$listForm.submit();
+				}
+			});
+		});
+		
+		// 商品筛选
+		$filterSelect.mouseover(function() {
+			var $this = $(this);
+			var offset = $this.offset();
+			var $menuWrap = $this.closest("div.menuWrap");
+			var $popupMenu = $menuWrap.children("div.popupMenu");
+			$popupMenu.css({left: offset.left, top: offset.top + $this.height() + 2}).show();
+			$menuWrap.mouseleave(function() {
+				$popupMenu.hide();
+			});
+		});
+		
+		// 筛选选项
+		$filterOption.click(function() {
+			var $this = $(this);
+			var $dest = $("#" + $this.attr("name"));
+			if ($this.hasClass("checked")) {
+				$dest.val("");
+			} else {
+				$dest.val($this.attr("val"));
+			}
+			$listForm.submit();
+			return false;
+		});
 });
 function findList(){
 	 var year=$('#year').val(); 

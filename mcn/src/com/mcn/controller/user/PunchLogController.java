@@ -108,7 +108,8 @@ public class PunchLogController extends BaseController{
 	 */
 	
 	@RequestMapping(value = "/PunchLogList")
-	public String list(Pageable pageable, ModelMap model) {
+	public String list(String punch_type,String punch_result,String depart_id,
+			String start_date,String end_date,Pageable pageable, ModelMap model) {
 //		HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
 		HttpSession session = getSession();
 		Row staff =(Row)session.getAttribute("staff");
@@ -121,8 +122,21 @@ public class PunchLogController extends BaseController{
 		}
 		punchLogService.getRow().put("org_id", org_id);
 		punchLogService.getRow().put("pageable", pageable);
+		punchLogService.getRow().put("punch_type", punch_type);
+		punchLogService.getRow().put("punch_result", punch_result);
+		punchLogService.getRow().put("depart_id", depart_id);
+		punchLogService.getRow().put("start_date", start_date);
+		punchLogService.getRow().put("end_date", end_date);
 		Page page = punchLogService.queryPageForCompany();
 		model.addAttribute("page", page);
+		model.addAttribute("punch_type", punch_type);
+		model.addAttribute("punch_result", punch_result);
+		model.addAttribute("depart_id", depart_id);
+		model.addAttribute("start_date", start_date);
+		model.addAttribute("end_date", end_date);
+		//site list 
+		DataSet siteDs =systemSiteService.queryOrgSite(org_id);
+		model.addAttribute("site_list", siteDs);
 		return "/mcnpage/user/punch/log/PunchLogList";
 	}
 	
