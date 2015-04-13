@@ -213,6 +213,13 @@ public class PunchLogController extends BaseController{
 			model.addAttribute("sites",systemSiteService.queryOrgSite(org_id));
 		return "/mcnpage/user/punch/log/edit";
 	}
+	
+	@RequestMapping(value = "/view")
+	public String view(Long id, ModelMap model) {
+		punchLogService.getRow().put("id", id);
+		model.addAttribute("row", punchLogService.findDetailById());
+		return "/mcnpage/user/punch/log/view";
+	}
 
 	@RequestMapping(value = "/update")
 	public String update(String ID,String DEPART_ID,String AM_START,String AM_END, String PM_START,String PM_END, ModelMap model) {

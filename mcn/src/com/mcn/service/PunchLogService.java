@@ -592,6 +592,20 @@ public class PunchLogService extends Service{
 		row = queryRow(sql);
 		return row;
 	}
+	
+	/**
+	 * 根据id查找详情
+	 * 
+	 * @return Row
+	 * @throws
+	 */
+	public Row findDetailById() {
+		Row row = new Row();
+		String id = getRow().getString("id");
+		sql = "select a.*,b.name from mcn_punch_log a left join mcn_users b on a.user_id=b.id where a.id='" + id + "'";
+		row = queryRow(sql);
+		return row;
+	}
 
 	/**
 	 * 更新

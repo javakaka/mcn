@@ -308,8 +308,8 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 					<% if (exportToExcel == null) { %>
 					<td>
 						<select onchange="updatestatus(this.options[this.options.selectedIndex].value,${row.ID})"><option value="0">正常</option><option value="1">地址不对</option><option value="2">头像不对</option></select>
-						<a href="edit.do?id=${row.ID}"><cc:message key="admin.common.edit" /></a>
-						<a href="#" target="_blank"><cc:message key="admin.common.view" /></a>
+						<!-- <a href="edit.do?id=${row.ID}"><cc:message key="admin.common.edit" /></a>-->
+						<a href="view.do?id=${row.ID }" target="_self"><cc:message key="admin.common.view" /></a>
 					</td>
 					<% }  %> 
 				</tr>

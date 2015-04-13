@@ -29,11 +29,37 @@ $().ready(function() {
 		rules: {
 			DEPART_ID: "required",
 			NAME: "required",
+			USERNAME: "required",
 			PASSWORD: "required"
 		}
 	});
 	
 });
+
+var old_username =${row.USERNAME};
+
+function changeUsername()
+{
+	$("#USERNAME").removeAttr("readonly");
+	$("#USERNAME").focus();
+	$("#saveNameBtn").css('display',''); 
+	$("#cancelNameBtn").css('display',''); 
+	
+}
+
+function saveUsername()
+{
+	$("#USERNAME").attr("readonly","readonly")
+	$("#saveNameBtn").css('display','none'); 
+	$("#cancelNameBtn").css('display','none'); 
+}
+function cancelUsername()
+{
+	$("#USERNAME").attr("readonly","readonly")
+	$("#saveNameBtn").css('display','none'); 
+	$("#cancelNameBtn").css('display','none'); 
+	
+}
 </script>
 </head>
 <body>
@@ -69,7 +95,17 @@ $().ready(function() {
 				</th>
 				<td>
 					<input type="text" name="NAME" class="text" maxlength="200" value="${row.NAME}" />
-					<input type="hidden" name="USERNAME" class="text" maxlength="200" value="${row.USERNAME}"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					用户名:
+				</th>
+				<td>
+					<input type="text" id="USERNAME" name="USERNAME" class="text" maxlength="200" value="${row.USERNAME}" readonly/>
+					<input type="button" id="editNameBtn" name="editNameBtn" class="button"  value="修改" onclick="changeUsername()"/>
+					<input type="button" id="saveNameBtn" name="saveNameBtn" class="button"  value="保存" onclick="saveUsername()" style="display:none;" />
+					<input type="button" id="cancelNameBtn" name="cancelNameBtn" class="button"  value="取消" onclick="cancelUsername()" style="display:none;" />
 				</td>
 			</tr>
 			<tr>
