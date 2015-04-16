@@ -8,6 +8,7 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.AesUtil;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
@@ -245,5 +246,37 @@ public class SystemSite  extends Service{
 	{
 		String site_no =row.getString("site_no",null);
 		update("sm_site",row, " site_no='"+site_no+"'");
+	}
+	
+	//根据给定的部门编号，取出部门名称，如：1,2,3
+	public String queryOrgSiteNameByIds(String ids)
+	{
+		String sql ="select * from sm_site where site_no in ("+ids+")";
+		DataSet ds =queryDataSet(sql);
+		String names ="";
+		String site_name ="";
+		if(ds != null)
+		{
+			for(int i=0;i<ds.size();i++)
+			{
+				Row row =(Row)ds.get(i);
+				site_name =row.getString("site_name","");
+				if(names.length()>0)
+				{
+					if(! StringUtils.isEmptyOrNull(site_name))
+					{
+						names +=","+site_name;
+					}
+				}
+				else
+				{
+					if(! StringUtils.isEmptyOrNull(site_name))
+					{
+						names +=site_name;
+					}
+				}
+			}
+		}
+		return names;
 	}
 }

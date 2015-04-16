@@ -36,6 +36,18 @@ public class CompanyUser extends Service{
 	}
 	
 	/**
+	 * mobile login 
+	 * @return
+	 */
+	public Row findById(String id)
+	{
+		Row row =null;
+		String sSql =" select * from mcn_users where id='"+id+"'";
+		row =queryRow(sSql);
+		return row;
+	}
+	
+	/**
 	 * change password
 	 * @param user_id
 	 * @param oldPwd

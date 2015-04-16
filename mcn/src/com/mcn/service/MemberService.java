@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
-import com.ezcloud.framework.util.StringUtils;
+import com.ezcloud.framework.util.ResponseVO;
 import com.ezcloud.framework.vo.Row;
 
 @Component("mcnMemberService")
@@ -149,6 +149,51 @@ public class MemberService extends Service{
 	}
 	
 
+	/**
+	 * 删除
+	 * 
+	 * @Title: delete
+	 * @param @param ids
+	 * @return void
+	 */
+	public ResponseVO changeUserName(String id,String old_name, String new_name) {
+		ResponseVO ovo =null;
+		if(old_name.indexOf("4") == -1)
+		{
+			ovo =new ResponseVO(-1,"用户名正常，不能随意更改");
+			return ovo;
+		}
+		if(new_name.indexOf("4") != -1)
+		{
+			ovo =new ResponseVO(-1,"新用户名包含4，不允许更改");
+			return ovo;
+		}
+		if(new_name.length() <5)
+		{
+			ovo =new ResponseVO(-1,"新用户名不能小于5位");
+			return ovo;
+		}
+		if(new_name.length() > 10)
+		{
+			ovo =new ResponseVO(-1,"新用户名不能大于10位");
+			return ovo;
+		}
+		String sql ="select count(*) from mcn_users where id !='"+id+"' and username='"+new_name+"' ";
+		System.out.println("sql---->>"+sql);
+		int num =Integer.parseInt(queryField(sql));
+		if(num >0)
+		{
+			ovo =new ResponseVO(-1,"用户名已存在");
+		}
+		else
+		{
+			sql ="update mcn_users set username='"+new_name+"' where id='"+id+"'";
+			update(sql);
+			ovo =new ResponseVO(1,"修改成功!");
+		}
+		return ovo;
+	}
+	
 	/**
 	 * 删除
 	 * 

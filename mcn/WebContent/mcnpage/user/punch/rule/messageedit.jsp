@@ -78,7 +78,7 @@ $().ready(function() {
 				</th>
 				<td>
 					<c:forEach items="${sites}" var="row" varStatus="status">
-							<input type="checkbox" id="message_qz" name="message_qz" value="${row.SITE_NAME}"/>${row.SITE_NAME}&nbsp;
+							<input type="checkbox" id="message_qz" name="message_qz" value="${row.SITE_NO}"/>${row.SITE_NAME}&nbsp;
 					</c:forEach>&nbsp;<input type="button" id="selectall" value="全选">
 				</td>
 			</tr>

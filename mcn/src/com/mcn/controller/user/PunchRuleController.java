@@ -24,6 +24,7 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
@@ -164,12 +165,28 @@ public class PunchRuleController extends BaseController{
 	}
 	
 	//通知公告列表
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/message")
 	public String messageList(ModelMap model) {
 		System.out.println("通过");
 		Row staff =(Row)getSession().getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		DataSet data = punchRuleService.messageList(org_id);
+		String org_names ="";
+		if(data != null)
+		{
+			for(int i=0;i<data.size();i++)
+			{
+				Row temp =(Row)data.get(i);
+				String org_ids=temp.getString("message_qz","");
+				if(! StringUtils.isEmptyOrNull(org_ids))
+				{
+					org_names =systemSiteService.queryOrgSiteNameByIds(org_ids);
+					temp.put("message_qz", org_names);
+					data.set(i, temp);
+				}
+			}
+		}
 		model.addAttribute("page", data);
 		return "/mcnpage/user/punch/rule/messageList";
 	}

@@ -791,4 +791,22 @@ public class PunchLogService extends Service{
 		sql = "SELECT * from mcn_message WHERE org_id='"+token+"' ORDER BY id DESC LIMIT 0,1";
 		return queryRow(sql);
 	}
+	
+	public String queryMessageDetail(String id){
+		sql = "SELECT * from mcn_message WHERE id='"+id+"' ";
+		return queryField(sql);
+	}
+	
+	public String updateMessageTotalNum(String id){
+		sql = "update mcn_message set read_total_num=read_total_num+1 WHERE id='"+id+"' ";
+		return queryField(sql);
+	}
+	
+	public DataSet queryOrgMessageListByUserId(String depart_id,String token,int page,int page_size){
+		int iStart =(page-1)*page_size;
+		DataSet ds =null;
+		sql = "SELECT id,message_name,create_time from mcn_message WHERE org_id='"+token+"' and message_qz like'%"+depart_id+"%' ORDER BY create_time DESC LIMIT "+iStart+", "+page_size;
+		ds =queryDataSet(sql);
+		return ds;
+	}
 }

@@ -35,7 +35,7 @@ $().ready(function() {
 	});
 	
 });
-
+var user_id =${row.ID};
 var old_username =${row.USERNAME};
 
 function changeUsername()
@@ -52,7 +52,39 @@ function saveUsername()
 	$("#USERNAME").attr("readonly","readonly")
 	$("#saveNameBtn").css('display','none'); 
 	$("#cancelNameBtn").css('display','none'); 
+	var name =$("#USERNAME").val();
+	var url ="<%=basePath%>mcnpage/user/member/changeUserName.do";
+	var params ={id:user_id,old_name:old_username,new_name:name};
+	$.ajax({
+		url: url,
+		type: "POST",
+		data: params,
+		dataType: "json",
+		cache: false,
+		beforeSend: function (XMLHttpRequest){
+		},
+		success: function(ovo, textStatus) {
+			var code =ovo.code;
+			if(code >=0)
+			{
+				$.message("success","修改成功!");
+				cancelUsername();
+			}
+			else
+			{
+				$.message("error",ovo.msg);
+				$("#USERNAME").val(old_username)
+			}
+		},
+		complete: function (XMLHttpRequest, textStatus){
+		},
+		error: function (){
+			$.message("error","处理出错!");
+			$("#USERNAME").val(old_username)
+		}
+	});
 }
+
 function cancelUsername()
 {
 	$("#USERNAME").attr("readonly","readonly")

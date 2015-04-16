@@ -16,6 +16,7 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.ResponseVO;
 import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.Row;
 import com.mcn.service.MemberService;
@@ -192,6 +193,14 @@ public class MemberController extends BaseController{
 	Message delete(Long[] ids) {
 		memberService.delete(ids);
 		return SUCCESS_MESSAGE;
+	}
+	
+	@RequestMapping(value = "/changeUserName")
+	public @ResponseBody
+	ResponseVO changeUserName(String id,String old_name, String new_name) {
+		ResponseVO ovo =null;
+		ovo =memberService.changeUserName(id,old_name,new_name);
+		return ovo;
 	}
 	
 }
