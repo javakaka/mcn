@@ -5,22 +5,20 @@ import java.text.ParseException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ezcloud.framework.exp.JException;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.framework.vo.VOConvert;
 import com.ezcloud.utility.DateUtil;
-import com.mcn.service.CheckStatisService;
+import com.mcn.service.CompanySite;
+import com.mcn.service.CompanyUser;
 import com.mcn.service.LeaveService;
-import com.mcn.service.MeetingRoomBook;
-import com.mcn.service.MeetingRoomStatus;
 
 /**
  * 手机端请假接口
@@ -32,6 +30,13 @@ import com.mcn.service.MeetingRoomStatus;
 public class LeaveController extends BaseController{
 	@Resource(name = "mcnLeaveService")
 	private  LeaveService leaveService;
+	
+	@Resource(name = "companyUserService")
+	private  CompanyUser companyUserService;
+	
+	@Resource(name = "companySiteService")
+	private  CompanySite companySiteService;
+	
 //	@RequestMapping("/list")
 //	public @ResponseBody String getMobileroomList(HttpServletRequest request) throws JException
 //	{
@@ -70,6 +75,45 @@ public class LeaveController extends BaseController{
 			json =VOConvert.ovoToJson(ovo);
 			return json;
 		}
+		//找出部门审批人
+		Row userRow =companyUserService.findById(id);
+		String depart_id =userRow.getString("depart_id","");
+		String audit_user_id =companyUserService.queryDefaultAuditUserId(depart_id);
+		if(StringUtils.isEmptyOrNull(audit_user_id))
+		{
+			DataSet ds =companyUserService.queryManagersByDepartID(depart_id);
+			if(ds == null || ds.size() == 0)
+			{
+				//找出上级部门的审批人，如果当前部门有上级部门，则继续查找，否则，提示无审批人，不能请假
+				Row departRow =companySiteService.findById(depart_id);
+				String up_site_id =departRow.getString("up_site_no","");
+				if(StringUtils.isEmptyOrNull(up_site_id))
+				{
+					ovo =new OVO(-1,"无审批人，不能请假","");
+					json =VOConvert.ovoToJson(ovo);
+					return json;
+				}
+				else
+				{
+					audit_user_id =findAuditUserIdByDepartId(up_site_id);
+				}
+			}
+			else
+			{
+				Row uRow =(Row)ds.get(0);
+				Row updateRow =new Row();
+				uRow.put("default_manager", "1");
+				updateRow.put("id",uRow.getString("id","") );
+				companyUserService.update(updateRow);
+				audit_user_id =uRow.getString("id","");
+			}
+		}
+		if(StringUtils.isEmptyOrNull(audit_user_id))
+		{
+			ovo =new OVO(-1,"无审批人，不能请假","");
+			json =VOConvert.ovoToJson(ovo);
+			return json;
+		}
 		String leave_type=ivo.getString("leave_type","1");
 		String start_date=ivo.getString("start_date",null);
 		String end_date=ivo.getString("end_date",null);
@@ -86,12 +130,45 @@ public class LeaveController extends BaseController{
 		Row checkRow = new Row();
 		checkRow.put("leave_id",leave_id);
 		checkRow.put("check_type",1);
-		leaveService.check_up_log(checkRow,token,id);
+		checkRow.put("up_check_id",audit_user_id);
+//		leaveService.check_up_log(checkRow,token,id);
+		leaveService.insert_check_up_log(checkRow);
 		ovo =new OVO(0,"success","");
 		json =VOConvert.ovoToJson(ovo);
 		return json;
 	} 
 	
+	public String findAuditUserIdByDepartId(String depart_id)
+	{
+		String id="";
+		id =companyUserService.queryDefaultAuditUserId(depart_id);
+		if(! StringUtils.isEmptyOrNull(id))
+		{
+			return id;
+		}
+		else
+		{
+			DataSet ds =companyUserService.queryManagersByDepartID(depart_id);
+			if(ds == null || ds.size() == 0)
+			{
+				//找出上级部门的审批人，如果当前部门有上级部门，则继续查找，否则，提示无审批人，不能请假
+				Row departRow =companySiteService.findById(depart_id);
+				String up_site_id =departRow.getString("up_site_no","");
+				id =findAuditUserIdByDepartId(up_site_id);
+			}
+			else
+			{
+				Row uRow =(Row)ds.get(0);
+				Row updateRow =new Row();
+				uRow.put("default_manager", "1");
+				updateRow.put("id",uRow.getString("id","") );
+				companyUserService.update(updateRow);
+				id =uRow.getString("id","");
+				return id;
+			}
+		}
+		return id;
+	}
 	//查询自己的请假记录
 		// id
 		@RequestMapping("/selfList")

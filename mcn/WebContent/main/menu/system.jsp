@@ -21,7 +21,7 @@ html { overflow-x: ; overflow-y: ; border:0;}
 </style>
 </head>
 <body>
-	<div style="width:100%;z-index:1;position:absolute;top:0px;bottom:40px;"><img src="<%=basePath%>res/images/welcome.gif" style="width:100%;height:100%;margin:0 auto;padding:0px;" /></div>
-	<div style="width:100%;height:40px;position:absolute;margin-top:0px;bottom:0px;z-index:2;position:absolute;background:#646464;color:white;font-size:12px;font-weight:bold;line-height:40px;text-align:center;">系统版本号：1.0  ; 服务器版本号：<%= application.getServerInfo() %></div>
+	<div style="width:100%;z-index:1;position:absolute;top:0px;bottom:40px;"></div>
+	<div style="width:100%;height:40px;position:absolute;margin-top:0px;bottom:0px;z-index:2;position:absolute;background:rgb(239, 247, 255);color:#488bd1;font-size:12px;font-weight:bold;line-height:40px;text-align:center;">系统版本号：1.0  ; 服务器版本号：<%= application.getServerInfo() %></div>
 </body>
 </html>

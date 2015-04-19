@@ -80,4 +80,35 @@ public class CompanyUser extends Service{
 		return status;
 	}
 	
+	public void update(Row row )
+	{
+		String id=row.getString("id","");
+		update("mcn_users", row, " id='"+id+"'");
+	}
+	
+	/**
+	 * 根据部门编号查询部门的默认审批人
+	 * @param depart_id
+	 * @return
+	 */
+	public String queryDefaultAuditUserId(String depart_id)
+	{
+		String id="";
+		String sql ="select id from mcn_users where depart_id='"+depart_id+"' and default_manager='1' ";
+		id =queryField(sql);
+		return id;
+	}
+	
+	/**
+	 * 根据部门编号查询具有审核权限的人员列表
+	 * @param depart_id
+	 * @return
+	 */
+	public DataSet queryManagersByDepartID(String depart_id)
+	{
+		DataSet ds =null;
+		String sql ="select * from mcn_users where depart_id='"+depart_id+"' and manager_id='是' ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
 }

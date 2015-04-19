@@ -56,6 +56,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" >内容</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" >阅读数</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" >附件</a>
 				</th>
 				<th>
@@ -78,6 +81,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${row.MESSAGE_CONTENT}
+					</td>
+					<td>
+						${row.READ_TOTAL_NUM}
 					</td>
 					<td>
 						<span>${row.MESSAGE_FJ}</span>

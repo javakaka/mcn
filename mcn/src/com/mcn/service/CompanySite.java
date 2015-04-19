@@ -241,4 +241,12 @@ public class CompanySite  extends Service{
 		}
 		return site_no;
 	}
+	
+	public Row findById(String id)
+	{
+		Row row =new Row();
+		String sql ="select * from sm_site where site_no='"+id+"'";
+		row =queryRow(sql);
+		return row;
+	}
 }

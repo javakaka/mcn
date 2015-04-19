@@ -13,7 +13,7 @@ String month = time.substring(5,7);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>打卡记录</title>
+<title>企业考勤汇总</title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
@@ -124,7 +124,7 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 } %>
 <% if (exportToExcel == null) { %>
 	<div class="path">
-		管理中心 &raquo;打卡记录
+		管理中心 &raquo;企业考勤汇总
 		<span></span>
 	</div>
 	<form id="listForm" action="PunchLogList.do" method="get">
@@ -179,6 +179,12 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 					<a href="javascript:;" class="sort" name="PUNCH_RESULT">加班</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="LEAVE_EARLY">早退</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="LOST_PUNCH">漏打卡</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="PUNCH_RESULT">迟到10分钟以内</a>
 				</th>
 				<th>
@@ -216,6 +222,12 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 					</td>
 					<td>
 					<a href='<%=basePath%>mcnpage/user/punch/log/PunchLogList3.do?user_id=${row.USER_ID}&leave_type=4'>${row.ADD_DAY}</a>
+					</td>
+					<td>
+					${row.LEAVE_EARLY}
+					</td>
+					<td>
+					${row.LOST_PUNCH}
 					</td>
 					<td>
 					<a href='<%=basePath%>mcnpage/user/punch/log/chidaoLogList.do?user_id=${row.USER_ID}&type=0'>${row.XSHI}</a>

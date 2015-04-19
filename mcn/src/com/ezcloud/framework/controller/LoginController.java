@@ -26,6 +26,7 @@ import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.service.login.Login;
 import com.ezcloud.framework.service.system.Staff;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.Row;
 
 /**
@@ -46,21 +47,29 @@ public class LoginController extends BaseController {
 	@Resource(name = "frameworkStaffService")
 	private Staff staffService;
 
+	@RequestMapping(value = "/Login")
+	public String Login(ModelMap model)
+	{
+		return "Login";
+	}
+	
 	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/login")
 	public String login(String username, String password, String captcha, String isRememberUsername, String token ,RedirectAttributes redirectAttributes, HttpSession session, ModelMap model) {
-//		System.out.println("username:" + username);
-//		System.out.println("password:" + password);
-//		System.out.println("captcha:" + captcha);
-//		System.out.println("isRememberUsername:" + isRememberUsername);
 		Assert.notNull(username, "username can not be null");
 		Assert.notNull(password, "password can not be null");
 		Assert.notNull(captcha, "captcha can not be null");
+		String token_bak =token;
 		String sessionCaptcha = (String) session.getAttribute("validateCode");
 		boolean boolCode = captcha.toUpperCase().equals(sessionCaptcha);
 		if (!boolCode) {
 			model.addAttribute("error", message("framework.validatecode.error"));
-			return "Login";
+			String uri="redirect:/login/Login.do";
+			if(! StringUtils.isEmptyOrNull(token))
+			{
+				uri +="?token="+token_bak;
+			}
+			return uri;
 		}
 		try {
 			loginService.getRow().put("username", username);
@@ -68,13 +77,19 @@ public class LoginController extends BaseController {
 			if(token == null || token.replace(" ", "").length() == 0){
 				token ="";
 			}
+//			session.setAttribute("token", token);
 			token =URLDecoder.decode(token);
 			loginService.getRow().put("token", token);
 			loginService.login();
 		} catch (JException e) {
 			e.printStackTrace();
 			model.addAttribute("error", e.getMsg());
-			return "Login";
+			String uri="redirect:/login/Login.do";
+			if(! StringUtils.isEmptyOrNull(token))
+			{
+				uri +="?token="+token_bak;
+			}
+			return uri;
 		}
 		Row staff = loginService.getRow();
 		session.setAttribute("staff", staff);

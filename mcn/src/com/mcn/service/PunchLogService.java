@@ -49,6 +49,10 @@ public class PunchLogService extends Service{
 					row.put("depart_name", depart_name);
 					row.put("user_id", user_id);
 					row.put("manager_name", manager_name);
+					//早退
+					int leave_early =queryUserMonthLeaveEarlyNumByUserId(user_id,time);
+					row.put("leave_early", leave_early);
+					row.put("lost_punch", 0);
 					String sq2 = "SELECT SUM(day_status) as all_day from mcn_punch_log WHERE org_id='"+org_id+"' and user_id='"+user_id+"' and punch_time like '"+year+"_"+month+"%'";
 					String all_day2 = queryField(sq2);
 					double all_day = 0;
@@ -171,150 +175,19 @@ public class PunchLogService extends Service{
 			}
 		}
 		}
-		/*
-		String year = time.substring(0, 4);
-		System.out.println("year=="+year);
-		String month = time.substring(5, 7);
-		System.out.println("month=="+month);
-		DataSet dataSet = new DataSet();
-		DataSet dataSet2 = null;
-		sql ="SELECT SITE_NO AS depart_id,SITE_NAME as depart_name from sm_site WHERE BUREAU_NO='"+org_id+"'";
-		dataSet2 = queryDataSet(sql);
-		if(dataSet2.size() > 0) {
-		for(int i=0;i<dataSet2.size();i++) {
-			Row row = new Row();
-			Row row2 = new Row();
-			row2 = (Row) dataSet2.get(i);
-			String depart_id = row2.getString("depart_id");
-			String depart_name = row2.getString("depart_name");
-			row.put("depart_name", depart_name);
-			String sq = "select name from mcn_users WHERE depart_id='"+depart_id+"' and manager_id='是'";
-			String manager_name = queryField(sq);
-			if(manager_name != null){
-			row.put("manager_name", manager_name);
-			}
-			String sq2 = "select id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"'";
-			DataSet data2 = queryDataSet(sq2);
-			double allAddDay = 0; //加班总记录
-			for(int j=0;j<data2.size();j++){
-				Row row3 = new Row();
-				row3 = (Row) data2.get(j);
-				String user_id = row3.getString("id");
-				allAddDay += getPunchDay(org_id,user_id,year,month);
-			}
-			row.put("all_day",allAddDay);
-			String sq3 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='1' and user_id in(SELECT id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"' and manager_id='否') and status='2' and year='"+year+"' and month='"+month+"'";
-			String year_day = queryField(sq3);
-			if(year_day == null){
-				row.put("year_day", "0");
-			}else{
-			row.put("year_day", year_day);
-			}
-			String sq4 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='2' and user_id in(SELECT id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"' and manager_id='否') and status='2' and year='"+year+"' and month='"+month+"'";
-			String sick_day = queryField(sq4);
-			if(sick_day == null){
-				row.put("sick_day", "0");
-			}else{
-			row.put("sick_day", sick_day);
-			}
-			String sq5 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='3' and user_id in(SELECT id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"' and manager_id='否') and status='2' and year='"+year+"' and month='"+month+"'";
-			String tiao_day = queryField(sq5);
-			if(tiao_day == null){
-				row.put("tiao_day", "0");
-			}else{
-			row.put("tiao_day", tiao_day);
-			}
-			String sq6 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='4' and user_id in(SELECT id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"' and manager_id='否') and status='2' and year='"+year+"' and month='"+month+"'";
-			String add_day = queryField(sq6);
-			if(add_day == null){
-				row.put("add_day", "0");
-			}else{
-			row.put("add_day", add_day);
-			}
-			String sq7 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='5' and user_id in(SELECT id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"' and manager_id='否') and status='2' and year='"+year+"' and month='"+month+"'";
-			String shi_day = queryField(sq7);
-			if(shi_day == null){
-				row.put("shi_day", "0");
-			}else{
-			row.put("shi_day", shi_day);
-			}
-			String sq8 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='6' and user_id in(SELECT id from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"' and manager_id='否') and status='2' and year='"+year+"' and month='"+month+"'";
-			String wai_day = queryField(sq8);
-			if(wai_day == null){
-				row.put("wai_day", "0");
-			}else{
-			row.put("wai_day", wai_day);
-			}
-			String sql5 = "SELECT * from mcn_punch_rule WHERE org_id='"+org_id+"' ORDER BY ID DESC LIMIT 0,1";
-			Row row5 = queryRow(sql5);
-			int xshi = 0;
-			int dshi = 0;
-			int cshi = 0;
-			if(row5 != null){
-				String am_start = row5.getString("AM_START");
-				String pm_start = row5.getString("PM_START");
-				String sql8 = "SELECT punch_time from mcn_punch_log a,mcn_users b WHERE a.user_id=b.id and b.depart_id='"+depart_id+"' and a.org_id='"+org_id+"' and a.punch_type='1' and a.punch_time like '"+year+"_"+month+"%'";
-				String sql9 = "SELECT punch_time from mcn_punch_log a,mcn_users b WHERE a.user_id=b.id and b.depart_id='"+depart_id+"' and a.org_id='"+org_id+"' and a.punch_type='3' and a.punch_time like '"+year+"_"+month+"%'";
-				DataSet data8 = queryDataSet(sql8);
-				DataSet data9 = queryDataSet(sql9);
-				for(int f=0;f<data8.size();f++){
-					Row row8 =new Row();
-					row8 = (Row) data8.get(f);
-					String punch_time = row8.getString("punch_time");
-					String punch_time2 = punch_time.replace("年", "-");
-					String punch_time3 = punch_time2.replace("月", "-");
-					String start_time = punch_time3.replace("日", "");
-					String end_time = start_time.substring(0,10)+" "+am_start+":00";
-					System.out.println("time======???======"+start_time+"================"+end_time);
-					java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-					java.util.Date  beginDate = format.parse(end_time); 
-					java.util.Date endDate= format.parse(start_time);
-					Long day=(endDate.getTime()-beginDate.getTime())/(1000*60); 
-					System.out.println("相隔的分数="+day); 
-					if(day > 0){
-					if(day < 10){
-						xshi++;
-					}else if(10 <= day && day < 30){
-						dshi++;
-					}else if(day > 30){
-						cshi++;
-					}
-					}
-				}
-				
-				for(int e=0;e<data9.size();e++){
-					Row row9 =new Row();
-					row9 = (Row) data9.get(e);
-					String punch_time = row9.getString("punch_time");
-					String punch_time2 = punch_time.replace("年", "-");
-					String punch_time3 = punch_time2.replace("月", "-");
-					String start_time = punch_time3.replace("日", "");
-					String end_time = start_time.substring(0,10)+" "+pm_start+":00";
-					System.out.println("time======???======"+start_time+"================"+end_time);
-					java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-					java.util.Date  beginDate = format.parse(end_time); 
-					java.util.Date endDate= format.parse(start_time);
-					Long day=(endDate.getTime()-beginDate.getTime())/(1000*60); 
-					System.out.println("相隔的分数="+day); 
-					if(day > 0){
-					if(day < 10){
-						xshi++;
-					}else if(10 <= day && day < 30){
-						dshi++;
-					}else if(day > 30){
-						cshi++;
-					}
-					}
-				}
-			}
-			row.put("xshi",xshi);
-			row.put("dshi",dshi);
-			row.put("cshi",cshi);
-			dataSet.add(row);
-		}
-	}
-	*/
 		return dataSet;
+	}
+	
+	/**
+	 * 查询用户的月度打卡早退次数
+	 * @return
+	 */
+	public int queryUserMonthLeaveEarlyNumByUserId(String user_id,String month)
+	{
+		int num =0;
+		String sql ="select count(*) from mcn_punch_log where punch_result='2' and user_id='"+user_id+"' and punch_time like '%"+month+"%'";
+		num =Integer.parseInt(queryField(sql));
+		return num ;
 	}
 	
 	/**

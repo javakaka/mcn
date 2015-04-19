@@ -10,8 +10,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>系统管理后台${test}</title>
-<meta name="author" content="易之云科技" />
-<meta name="copyright" content="易之云科技" />
+<meta name="author" content="" />
+<meta name="copyright" content="" />
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <link href="<%=basePath%>/res/admin/css/main.css" rel="stylesheet" type="text/css" />
 <link href="<%=basePath%>/res/admin/css/menu.css" rel="stylesheet" type="text/css" />
@@ -82,7 +82,18 @@ $().ready(function() {
 		<tr>
 			<th class="logo">
 				<a href="login.jsp">
-					<img src="<%=basePath%>/res/images/login_logo.gif" alt="Logo" />
+					<!-- <img src="<%=basePath%>/res/images/login_logo.gif" alt="Logo" />-->
+					<c:choose >
+						<c:when test="${staff.STAFF_NAME == 'admin@fdzk'}">
+							<img src="<%=basePath%>/res/images/login_logo.gif" alt="Logo" />
+						</c:when>
+						<c:when test="${staff.STAFF_NAME == 'admin@agent'}">
+							<img src="<%=basePath%>/res/images/login_logo_agent.gif" alt="Logo" />
+						</c:when>
+						<c:otherwise>
+							<img src="<%=basePath%>/res/images/login_logo.gif" alt="Logo" />
+						</c:otherwise>
+					</c:choose>
 				</a>
 			</th>
 			<th>
@@ -102,20 +113,24 @@ $().ready(function() {
 								<a href="#top_nav_${status.index + 1}">${xxx.FUN_NAME}</a>
 							</li>
 						 </c:forEach>
+						 
 						 <li>
-							<a href="<%=basePath%>" target="_blank">首页</a>
+							<a href="#" target="_blank"></a>
 						</li>
 					</ul>
 				</div>
 				<div class="link">
+					<!--
 					<a href="#" target="_blank">官方网站</a>|
 					<a href="#" target="_blank">官方论坛</a>|
 					<a href="#" target="_blank">关于我们</a>
+				-->
 				</div>
 				<div class="link">
-					<strong>admin</strong>
+					<strong>${staff.STAFF_NAME}</strong>
 					您好!
-					<a href="javascript:void(0);" onClick='openLeftTab("./ChangePwd.jsp","修改密码","1","change_pwd_tab_id")'>账号设置</a>
+					<a href="javascript:void(0);" onClick='openLeftTab("./ChangePassword.jsp","修改密码","1","change_pwd_tab_id")'>修改密码</a>
+					<!-- <a href="<%=basePath%>help/Index.jsp" target="_blank">帮助手册</a>-->
 					<a href="./logout.jsp" target="_top">注销</a>
 				</div>
 			</th>
@@ -147,7 +162,7 @@ $().ready(function() {
 				</div>
 			</c:forEach>
 			</td>
-			<td style="width:100%;height:100%;">
+			<td style="height:100%;">
 				<iframe id="iframe" name="iframe" src="mainfra.jsp" frameborder="0"></iframe>
 			</td>
 		</tr>

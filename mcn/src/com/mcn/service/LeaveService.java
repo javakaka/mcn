@@ -209,6 +209,16 @@ public class LeaveService extends Service{
 		checkRow.put("up_check_id",up_id);
 		insert("check_up_log", checkRow);
 	}
+	
+	public void insert_check_up_log(Row checkRow) {
+		int id =getTableSequence("check_up_log", "id", 1);
+		checkRow.put("id", id);
+		String curTime =DateUtil.getCurrentDateTime();
+		checkRow.put("create_time",curTime );
+		insert("check_up_log", checkRow);
+	}
+	
+	
 	//查询自己的请假列表
 	public DataSet querySelfLeaveList(String user_id,String page,String page_size,String status)
 	{

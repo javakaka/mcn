@@ -44,7 +44,6 @@ public class PunchLogController extends BaseController{
 	 */
 	@RequestMapping(value = "/companyLogList")
 	public String companyLoglist(Pageable pageable, ModelMap model,String time) throws ParseException {
-		System.out.println("timefffff================"+time);
 		HttpSession session = getSession();
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id =null;
@@ -56,7 +55,6 @@ public class PunchLogController extends BaseController{
 		}
 		DataSet pageSet = null;
 		String curTime =DateUtil.getCurrentDateTime();
-		System.out.println("critime==="+curTime+"===="+curTime.substring(0,7));
 		if(time == null){
 			time=curTime.substring(0,7);
 		}

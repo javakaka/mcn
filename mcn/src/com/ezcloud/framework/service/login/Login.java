@@ -45,6 +45,7 @@ public class Login extends Service {
 			}
 			sql +=  " and bureau_no='"+token+"'";
 		}
+		System.out.println("sql===>" + sql);
 		Row staff = queryRow(sql);
 		System.out.println("row===>" + row);
 		// 判断密码是否正确

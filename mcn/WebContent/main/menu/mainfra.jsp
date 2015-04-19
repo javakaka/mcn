@@ -38,7 +38,7 @@ $(document).ready(function(){
 		autoResizable:true,
 		border:'none',
 		active : 0,
-		maxLength : 10,
+		maxLength : 20,
 		items : [{
 			id:'toolbarPlugin',
 			title:'系统信息',

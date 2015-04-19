@@ -9,15 +9,21 @@ String token = request.getParameter("token");
 if(token == null || token.trim().length() == 0){
 	token = "";
 }
+
 else
 {
+	token =URLEncoder.encode(token);
+	session.setAttribute("token",token);
+	/*
 	if(session.getAttribute("token")==null){
 	token =URLEncoder.encode(token);
 	session.setAttribute("token",token);
 	}else{
     token = session.getAttribute("token").toString();
 	}
+	*/
 }
+ 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -32,7 +38,7 @@ else
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <link href="<%=basePath%>/res/admin/css/login.css" rel="stylesheet" type="text/css" />
 </head>
-<BODY bgcolor="#EFEFEF">
+<body bgcolor="#EFEFEF">
 <div class="login">
 			<form id="loginForm" action="login.do" method="post">
 				<table>
@@ -106,7 +112,6 @@ else
 				</div>
 			</form>
 		</div>
-</BODY>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/md5.js"></script>
@@ -164,6 +169,7 @@ else
 </script>
 <script type="text/javascript">
 	var errorMsg="${error}";
+	var token="${token}";
 	var showTip=true;
 	if(typeof errorMsg == "undefined" || errorMsg == "" || errorMsg==null || errorMsg=="null"){
 		showTip=false;
@@ -171,5 +177,9 @@ else
 	if(showTip){
 		$.message("warn", errorMsg);
 	}
+	if(typeof token != "undefined" && token != "" && token != null && token != "null"){
+		var url =window.location.href+"?token="+token;
+	}
 </script>
-</HTML>
+</body>
+</html>
