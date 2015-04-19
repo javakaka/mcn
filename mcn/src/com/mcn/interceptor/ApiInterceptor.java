@@ -88,7 +88,7 @@ public class ApiInterceptor  implements HandlerInterceptor{
         	ovo.sExp ="token 不能为空";
         	ovo.sMsg ="token 不能为空";
         	sendError(response, ovo);
-        	return false;   
+        	return false;
         }
         else
         {
@@ -105,14 +105,14 @@ public class ApiInterceptor  implements HandlerInterceptor{
             	ovo.sMsg ="非法token";
             	sendError(response, ovo);
             	System.out.println("token3=="+token);
-            	return false;   
+            	return false;
         	}
         	ivo.set("token", token);
         	System.out.println("token="+token);
         }
         request.setAttribute("ivo", ivo);
       //  System.out.println("token2=="+token);
-        return true;  
+        return true;
 	}
 
 	/**

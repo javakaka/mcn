@@ -37,6 +37,15 @@ else
 <meta name="copyright" content="易之云科技" />
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <link href="<%=basePath%>/res/admin/css/login.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
+<script type="text/javascript">
+$().ready(function() {
+
+	${flash_message};
+
+});
+</script>
 </head>
 <body bgcolor="#EFEFEF">
 <div class="login">
@@ -166,20 +175,6 @@ else
 			$("#password").val(md5Pwd);
 		});
 	});
-</script>
-<script type="text/javascript">
-	var errorMsg="${error}";
-	var token="${token}";
-	var showTip=true;
-	if(typeof errorMsg == "undefined" || errorMsg == "" || errorMsg==null || errorMsg=="null"){
-		showTip=false;
-	}
-	if(showTip){
-		$.message("warn", errorMsg);
-	}
-	if(typeof token != "undefined" && token != "" && token != null && token != "null"){
-		var url =window.location.href+"?token="+token;
-	}
 </script>
 </body>
 </html>

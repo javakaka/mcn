@@ -8,8 +8,10 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.AesUtil;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
+import com.ezcloud.utility.DateUtil;
 
 /**
  * 区域
@@ -172,5 +174,45 @@ public class Bureau  extends Service{
 		ds =queryDataSet(sql);
 		
 		return ds;
+	}
+	
+	/**
+	 * 检查区域账号是否已经被停用
+	 * @param id
+	 * @return
+	 */
+	public boolean isBureauStoped(String id)
+	{
+		boolean bool =true;
+		String sql ="select status from sm_bureau where bureau_no='"+id+"' ";
+		String status =queryField(sql);
+		if(StringUtils.isEmptyOrNull(status))
+		{
+			status ="2";
+		}
+		if(status.equals("2") || status.equals("3"))
+		{
+			bool =false;
+		}
+		return bool;
+	}
+	
+	/**
+	 * 检查区域账号是否在可用期
+	 * @param id
+	 * @return
+	 */
+	public boolean isBureauInServiceTime(String id)
+	{
+		boolean bool =true;
+		String date =DateUtil.getCurrentDate();
+		String sql ="select count(*) from sm_bureau where bureau_no='"+id+"' and begin_date <='"+date+"' and end_date >= '"+date+"'";
+		String num =queryField(sql);
+		int count =Integer.parseInt(num);
+		if(count == 0)
+		{
+			bool =false;
+		}
+		return bool;
 	}
 }

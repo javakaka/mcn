@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ezcloud.framework.exp.JException;
+import com.ezcloud.framework.service.system.Bureau;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.framework.vo.VOConvert;
+import com.mcn.service.CompanySite;
 import com.mcn.service.CompanyUser;
 
 @Controller("mobileLoginController")
@@ -20,6 +23,12 @@ public class LoginController extends BaseController {
 	
 	@Resource(name = "companyUserService")
 	private CompanyUser companyUserService;
+	
+	@Resource(name = "frameworkSystemBureauService")
+	private Bureau bureauService;
+	
+	@Resource(name = "companySiteService")
+	private CompanySite companySiteService;
 	
 	/**
 	 * 登陆
@@ -35,6 +44,19 @@ public class LoginController extends BaseController {
 		String token =ivo.getString("token",null);
 		String username =ivo.getString("username",null);
 		String password =ivo.getString("password",null);
+		//检查企业是否已停用、在有效期、部门是否在有效期
+		boolean bool =bureauService.isBureauStoped(token);
+		if(! bool)
+		{
+			ovo =new OVO(-10003,"企业已停用，不能登陆","企业已停用，不能登陆");
+			return VOConvert.ovoToJson(ovo);
+		}
+		bool =bureauService.isBureauInServiceTime(token);
+		if(! bool)
+		{
+			ovo =new OVO(-10003,"企业使用时间已过期，不能登陆","企业使用时间已过期，不能登陆");
+			return VOConvert.ovoToJson(ovo);
+		}
 		Row staff =companyUserService.login(token, username);
 		if(staff == null)
 		{
@@ -45,6 +67,18 @@ public class LoginController extends BaseController {
 		}
 		else
 		{
+			//检查部门是否已停用
+			boolean boolDepart =false;
+			String depart_id =staff.getString("depart_id","");
+			if(! StringUtils.isEmptyOrNull(depart_id))
+			{
+				boolDepart =companySiteService.isDepartStoped(depart_id);
+			}
+			if(boolDepart)
+			{
+				ovo =new OVO(-10003,"此用户所在部门已停用，不能登陆","此用户所在部门已停用，不能登陆");
+				return VOConvert.ovoToJson(ovo);
+			}
 			String pwd =staff.getString("password",null);
 			System.out.println("pwd="+pwd);
 			if(pwd != null && ! pwd.equals(password))
@@ -52,6 +86,13 @@ public class LoginController extends BaseController {
 				ovo =new OVO(-10004, "密码错误", "密码错误");
 			}
 			else if(pwd !=null && pwd.equals(password)){
+				//检查用户是否已停用
+				String user_status =staff.getString("status","");
+				if(user_status.equals("2") || user_status.equals("3") )
+				{
+					ovo =new OVO(-10003,"此用户已停用，不能登陆","此用户已停用，不能登陆");
+					return VOConvert.ovoToJson(ovo);
+				}
 				ovo =new OVO(0, "登陆成功", "登陆成功");
 				// user profile info
 				ovo.set("user_id",staff.getString("id","") );

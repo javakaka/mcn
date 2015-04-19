@@ -24,7 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.service.login.Login;
+import com.ezcloud.framework.service.system.Bureau;
 import com.ezcloud.framework.service.system.Staff;
+import com.ezcloud.framework.util.AesUtil;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.Row;
@@ -46,7 +48,10 @@ public class LoginController extends BaseController {
 	
 	@Resource(name = "frameworkStaffService")
 	private Staff staffService;
-
+	
+	@Resource(name = "frameworkSystemBureauService")
+	private Bureau bureauService;
+	
 	@RequestMapping(value = "/Login")
 	public String Login(ModelMap model)
 	{
@@ -63,7 +68,7 @@ public class LoginController extends BaseController {
 		String sessionCaptcha = (String) session.getAttribute("validateCode");
 		boolean boolCode = captcha.toUpperCase().equals(sessionCaptcha);
 		if (!boolCode) {
-			model.addAttribute("error", message("framework.validatecode.error"));
+			addFlashMessage(redirectAttributes, Message.error(message("framework.validatecode.error")));
 			String uri="redirect:/login/Login.do";
 			if(! StringUtils.isEmptyOrNull(token))
 			{
@@ -77,13 +82,43 @@ public class LoginController extends BaseController {
 			if(token == null || token.replace(" ", "").length() == 0){
 				token ="";
 			}
-//			session.setAttribute("token", token);
 			token =URLDecoder.decode(token);
 			loginService.getRow().put("token", token);
+			if(! StringUtils.isEmptyOrNull(token_bak))
+			{
+				//检查是否已停用
+				String bureau_no =null;
+				try{
+					bureau_no =AesUtil.decode(URLDecoder.decode(token_bak));
+				}catch(Exception exp)
+				{
+					String uri="redirect:/login/Login.do";
+					uri +="?token="+token_bak;
+					addFlashMessage(redirectAttributes, Message.error("无效登陆地址，请联系管理员获取正确的登陆地址！"));
+					return uri;
+				}
+				boolean bool =bureauService.isBureauStoped(bureau_no);
+				if(!bool)
+				{
+					String uri="redirect:/login/Login.do";
+					uri +="?token="+token_bak;
+					addFlashMessage(redirectAttributes, Message.error("账号已停用，请联系管理人员！"));
+					return uri;
+				}
+				//检查是否已过期
+				bool =bureauService.isBureauInServiceTime(bureau_no);
+				if(!bool)
+				{
+					String uri="redirect:/login/Login.do";
+					uri +="?token="+token_bak;
+					addFlashMessage(redirectAttributes, Message.error("账号已过期，请联系管理人员！"));
+					return uri;
+				}
+			}
 			loginService.login();
 		} catch (JException e) {
 			e.printStackTrace();
-			model.addAttribute("error", e.getMsg());
+			addFlashMessage(redirectAttributes, Message.error(e.getMsg()));
 			String uri="redirect:/login/Login.do";
 			if(! StringUtils.isEmptyOrNull(token))
 			{

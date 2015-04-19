@@ -45,9 +45,7 @@ public class Login extends Service {
 			}
 			sql +=  " and bureau_no='"+token+"'";
 		}
-		System.out.println("sql===>" + sql);
 		Row staff = queryRow(sql);
-		System.out.println("row===>" + row);
 		// 判断密码是否正确
 		if (staff == null) {
 			throw new JException(-1001, "账号不存在");
@@ -56,6 +54,7 @@ public class Login extends Service {
 		if (!password.equals(md5_pwd)) {
 			throw new JException(-1002, "账号或者密码错误!");
 		}
+		
 		row = staff;
 	}
 
@@ -106,4 +105,5 @@ public class Login extends Service {
 		String resString = SpringUtils.getMessage("framework.message.error", "@@@", "####", "^^^");
 		System.out.println("res:" + resString);
 	}
+	
 }

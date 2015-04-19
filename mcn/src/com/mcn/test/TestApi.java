@@ -17,9 +17,9 @@ public class TestApi {
 		IVO ivo =new IVO();
 		   try {
 //			ivo.set("username", "1001");
-			ivo.set("username", "13629900136");
-			ivo.set("password", "123456");
-			ivo.set("token", "MTAwMDQ=");
+			ivo.set("username", "13924642229");
+			ivo.set("password", "888888");
+			ivo.set("token", "MTAwMDc=");
 			String json =  VOConvert.ivoToJson(ivo);
 			System.out.print("ivo to json ====>>"+json);
 			String res =NetUtil.getNetResponse(url, json,"UTF-8");
@@ -621,7 +621,7 @@ public class TestApi {
 	 public static void main(String[] args) {
 		 //String token = nQd9zWGtvBeGWqdnZ%2F9ZfQ%3D%3D;
 		 //登陆
-//		 login();
+		 login();
 		 //修改密码
 //		 changePwd();
 		// room list

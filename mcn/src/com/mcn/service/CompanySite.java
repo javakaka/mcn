@@ -249,4 +249,20 @@ public class CompanySite  extends Service{
 		row =queryRow(sql);
 		return row;
 	}
+	
+	public boolean isDepartStoped(String id)
+	{
+		boolean bool =false;
+		String sql ="select state from sm_site where site_no='"+id+"' ";
+		String state =queryField(sql);
+		if(StringUtils.isEmptyOrNull(state))
+		{
+			state ="0";
+		}
+		if(state.equals("0"))
+		{
+			bool =true;
+		}
+		return bool;
+	}
 }
