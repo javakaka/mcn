@@ -100,6 +100,19 @@ public class Bureau  extends Service{
 		row = queryRow(sql);
 		return row;
 	}
+	
+	/**
+	 * 根据id查找
+	 * 
+	 * @return Row
+	 * @throws
+	 */
+	public Row find(String id) {
+		Row row = new Row();
+		sql = "select * from sm_bureau where bureau_no='" + id + "'";
+		row = queryRow(sql);
+		return row;
+	}
 
 	/**
 	 * 更新

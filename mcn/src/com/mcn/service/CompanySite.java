@@ -8,10 +8,14 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.ExcelUtil;
+import com.ezcloud.framework.util.Md5Util;
 import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
+import com.ezcloud.framework.vo.OVO;
+import com.ezcloud.framework.vo.Row;
 import com.ezcloud.framework.vo.Row;
 
 @Component("companySiteService")
@@ -24,8 +28,9 @@ public class CompanySite  extends Service{
 	}
 
 	
-	public boolean parseExcel(String id)
+	public OVO parseExcel(String id)
 	{
+		OVO ovo =new OVO();
 		boolean b=false;
 		//增量解析方式，每次解析时只解析最新上传的部门人员excel文件
 		String sSql ="select b.FILE_PATH from file_attach_control a,file_attach_upload b "+
@@ -33,23 +38,37 @@ public class CompanySite  extends Service{
 				" and a.CONTROL_ID=b.CONTROL_ID order by a.UPLOAD_DATE desc limit 0,1";
 		Row row =queryRow(sSql);
 		if(row ==null)
-			return b;
+			return new OVO(-1,"导入数据文件不存在，请先上传数据文件","");
 		String filePath =row.getString("file_path",null);
 		if(filePath == null || filePath.replace(" ", "").length() == 0)
 		{
-			return b;
+			return new OVO(-1,"文件已丢失，请重新上传数据文件","");
 		}
 		List<Map<String,Object>> list =null;
 		try {
 			list = ExcelUtil.parseExcel(filePath);
-			parseExcelData(list, id);
+			if(list == null || list.size()<2)
+			{
+				ovo =new OVO(-1,"文件格式错误，请参考文件模版","");
+			}
+			else
+			{
+				ovo =new OVO(0,"解析成功","");
+				try {
+					ovo.set("sheet_list", list);
+				} catch (JException e) {
+					e.printStackTrace();
+					ovo =new OVO(-1,"设置数据出错","");
+				}
+			}
+//			parseExcelData(list, id);
 			b=true;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			ovo =new OVO(-1,"文件路径错误，请参考文件模版","");
 		} catch (IOException e) {
-			e.printStackTrace();
+			ovo =new OVO(-1,"文件解析出错，请参考文件模版","");
 		}
-		return b;
+		return ovo;
 	}
 	
 	/**
@@ -57,6 +76,7 @@ public class CompanySite  extends Service{
 	 * @param list
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean parseExcelData(List<Map<String,Object>> list ,String org_id)
 	{
 		boolean b=false;
@@ -130,7 +150,11 @@ public class CompanySite  extends Service{
 			tempRow.put("id", user_id);
 			tempRow.put("org_id", org_id);
 			tempRow.put("name", name==null?"":name);
-			tempRow.put("password", password==null?"123456":password);
+			if(StringUtils.isEmptyOrNull(password))
+			{
+				password ="123456";
+			}
+			tempRow.put("password", password);
 			tempRow.put("username", username);
 			tempRow.put("depart_id", depart_id);
 			tempRow.put("telephone",telephone ==null?"":telephone);
@@ -142,8 +166,33 @@ public class CompanySite  extends Service{
 			tempRow.put("remark", remark==null?"":remark);
 			System.out.println("tempRow="+tempRow);
 			insert("mcn_users",tempRow);
+			//保存到sm_staff 
+			Row staffRow =new Row();
+			String staff_no =String.valueOf(getTableSequence("sm_staff", "staff_no", 10000));
+			staffRow.put("staff_no", staff_no);
+			staffRow.put("bureau_no", org_id);
+			staffRow.put("site_no", depart_id);
+			staffRow.put("staff_name", username);
+			staffRow.put("password", Md5Util.Md5(password));
+			staffRow.put("real_name", username);
+			insert("sm_staff",staffRow);
 		}
 		return b;
+	}
+	
+	/**
+	 * 获取sheet数据行数
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public int getExcelSheetRowNum(Map<String , Object>map)
+	{
+		int num =0;
+		//人员数据
+		List<Object> sheetData=null;
+		sheetData =(List<Object>)map.get("data");
+		num =sheetData.size();
+		return num;
 	}
 	
 	@SuppressWarnings("null")

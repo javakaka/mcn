@@ -192,11 +192,12 @@ function parseExcel()
 				//alert('.....');
 			},
 			success: function(message, textStatus) {
-				$.message(message);
+				$.message(message.type,message.content);
 				//alert(data);
 			},
 			complete: function (XMLHttpRequest, textStatus){
 				//alert("complete...");
+				
 			},
 			error: function (){
 				alert('error...');

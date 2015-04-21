@@ -111,4 +111,18 @@ public class CompanyUser extends Service{
 		ds =queryDataSet(sql);
 		return ds;
 	}
+	
+	/**
+	 * 根据企业编号，查询此企业下面已有的人员总数
+	 * @param org_id
+	 * @return
+	 */
+	public int queryUserTotalNum(String org_id)
+	{
+		int num=0;
+		String sql ="select count(*) from mcn_users where org_id='"+org_id+"' ";
+		num =Integer.parseInt(queryField(sql));
+		return num;
+	}
+	
 }

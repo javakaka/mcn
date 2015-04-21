@@ -606,6 +606,7 @@ public class TestApi {
 					e.printStackTrace();
 				}
 		}
+		
 		public static void selectB()
 		{
 			//String url ="http://localhost:8080/mcn/system/fun/BBSJ.do";

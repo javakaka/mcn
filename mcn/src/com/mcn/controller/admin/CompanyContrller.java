@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ezcloud.framework.controller.BaseController;
+import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.Bureau;
@@ -27,7 +31,9 @@ import com.ezcloud.framework.service.system.Staff;
 import com.ezcloud.framework.service.system.StaffRole;
 import com.ezcloud.framework.util.Md5Util;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
+import com.ezcloud.utility.DateUtil;
 import com.mcn.service.CompanyModule;
 import com.mcn.service.CompanySite;
 import com.mcn.service.CompanyUser;
@@ -237,16 +243,73 @@ public class CompanyContrller  extends BaseController{
 	 * 避免重复导入部门以及人员
 	 * @param id
 	 * @return
+	 * @throws JException 
+	 * @throws ParseException 
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/parseExcel")
 	public @ResponseBody
-	Message parseExcel(String id) {
+	Message parseExcel(String id) throws JException, ParseException {
+		Message message =null;
+		//查询此企业人员容量
+		Row bureauRow =bureau.find(id);
+		String bureau_status =bureauRow.getString("status","2");
+		if(bureau_status.equals("2") || bureau_status.equals("3"))
+		{
+			message=Message.error("企业处于停用状态，不能导入数据，请联系系统管理员");
+			return message;
+		}
+		String end_date =bureauRow.getString("end_date",DateUtil.getCurrentDate());
+		if(end_date.length() > 10)
+		{
+			end_date =end_date.substring(0, 10);
+		}
+		String cur_date =DateUtil.getCurrentDate();
+		end_date =end_date+" 00:00:00";
+		cur_date =cur_date+" 00:00:00";
+		long minus=DateUtil.compare(cur_date, end_date);
+		if(minus > 0)
+		{
+			message=Message.error("企业服务期限已超过有效期，不能导入数据，请联系系统管理员");
+			return message;
+		}
+		String user_sum =bureauRow.getString("user_sum","0");
+		int i_user_sum =Integer.parseInt(user_sum);
+		if(i_user_sum <= 0)
+		{
+			message=Message.error("企业允许导入的人员总数为0，请联系系统管理员");
+			return message;
+		}
 		System.out.println("通过Excel表"+id);
 		Assert.notNull(id, "id can not be null");
 //		companySiteService.deteleSite(id);
 //		companyUserService.delete(id);
-		companySiteService.parseExcel(id);
-		return SUCCESS_MESSAGE;
+		OVO ovo =companySiteService.parseExcel(id);
+		int code =ovo.iCode;
+		String msg ="";
+		if(code <0)
+		{
+			msg =ovo.sMsg;
+			message=Message.error(msg);
+			return message;
+		}
+		List<Map<String,Object>> sheet_list =null;
+		sheet_list =(List<Map<String,Object>>)ovo.get("sheet_list");
+		//检查导入的企业人员数目是否超过设定值
+		Map<String , Object>map =sheet_list.get(1);
+		int excelUserTotalNum =companySiteService.getExcelSheetRowNum(map);
+		//查询系统中此企业已经有多少人
+		int existedUserTotalNum =companyUserService.queryUserTotalNum(id);
+		int newTotalNum =excelUserTotalNum+existedUserTotalNum;
+		if(newTotalNum > i_user_sum)
+		{
+			message=Message.error("超过企业允许导入的人员总数，请联系系统管理员");
+			return message;
+		}
+		//导入数据
+		companySiteService.parseExcelData(sheet_list, id);
+		message =Message.success("导入成功");
+		return message;
 	}
 	
 	//图片上传
