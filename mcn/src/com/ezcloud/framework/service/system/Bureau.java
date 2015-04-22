@@ -185,7 +185,14 @@ public class Bureau  extends Service{
 		DataSet ds=new DataSet();
 		sql ="select * from sm_bureau ";
 		ds =queryDataSet(sql);
-		
+		return ds;
+	}
+	
+	public DataSet queryBureau(String bureau_no)
+	{
+		DataSet ds=new DataSet();
+		sql ="select * from sm_bureau where bureau_no='"+bureau_no+"' ";
+		ds =queryDataSet(sql);
 		return ds;
 	}
 	
