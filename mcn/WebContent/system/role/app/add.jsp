@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><cc:message key="framework.moudle.edit"/></title>
+<title><cc:message key="framework.moudle.add"/></title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
@@ -27,28 +27,26 @@ $().ready(function() {
 	// 表单验证
 	$inputForm.validate({
 		rules: {
-			ROLE_ID: "required",
 			ROLE_NAME: "required",
 			BUREAU_NO: "required"
 		}
 	});
-
+	
 });
 </script>
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo; <cc:message key="framework.moudle.edit"/>
+		<cc:message key="framework.nav.index" /> &raquo;角色添加
 	</div>
-	<form id="inputForm" action="update.do" method="post">
-		<input type="hidden" name="ROLE_ID" value="${role.ROLE_ID}" />
+	<form id="inputForm" action="save.do" method="post">
 		<table class="input">
 			<tr>
 				<th>
 					<span class="requiredField">*</span>角色名称:
 				</th>
 				<td>
-					<input type="text" name="ROLE_NAME" value="${role.ROLE_NAME}" class="text" maxlength="200" />
+					<input type="text" name="ROLE_NAME" class="text" maxlength="200" />
 				</td>
 			</tr>
 			<tr>
@@ -56,17 +54,10 @@ $().ready(function() {
 					<span class="requiredField">*</span>请选择区域:
 				</th>
 				<td>
-					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200" style="width:190px;">
+					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200"  style="width:190px;">
 						<option value="" selected>请选择...</option>
 						<c:forEach items="${bureau}" var="row" varStatus="status">
-							<c:choose>
-								<c:when test="${row.BUREAU_NO == role.BUREAU_NO}">
-									<option value="${row.BUREAU_NO}" selected>${row.BUREAU_NAME}</option>
-								</c:when>
-								<c:otherwise>
-									<option value="${row.BUREAU_NO}" >${row.BUREAU_NAME}</option>
-								</c:otherwise>
-							</c:choose>
+							<option value="${row.BUREAU_NO}">${row.BUREAU_NAME}</option>
 						</c:forEach>
 					</select>
 				</td>
@@ -77,14 +68,8 @@ $().ready(function() {
 				</th>
 				<td>
 					<select id="STATE" name="STATE" class="text" maxlength="200"  style="width:190px;">
-						<c:if test="${role.STATE ==1}">
-							<option value="1" selected>有效</option>
-							<option value="0">无效</option>
-						</c:if>
-						<c:if test="${role.STATE ==0}">
-							<option value="1" >有效</option>
-							<option value="0" selected>无效</option>
-						</c:if>
+						<option value="1" selected>有效</option>
+						<option value="0">无效</option>
 					</select>
 				</td>
 			</tr>
@@ -93,7 +78,7 @@ $().ready(function() {
 					有效期起始时间:
 				</th>
 				<td>
-					<input type="text" name="ROLE_BEGINTIME" value="${role.ROLE_BEGINTIME}" maxlength="200" class="text Wdate" onfocus="WdatePicker();" />
+					<input type="text" name="ROLE_BEGINTIME" maxlength="200" class="text Wdate" value="" onfocus="WdatePicker();" />
 				</td>
 			</tr>
 			<tr>
@@ -101,7 +86,7 @@ $().ready(function() {
 					有效期结束时间:
 				</th>
 				<td>
-					<input type="text" name="ROLE_ENDTIME" value="${role.ROLE_ENDTIME}" maxlength="200" class="text Wdate" onfocus="WdatePicker();"/>
+					<input type="text" name="ROLE_ENDTIME" maxlength="200" class="text Wdate" value="" onfocus="WdatePicker();"/>
 				</td>
 			</tr>
 			<tr>
@@ -109,7 +94,7 @@ $().ready(function() {
 					功能简介:
 				</th>
 				<td>
-					<input type="text" name="ROLE_DESC" value="${role.ROLE_DESC}" class="text" maxlength="200" />
+					<input type="text" name="ROLE_DESC" class="text" maxlength="200" />
 				</td>
 			</tr>
 

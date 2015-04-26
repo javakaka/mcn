@@ -14,32 +14,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ezcloud.framework.exp.JException;
-import com.ezcloud.framework.service.system.StaffRole;
-import com.ezcloud.framework.service.system.SystemPositionRole;
-import com.ezcloud.framework.service.system.SystemRole;
-import com.ezcloud.framework.service.system.SystemThirdGrantRole;
-import com.ezcloud.framework.service.system.SystemThirdRole;
+import com.ezcloud.framework.service.system.StaffAppRoleService;
+import com.ezcloud.framework.service.system.SystemPositionAppRole;
+import com.ezcloud.framework.service.system.SystemThirdAppGrantRole;
+import com.ezcloud.framework.service.system.SystemThirdAppRole;
 import com.ezcloud.framework.util.AesUtil;
 import com.ezcloud.framework.util.ResponseVO;
 import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
-@Controller("frameworkSystemThirdGrantRoleController")
-@RequestMapping("system/grantrole/third")
-public class SystemThirdGrantRoleController extends BaseController{
+@Controller("frameworkSystemThirdAppGrantRoleController")
+@RequestMapping("system/grantrole/app")
+public class SystemThirdAppGrantRoleController extends BaseController{
 
-	@Resource(name = "frameworkSystemThirdGrantRoleService")
-	private SystemThirdGrantRole systemThirdGrantRoleService;
+	@Resource(name = "frameworkSystemThirdAppGrantRoleService")
+	private SystemThirdAppGrantRole systemThirdAppGrantRoleService;
 	
-	@Resource(name = "frameworkSystemThirdRoleService")
-	private SystemThirdRole systemThirdRoleService;
+	@Resource(name = "frameworkSystemThirdAppRoleService")
+	private SystemThirdAppRole systemThirdAppRoleService;
 	
-	@Resource(name = "frameworkPositionRoleService")
-	private SystemPositionRole systemPositionRoleService;
+	@Resource(name = "frameworkPositionAppRoleService")
+	private SystemPositionAppRole systemPositionAppRoleService;
 	
-	@Resource(name = "frameworkStaffRoleService")
-	private StaffRole systemStaffRoleService;
+	@Resource(name = "frameworkStaffAppRoleService")
+	private StaffAppRoleService systemStaffAppRoleService;
 	
 	
 	@RequestMapping("/GrantRole")
@@ -51,10 +50,10 @@ public class SystemThirdGrantRoleController extends BaseController{
 		String org_id =AesUtil.decode(URLDecoder.decode(token));
 		if(StringUtils.isEmptyOrNull(org_id))
 		{
-			return "/system/grantrole/third/GrantRole";
+			return "/system/grantrole/app/GrantRole";
 		}
-		model.addAttribute("treeData", systemThirdGrantRoleService.getDeptPostionStaffTreeByBureauNo(org_id));
-		return "/system/grantrole/third/GrantRole";
+		model.addAttribute("treeData", systemThirdAppGrantRoleService.getDeptPostionStaffTreeByBureauNo(org_id));
+		return "/system/grantrole/app/GrantRole";
 	}
 	
 	/**
@@ -76,10 +75,10 @@ public class SystemThirdGrantRoleController extends BaseController{
 		String org_id =AesUtil.decode(URLDecoder.decode(token));
 		if(StringUtils.isEmptyOrNull(org_id))
 		{
-			return "/system/grantrole/third/RoleAuth";
+			return "/system/grantrole/app/RoleAuth";
 		}
 		// bureau roles
-		model.addAttribute("roles", systemThirdRoleService.findRoleByBureauNo(org_id));
+		model.addAttribute("roles", systemThirdAppRoleService.findRoleByBureauNo(org_id));
 		// position or staff 's roles 
 		String posi_no =(String)request.getParameter("posi_no");
 		// position
@@ -92,8 +91,8 @@ public class SystemThirdGrantRoleController extends BaseController{
 			}
 			type ="1";
 			System.out.println("posi_no =====>>"+posi_no);
-			systemPositionRoleService.getRow().put("posi_no", posi_no);
-			posiRoleDataSet = systemPositionRoleService.queryPositionRole();
+			systemPositionAppRoleService.getRow().put("posi_no", posi_no);
+			posiRoleDataSet = systemPositionAppRoleService.queryPositionRole();
 			model.addAttribute("role_dataset", posiRoleDataSet);
 			model.addAttribute("posi_name", posi_name);
 			model.addAttribute("posi_no", posi_no);
@@ -109,15 +108,15 @@ public class SystemThirdGrantRoleController extends BaseController{
 				staff_name = "";
 			}
 			type ="4";
-			systemStaffRoleService.getRow().put("staff_no", staff_no);
-			staffRoleDataSet = systemStaffRoleService.queryStaffRole();
+			systemStaffAppRoleService.getRow().put("staff_no", staff_no);
+			staffRoleDataSet = systemStaffAppRoleService.queryStaffRole();
 			model.addAttribute("role_dataset", staffRoleDataSet);
 			System.out.println("type ===============>>"+type);
 			model.addAttribute("staff_name", staff_name);
 			model.addAttribute("staff_no", staff_no);
 		}
 		model.addAttribute("type", type);
-		return "/system/grantrole/third/RoleAuth";
+		return "/system/grantrole/app/RoleAuth";
 	}
 	
 	
@@ -128,9 +127,6 @@ public class SystemThirdGrantRoleController extends BaseController{
 		ResponseVO  ovo =new ResponseVO();
 		Assert.notNull(type,"type not null");
 		Assert.notNull(id,"id not null");
-//		Assert.notNull(items,"items not null");
-//		String use_state = null;
-//		String assign_state = null;
 		String arr [] =null;
 		String item[] =null;
 		DataSet roleDataSet =new DataSet();
@@ -156,7 +152,7 @@ public class SystemThirdGrantRoleController extends BaseController{
 					roleDataSet.add(roleRow);
 				}
 			}
-			systemPositionRoleService.savePositionRoleAuth(id,roleDataSet);
+			systemPositionAppRoleService.savePositionRoleAuth(id,roleDataSet);
 		}
 		else if(type.equals("4"))
 		{
@@ -178,7 +174,7 @@ public class SystemThirdGrantRoleController extends BaseController{
 					roleDataSet.add(roleRow);
 				}
 			}
-			systemStaffRoleService.saveStaffRoleAuth(id, roleDataSet);
+			systemStaffAppRoleService.saveStaffRoleAuth(id, roleDataSet);
 		}
 		ovo.put("status", "1");
 		return ovo;

@@ -29,8 +29,10 @@ import com.ezcloud.framework.service.system.Bureau;
 import com.ezcloud.framework.service.system.ProjectParameter;
 import com.ezcloud.framework.service.system.Staff;
 import com.ezcloud.framework.service.system.StaffRole;
+import com.ezcloud.framework.service.system.SystemBureauTokenService;
 import com.ezcloud.framework.util.Md5Util;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
@@ -62,6 +64,9 @@ public class CompanyContrller  extends BaseController{
 	@Resource(name = "frameworkProjectParameterService")
 	private ProjectParameter projectParameterService;
 	
+	@Resource(name = "frameworkSystemBureauTokenService")
+	private SystemBureauTokenService systemBureauTokenService;
+	
 	/**
 	 * 企业查询
 	 * @param pageable
@@ -71,7 +76,7 @@ public class CompanyContrller  extends BaseController{
 	@RequestMapping(value = "/CompanyList")
 	public String list(Pageable pageable, ModelMap model) {
 		bureau.getRow().put("pageable", pageable);
-		Page page = bureau.queryPage();
+		Page page = bureau.queryPageWithToken();
 		model.addAttribute("page", page);
 		return "/mcnpage/platform/company/CompanyList";
 	}
@@ -84,7 +89,7 @@ public class CompanyContrller  extends BaseController{
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	//public String save(String BUREAU_NAME, String UP_BUREAU_NO, String AREA_CODE, String LINKS,String NOTES ,ServletRequest request,RedirectAttributes redirectAttributes) {
 	public String save(String BUREAU_NAME, String UP_BUREAU_NO, MultipartFile fileElem, String LINKS,
-			String NOTES ,String BEGIN_DATE,String END_DATE,String USER_SUM,String STATUS,ServletRequest request,RedirectAttributes redirectAttributes) {
+			String NOTES ,String BEGIN_DATE,String END_DATE,String USER_SUM,String STATUS,ServletRequest request,RedirectAttributes redirectAttributes) throws JException {
 		String AREA_CODE = "";
 		System.out.println("fileElemFileName=="+fileElem.getOriginalFilename());
 		if(!(fileElem.getOriginalFilename() ==null || "".equals(fileElem.getOriginalFilename()))) {   
@@ -144,6 +149,17 @@ public class CompanyContrller  extends BaseController{
             }
             companyModuleService.save(mrow);
         }
+        //创建企业token
+        Row tokenRow =new Row();
+        String bureau_no =bureau.getRow().getString("BUREAU_NO","");
+        if(StringUtils.isEmptyOrNull(bureau_no))
+        {
+        	throw new JException(-100021,"保存企业token出错");
+        }
+        String token =systemBureauTokenService.getToken(6, bureau_no);
+        tokenRow.put("bureau_no", bureau_no);
+        tokenRow.put("token", token);
+        systemBureauTokenService.save(tokenRow);
         //创建企业管理员帐户
         Row staff =new Row();
         staff.put("staff_name", "admin");
@@ -166,7 +182,7 @@ public class CompanyContrller  extends BaseController{
 	@RequestMapping(value = "/edit")
 	public String edit(Long id, ModelMap model) {
 		bureau.getRow().put("id", id);
-		model.addAttribute("bureau", bureau.find());
+		model.addAttribute("bureau", bureau.findWithToken());
 		//查找功能选项
 		Row module = companyModuleService.edit(String.valueOf(id));
 		model.addAttribute("module", module);

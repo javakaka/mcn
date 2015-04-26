@@ -9,8 +9,8 @@ import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
-@Component("frameworkSystemThirdRoleService")
-public class SystemThirdRole extends Service{
+@Component("frameworkSystemThirdAppRoleService")
+public class SystemThirdAppRole extends Service{
 
 	/**
 	 * 分页查询
@@ -22,7 +22,7 @@ public class SystemThirdRole extends Service{
 		Page page = null;
 		Pageable pageable = (Pageable) row.get("pageable");
 		String bureau_no = row.getString("bureau_no","");
-		sql = "select * from sm_role where 1=1 ";
+		sql = "select * from sm_app_role where 1=1 ";
 		if(! StringUtils.isEmptyOrNull(bureau_no))
 		{
 			sql +=" and bureau_no='"+bureau_no+"' ";
@@ -31,7 +31,7 @@ public class SystemThirdRole extends Service{
 		String orders = addOrders(pageable);
 		sql += restrictions;
 		sql += orders;
-		String countSql = "select count(*) from sm_role where 1=1 ";
+		String countSql = "select count(*) from sm_app_role where 1=1 ";
 		if(! StringUtils.isEmptyOrNull(bureau_no))
 		{
 			countSql +=" and bureau_no='"+bureau_no+"' ";
@@ -45,7 +45,6 @@ public class SystemThirdRole extends Service{
 		}
 		int startPos = (pageable.getPageNumber() - 1) * pageable.getPageSize();
 		sql += " limit " + startPos + " , " + pageable.getPageSize();
-		System.out.println("sql--->>"+sql);
 		dataSet = queryDataSet(sql);
 		page = new Page(dataSet, total, pageable);
 		return page;
@@ -73,10 +72,12 @@ public class SystemThirdRole extends Service{
 		row.put("ROLE_ENDTIME", ROLE_ENDTIME);
 		row.put("STATE", STATE);
 		
-		int ROLE_ID = getTableSequence("sm_role", "role_id", 10001);
+		int ROLE_ID = getTableSequence("sm_app_role", "role_id", 10001);
 		row.put("ROLE_ID", ROLE_ID);
-		insert("sm_role", row);
+		insert("sm_app_role", row);
 	}
+	
+	
 
 	/**
 	 * 根据id查找
@@ -87,7 +88,7 @@ public class SystemThirdRole extends Service{
 	public Row find() {
 		Row row = new Row();
 		String id = getRow().getString("id");
-		sql = "select * from sm_role where role_id='" + id + "'";
+		sql = "select * from sm_app_role where role_id='" + id + "'";
 		row = queryRow(sql);
 		return row;
 	}
@@ -114,7 +115,7 @@ public class SystemThirdRole extends Service{
 		row.put("ROLE_BEGINTIME", ROLE_BEGINTIME);
 		row.put("ROLE_ENDTIME", ROLE_ENDTIME);
 		row.put("STATE", STATE);
-		update("sm_role", row, " role_id='"+ROLE_ID+"'");
+		update("sm_app_role", row, " role_id='"+ROLE_ID+"'");
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class SystemThirdRole extends Service{
 				}
 				id += "'" + String.valueOf(ids[i]) + "'";
 			}
-			sql = "delete from sm_role where role_id in(" + id + ")";
+			sql = "delete from sm_app_role where role_id in(" + id + ")";
 			update(sql);
 		}
 	}
@@ -141,7 +142,7 @@ public class SystemThirdRole extends Service{
 	public DataSet findAll()
 	{
 		DataSet ds=new DataSet();
-		sql ="select * from sm_role ";
+		sql ="select * from sm_app_role ";
 		ds =queryDataSet(sql);
 		return ds;
 	}
@@ -149,7 +150,7 @@ public class SystemThirdRole extends Service{
 	public DataSet findRoleByBureauNo(String bureau_no)
 	{
 		DataSet ds=new DataSet();
-		sql ="select * from sm_role where bureau_no ='"+bureau_no+"' ";
+		sql ="select * from sm_app_role where bureau_no ='"+bureau_no+"' ";
 		ds =queryDataSet(sql);
 		return ds;
 	}

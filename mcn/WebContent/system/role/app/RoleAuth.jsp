@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><cc:message key="framework.nav.role" /></title>
+<title><cc:message key="framework.nav.moudle" /></title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
@@ -18,17 +18,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">
 $().ready(function() {
 
-	${flash_message}
+	[@flash_message /]
 
 });
 </script>
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo;角色维护
+		<cc:message key="framework.nav.index" /> &raquo;<cc:message key="framework.nav.moudle" />
 		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
-	<form id="listForm" action="RoleList.do" method="get">
+	<form id="listForm" action="SystemModel.do" method="get">
 		<div class="bar">
 			<a href="add.do" class="iconButton">
 				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
@@ -71,19 +71,13 @@ $().ready(function() {
 				<div class="popupMenu">
 					<ul id="searchPropertyOption">
 						<li>
-							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_NAME'}"> class="current"</c:if> val="ROLE_NAME">角色名称</a>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'MOUDLE_NAME'}"> class="current"</c:if> val="MOUDLE_NAME">模块名称</a>
 						</li>
 						<li>
-							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_BEGINTIME'}">class="current"</c:if> val="ROLE_BEGINTIME">有效起始时间</a>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'MOUDLE_BEGIN_TAB'}">class="current"</c:if> val="MOUDLE_BEGIN_TAB">表前缀</a>
 						</li>
 						<li>
-							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_ENDTIME'}">class="current"</c:if> val="ROLE_ENDTIME">有效结束时间</a>
-						</li>
-						<li>
-							<a href="javascript:;" <c:if test="${page.searchProperty == 'STATE'}">class="current"</c:if> val="STATE">角色状态</a>
-						</li>
-						<li>
-							<a href="javascript:;" <c:if test="${page.searchProperty == 'ROLE_DESC'}">class="current"</c:if> val="ROLE_DESC">功能简介</a>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'MOUDLE_DESC'}">class="current"</c:if> val="MOUDLE_DESC">模块介绍</a>
 						</li>
 					</ul>
 				</div>
@@ -95,19 +89,13 @@ $().ready(function() {
 					<input type="checkbox" id="selectAll" />
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="ROLE_NAME">角色名称</a>
+					<a href="javascript:;" class="sort" name="MOUDLE_NAME">模块名称</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="ROLE_BEGINTIME">有效起始时间</a>
+					<a href="javascript:;" class="sort" name="MOUDLE_BEGIN_TAB">表前缀</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="ROLE_ENDTIME">有效结束时间</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" name="STATE">角色状态</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" name="ROLE_DESC">功能简介</a>
+					<a href="javascript:;" class="sort" name="MOUDLE_DESC">模块简介</a>
 				</th>
 				<th>
 					<span><cc:message key="admin.common.handle" /></span>
@@ -116,28 +104,20 @@ $().ready(function() {
 			<c:forEach items="${page.content}" var="row" varStatus="status">
 				<tr>
 					<td>
-						<input type="checkbox" name="ids" value="${row.ROLE_ID}" />
+						<input type="checkbox" name="ids" value="${row.MOUDLE_ID}" />
 					</td>
 					<td>
-						<span title="${row.MOUDLE_NAME}">${row.ROLE_NAME}</span>
+						<span title="${row.MOUDLE_NAME}">${row.MOUDLE_NAME}</span>
 					</td>
 					<td>
-						${row.ROLE_BEGINTIME}
+						${row.MOUDLE_BEGIN_TAB}
 					</td>
 					<td>
-						${row.ROLE_ENDTIME}
+						<span>${row.MOUDLE_DESC}</span>
 					</td>
 					<td>
-						<c:choose>
-							<c:when test="${row.STATE == 1}">有效</c:when>
-							<c:when test="${row.STATE == 0}">无效</c:when>
-						</c:choose>
-					</td>
-					<td>
-						<span>${row.ROLE_DESC}</span>
-					</td>
-					<td>
-						<a href="edit.do?id=${row.ROLE_ID}"><cc:message key="admin.common.edit" /></a>
+						<a href="edit.do?id=${row.MOUDLE_ID}"><cc:message key="admin.common.edit" /></a>
+						<a href="base}article.path}" target="_blank"><cc:message key="admin.common.view" /></a>
 					</td>
 				</tr>
 			</c:forEach>

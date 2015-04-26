@@ -28,7 +28,7 @@ $().ready(function() {
 	$inputForm.validate({
 		rules: {
 			ROLE_NAME: "required",
-			STATE: "required"
+			BUREAU_NO: "required"
 		}
 	});
 	
@@ -51,7 +51,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					请选择区域:
+					<span class="requiredField">*</span>请选择区域:
 				</th>
 				<td>
 					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200"  style="width:190px;">

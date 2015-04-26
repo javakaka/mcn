@@ -66,7 +66,7 @@ $().ready(function() {
 				//alert('.....');
 			},
 			success: function(msg, textStatus) {
-				$.message(msg.type, msg.content);
+				$.message(msg.type, "密码修改成功,下次登录生效");
 			},
 			complete: function (XMLHttpRequest, textStatus){
 				//alert("complete...");

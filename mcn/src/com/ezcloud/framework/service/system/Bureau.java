@@ -49,6 +49,35 @@ public class Bureau  extends Service{
 		page = new Page(dataSet, total, pageable);
 		return page;
 	}
+	
+	/**
+	 * 分页查询
+	 * 
+	 * @Title: queryPage
+	 * @return Page
+	 */
+	public Page queryPageWithToken() {
+		Page page = null;
+		Pageable pageable = (Pageable) row.get("pageable");
+		sql = " select * from (select a.*,b.token from sm_bureau a left join sm_bureau_token b on a.bureau_no=b.bureau_no order by a.bureau_no) as tab where 1=1 ";
+		String restrictions = addRestrictions(pageable);
+		String orders = addOrders(pageable);
+		sql += restrictions;
+		sql += orders;
+		String countSql = "select count(*) from (select a.*,b.token from sm_bureau a left join sm_bureau_token b on a.bureau_no=b.bureau_no ) as tab where 1=1 ";
+		countSql += restrictions;
+		countSql += orders;
+		long total = count(countSql);
+		int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
+		if (totalPages < pageable.getPageNumber()) {
+			pageable.setPageNumber(totalPages);
+		}
+		int startPos = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+		sql += " limit " + startPos + " , " + pageable.getPageSize();
+		dataSet = queryDataSet(sql);
+		page = new Page(dataSet, total, pageable);
+		return page;
+	}
 
 	/**
 	 * 保存
@@ -97,6 +126,20 @@ public class Bureau  extends Service{
 		Row row = new Row();
 		String id = getRow().getString("id");
 		sql = "select * from sm_bureau where bureau_no='" + id + "'";
+		row = queryRow(sql);
+		return row;
+	}
+	
+	/**
+	 * 根据id查找
+	 * 
+	 * @return Row
+	 * @throws
+	 */
+	public Row findWithToken() {
+		Row row = new Row();
+		String id = getRow().getString("id");
+		sql = "select a.*,b.token from sm_bureau a left join sm_bureau_token b on a.bureau_no=b.bureau_no where a.bureau_no='" + id + "'";
 		row = queryRow(sql);
 		return row;
 	}
@@ -163,6 +206,9 @@ public class Bureau  extends Service{
 			update(sql);
 			
 			sql = "delete from sm_site where bureau_no in(" + id + ")";
+			update(sql);
+			
+			sql = "delete from sm_bureau_token where bureau_no in(" + id + ")";
 			update(sql);
 			
 			sql = "delete from sm_bureau where bureau_no in(" + id + ")";

@@ -227,6 +227,104 @@ public class SystemSite  extends Service{
 		return ds;
 	}
 	
+	public DataSet queryOrgSiteAsFun(String org_id)
+	{
+		DataSet ds=new DataSet();
+		sql ="select site_no as fun_id,up_site_no as up_fun_id ,site_name as fun_name from sm_site  where bureau_no='"+org_id+"'";
+		ds =queryDataSet(sql);
+		return ds;
+	}
+	
+	//将所有功能目录按等级从上到下排序
+	@SuppressWarnings("unchecked")
+	public DataSet getSortedFuns(DataSet ds)
+	{
+		DataSet sortDs =new DataSet();
+		if(ds == null){
+			return sortDs;
+		}
+		String f_id=null;
+		String p_id=null;
+		Row row =null;
+		for(int i=0;i<ds.size();i++)
+		{
+			row =(Row)ds.get(i);
+			f_id =row.getString("fun_id",null);
+			p_id =row.getString("up_fun_id",null);
+			if(p_id == null || p_id.replace(" ","").length()==0)
+			{
+				sortDs.add(row);
+				if(isHaveChildNodes(f_id, ds))
+				{
+					pushSortChildren(f_id, ds, sortDs);
+				}
+			}
+		}
+		return sortDs;
+	}
+
+	//判断某个节点有子节点
+	public static boolean isHaveChildNodes(String fun_id,DataSet ds)
+	{
+		boolean bool=false;
+		if(ds == null || ds.size() ==0 )
+			return bool;
+		String p_id=null;
+		Row funRow=null;
+		for(int i=0; i<ds.size(); i++)
+		{
+			funRow=(Row)ds.get(i);
+			p_id =funRow.getString("up_fun_id",null);
+			if(p_id != null && p_id.equalsIgnoreCase(fun_id)){
+				bool =true;
+				break;
+			}
+		}
+		return bool;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void pushSortChildren(String fun_id,DataSet ds,DataSet sortDs)
+	{
+		DataSet childDs =getChildrenNodes(fun_id, ds);
+		String f_id=null;
+		Row row =null;
+		if(childDs != null && childDs.size() >0)
+		{
+			for(int i=0;i<childDs.size();i++)
+			{
+				row =(Row)childDs.get(i);
+				sortDs.add(row);
+				f_id =row.getString("fun_id",null);
+				if(isHaveChildNodes(f_id, ds))
+				{
+					pushSortChildren(f_id, ds, sortDs);
+				}
+			}
+		}
+	}
+	
+	//取子节点列表
+	@SuppressWarnings("unchecked")
+	public static DataSet getChildrenNodes(String fun_id, DataSet ds)
+	{
+		DataSet childrenDataSet =new DataSet();
+		if(ds == null || ds.size() ==0)
+			return childrenDataSet;
+		String p_id=null;
+//			String f_id =null;
+		Row funRow=null;
+		for(int i=0; i< ds.size(); i++)
+		{
+			funRow=(Row)ds.get(i);
+			p_id =funRow.getString("up_fun_id",null);
+			if(p_id != null && p_id.equals(fun_id))
+			{
+				childrenDataSet.add(funRow);
+			}
+		}
+		return childrenDataSet;
+	}
 	public String queryBureauNo(String id)
 	{
 		String bureau_no =null;

@@ -89,6 +89,9 @@ $().ready(function() {
 					<a href="javascript:;" class="sort" name="BUREAU_NO">编号</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="TOKEN">TOKEN</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="BUREAU_NAME">企业名称</a>
 				</th>
 				<th>
@@ -125,6 +128,9 @@ $().ready(function() {
 					</td>
 					<td>
 						${row.BUREAU_NO}
+					</td>
+					<td>
+						${row.TOKEN}
 					</td>
 					<td>
 						${row.BUREAU_NAME}

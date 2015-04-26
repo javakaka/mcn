@@ -28,8 +28,7 @@ $().ready(function() {
 	$inputForm.validate({
 		rules: {
 			ROLE_ID: "required",
-			ROLE_NAME: "required",
-			BUREAU_NO: "required"
+			ROLE_NAME: "required"
 		}
 	});
 
@@ -38,7 +37,7 @@ $().ready(function() {
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo; <cc:message key="framework.moudle.edit"/>
+		<cc:message key="framework.nav.index" /> &raquo;角色维护
 	</div>
 	<form id="inputForm" action="update.do" method="post">
 		<input type="hidden" name="ROLE_ID" value="${role.ROLE_ID}" />
@@ -53,7 +52,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					<span class="requiredField">*</span>请选择区域:
+					请选择区域:
 				</th>
 				<td>
 					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200" style="width:190px;">

@@ -116,6 +116,12 @@ $().ready(function() {
 					<input type="checkbox" id="check_reimburse"    name="modules"  maxlength="10" value="reimburse" />报销
 					<input type="checkbox" id="check_task"         name="modules"  maxlength="10" value="task" />任务
 					<input type="checkbox" id="check_meeting_room" name="modules"  maxlength="10" value="meeting_room" />会议室
+					<input type="checkbox" id="check_checkin" name="modules"  maxlength="10" value="checkin" />签到
+					<input type="checkbox" id="check_ask_leave" name="modules"  maxlength="10" value="ask_leave" />请假
+					<input type="checkbox" id="check_query_leave" name="modules"  maxlength="10" value="query_leave" />请假查询
+					<input type="checkbox" id="check_query_base" name="modules"  maxlength="10" value="query_base" />基本查询
+					<input type="checkbox" id="check_change_pwd" name="modules"  maxlength="10" value="change_pwd" />修改密码
+					<input type="checkbox" id="check_message" name="modules"  maxlength="10" value="message" />通知
 				</td>
 			</tr>
 			<tr>

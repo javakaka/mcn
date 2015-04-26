@@ -12,14 +12,14 @@ public class TestApi {
 	// login 
 	public static void login()
 	{
-		String url ="http://localhost:8080/mcn/api/action/login.do";
-		//String url ="http://211.154.151.145:8080/mcn/api/action/login.do";
+//		String url ="http://localhost:8080/mcn/api/action/login.do";
+		String url ="http://211.154.151.145:8080/mcn/api/action/login.do";
 		IVO ivo =new IVO();
 		   try {
 //			ivo.set("username", "1001");
 			ivo.set("username", "13924642229");
 			ivo.set("password", "888888");
-			ivo.set("token", "MTAwMDc=");
+			ivo.set("token", "TUpZQzMx");
 			String json =  VOConvert.ivoToJson(ivo);
 			System.out.print("ivo to json ====>>"+json);
 			String res =NetUtil.getNetResponse(url, json,"UTF-8");
@@ -683,6 +683,6 @@ public class TestApi {
 		 //查询已审批过的记录
 	//	 statusList();
 		 //查询客户端版本更新接口
-		 selectB();
+//		 selectB();
 	 }
 	 }

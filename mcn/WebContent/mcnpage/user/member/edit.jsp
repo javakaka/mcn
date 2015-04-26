@@ -135,9 +135,11 @@ function cancelUsername()
 				</th>
 				<td>
 					<input type="text" id="USERNAME" name="USERNAME" class="text" maxlength="200" value="${row.USERNAME}" readonly/>
+					<!-- 
 					<input type="button" id="editNameBtn" name="editNameBtn" class="button"  value="修改" onclick="changeUsername()"/>
 					<input type="button" id="saveNameBtn" name="saveNameBtn" class="button"  value="保存" onclick="saveUsername()" style="display:none;" />
 					<input type="button" id="cancelNameBtn" name="cancelNameBtn" class="button"  value="取消" onclick="cancelUsername()" style="display:none;" />
+					 -->
 				</td>
 			</tr>
 			<tr>

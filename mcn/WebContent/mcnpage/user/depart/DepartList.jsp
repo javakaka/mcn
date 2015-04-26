@@ -18,7 +18,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">
 $().ready(function() {
 
-	[@flash_message /]
+	${flash_message}
 
 });
 </script>
@@ -28,15 +28,17 @@ $().ready(function() {
 		管理中心 &raquo;部门列表
 		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
-	<form id="listForm" action="BookList.do" method="get">
+	<form id="listForm" action="DepartList.do" method="get">
 		<div class="bar">
 			<a href="add.do" class="iconButton">
 				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
 			</a>
 			<div class="buttonWrap">
+				<!-- 
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span><cc:message key="admin.common.delete" />
 				</a>
+				-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span><cc:message key="admin.common.refresh" />
 				</a>

@@ -27,7 +27,8 @@ $().ready(function() {
 	// 表单验证
 	$inputForm.validate({
 		rules: {
-			SITE_NAME: "required"
+			SITE_NAME: "required",
+			STATE: "required"
 		}
 	});
 	
@@ -63,7 +64,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					状态:
+					<span class="requiredField">*</span>状态:
 				</th>
 				<td>
 					<select id="STATE" name="STATE" class="text" maxlength="200"  style="width:190px;" >

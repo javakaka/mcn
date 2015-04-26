@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.service.system.Bureau;
+import com.ezcloud.framework.service.system.SystemBureauTokenService;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.IVO;
 import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
@@ -32,6 +34,9 @@ public class ApiInterceptor  implements HandlerInterceptor{
 	@Resource(name = "frameworkSystemBureauService")
 	private Bureau bureau;
 	
+	@Resource(name = "frameworkSystemBureauTokenService")
+	private SystemBureauTokenService systemBureauTokenService;
+	
 	public ApiInterceptor() {  
 		
     } 
@@ -48,14 +53,11 @@ public class ApiInterceptor  implements HandlerInterceptor{
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception arg3)
 			throws Exception {
-		//System.out.println("==============执行顺序: 3、afterCompletion================");
-		//System.out.println("============== type ================"+response.getCharacterEncoding());
 	}
 
 	//在业务处理器处理请求执行完成后,生成视图之前执行的动作
 	public void postHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler, ModelAndView modelAndView) throws Exception {
-		//System.out.println("==============执行顺序: 2、postHandle================");
 	}
 
 	/** 
@@ -72,7 +74,6 @@ public class ApiInterceptor  implements HandlerInterceptor{
      */
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) throws Exception {
-		//System.out.println("==============执行顺序: 1、preHandle================");
 		String url=request.getRequestURL().toString();    
 //        if(mappingURL==null || url.matches(mappingURL)){    
 //            request.getRequestDispatcher("/msg.jsp").forward(request, response);  
@@ -81,6 +82,7 @@ public class ApiInterceptor  implements HandlerInterceptor{
         IVO ivo =proccessRequest(request);
         //检查是否有token 参数
         String token =ivo.getString("token",null);
+        String bureau_no ="";
         if(token == null || token.replace(" ", "").length() ==0)
         {
         	ovo =new OVO();
@@ -99,13 +101,34 @@ public class ApiInterceptor  implements HandlerInterceptor{
         	Row row =bureau.find();
         	if(row == null || row.getString("bureau_no",null) == null)
         	{
-        		ovo =new OVO();
-            	ovo.iCode =-10002;
-            	ovo.sExp ="非法token";
-            	ovo.sMsg ="非法token";
-            	sendError(response, ovo);
-            	System.out.println("token3=="+token);
-            	return false;
+        		bureau_no =systemBureauTokenService.getBureauNoByToken(token);
+        		if(StringUtils.isEmptyOrNull(bureau_no))
+        		{
+        			ovo =new OVO();
+                	ovo.iCode =-10002;
+                	ovo.sExp ="非法token";
+                	ovo.sMsg ="非法token";
+                	sendError(response, ovo);
+                	return false;
+        		}
+        		else
+        		{
+        			bureau.getRow().put("id", bureau_no);
+                	row =bureau.find();
+                	if(row == null || row.getString("bureau_no",null) == null)
+                	{
+                		ovo =new OVO();
+                    	ovo.iCode =-10002;
+                    	ovo.sExp ="非法token";
+                    	ovo.sMsg ="非法token";
+                    	sendError(response, ovo);
+                    	return false;
+                	}
+                	else
+                	{
+                		token =bureau_no;
+                	}
+        		}
         	}
         	ivo.set("token", token);
         	System.out.println("token="+token);

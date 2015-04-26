@@ -29,7 +29,8 @@ $().ready(function() {
 		rules: {
 			DEPART_ID: "required",
 			NAME: "required",
-			PASSWORD: "required"
+			PASSWORD: "required",
+			STATUS: "required"
 		}
 	});
 	
@@ -57,7 +58,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					姓名:
+					<span class="requiredField">*</span>姓名:
 				</th>
 				<td>
 					<input type="text" name="NAME" class="text" maxlength="200" />
@@ -66,7 +67,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					密码:
+					<span class="requiredField">*</span>密码:
 				</th>
 				<td>
 					<input type="text" name="PASSWORD" class="text" maxlength="200" />
@@ -139,7 +140,7 @@ $().ready(function() {
 			</tr>
 			<tr>
 				<th>
-					状态:
+					<span class="requiredField">*</span>状态:
 				</th>
 				<td>
 					<select id="STATUS" name="STATUS" class="text" maxlength="200"  style="width:190px;">

@@ -18,14 +18,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">
 $().ready(function() {
 
-	${flash_message}
+	[@flash_message /]
 
 });
 </script>
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo;角色维护
+		<cc:message key="framework.nav.index" /> &raquo;角色列表
 		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
 	<form id="listForm" action="RoleList.do" method="get">

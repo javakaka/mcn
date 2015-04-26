@@ -13,6 +13,7 @@ import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.framework.vo.VOConvert;
+import com.mcn.service.CompanyModule;
 import com.mcn.service.CompanySite;
 import com.mcn.service.CompanyUser;
 
@@ -29,6 +30,9 @@ public class LoginController extends BaseController {
 	
 	@Resource(name = "companySiteService")
 	private CompanySite companySiteService;
+	
+	@Resource(name = "adminCompanyModuleService")
+	private CompanyModule companyModuleService;
 	
 	/**
 	 * 登陆
@@ -104,6 +108,28 @@ public class LoginController extends BaseController {
 				ovo.set("position",staff.getString("position", ""));
 				ovo.set("manager_id",staff.getString("manager_id", ""));
 				ovo.set("remark",staff.getString("remark", ""));
+				//获取企业模块
+				Row module = companyModuleService.edit(token);
+//				checkin 签到，0没有此功能1有此功能
+//				ask_leave 请假，0没有此功能1有此功能
+//				query_leave 基本查询，0没有此功能1有此功能
+//				query_base 基本查询，0没有此功能1有此功能
+//				change_pwd 修改密码，0没有此功能1有此功能
+//				message 通知，0没有此功能1有此功能
+				String punch=module.getString("punch","0");
+				String checkin=module.getString("checkin","0");
+				String ask_leave=module.getString("ask_leave","0");
+				String query_leave=module.getString("query_leave","0");
+				String query_base=module.getString("query_base","0");
+				String change_pwd=module.getString("change_pwd","0");
+				String message=module.getString("message","0");
+				ovo.set("punch", punch);
+				ovo.set("checkin", checkin);
+				ovo.set("ask_leave", ask_leave);
+				ovo.set("query_leave", query_leave);
+				ovo.set("query_base", query_base);
+				ovo.set("change_pwd", change_pwd);
+				ovo.set("message", message);
 			}
 		}
 		return VOConvert.ovoToJson(ovo);

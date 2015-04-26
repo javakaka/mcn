@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><cc:message key="framework.moudle.edit"/></title>
+<title>加班单审批</title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
@@ -27,92 +27,115 @@ $().ready(function() {
 	// 表单验证
 	$inputForm.validate({
 		rules: {
-			ROLE_ID: "required",
-			ROLE_NAME: "required",
-			BUREAU_NO: "required"
+			ID: "required",
+			STATUS: "required"
 		}
 	});
-
+	
 });
 </script>
 </head>
 <body>
 	<div class="path">
-		<cc:message key="framework.nav.index" /> &raquo; <cc:message key="framework.moudle.edit"/>
+		管理中心 &raquo; 加班单审批
 	</div>
 	<form id="inputForm" action="update.do" method="post">
-		<input type="hidden" name="ROLE_ID" value="${role.ROLE_ID}" />
+	<input type="hidden" name="ID" class="text" maxlength="200" value="${row.ID}"/>
 		<table class="input">
 			<tr>
 				<th>
-					<span class="requiredField">*</span>角色名称:
+					用户姓名:
 				</th>
 				<td>
-					<input type="text" name="ROLE_NAME" value="${role.ROLE_NAME}" class="text" maxlength="200" />
+					${row.USER_NAME}
 				</td>
 			</tr>
 			<tr>
 				<th>
-					<span class="requiredField">*</span>请选择区域:
+					部门:
 				</th>
 				<td>
-					<select id="BUREAU_NO" name="BUREAU_NO" class="text" maxlength="200" style="width:190px;">
-						<option value="" selected>请选择...</option>
-						<c:forEach items="${bureau}" var="row" varStatus="status">
-							<c:choose>
-								<c:when test="${row.BUREAU_NO == role.BUREAU_NO}">
-									<option value="${row.BUREAU_NO}" selected>${row.BUREAU_NAME}</option>
-								</c:when>
-								<c:otherwise>
-									<option value="${row.BUREAU_NO}" >${row.BUREAU_NAME}</option>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
+					${row.SITE_NAME}
+				</td>
+			</tr>
+			<tr>
+				<th>
+					开始时间:
+				</th>
+				<td>
+					<c:choose>
+							<c:when test="${row.STATUS == 1}">
+								<input type="text" name="START_TIME" class="text Wdate" onfocus="WdatePicker()" maxlength="200" value="${row.START_TIME}"/>
+							</c:when>
+							<c:otherwise>
+								${row.START_TIME}
+							</c:otherwise>
+						</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					结束时间:
+				</th>
+				<td>
+					<c:choose>
+							<c:when test="${row.STATUS == 1}">
+								<input type="text" name="END_TIME" class="text Wdate" onfocus="WdatePicker()" maxlength="200" value="${row.END_TIME}"/>
+							</c:when>
+							<c:otherwise>
+								${row.END_TIME}
+							</c:otherwise>
+						</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					状态:
+				</th>
+				<td>
+					<select id="STATUS" name="STATUS" class="text" style="width:190px;">
+						<c:choose>
+							<c:when test="${row.STATUS == 1}">
+								<option value="1" selected>申请中</option>
+								<option value="2" >审核通过</option>
+								<option value="3" >审核不通过</option>
+							</c:when>
+							<c:when test="${row.STATUS == 2}">
+								<option value="1" selected>申请中</option>
+								<option value="2" >审核通过</option>
+								<option value="3" >审核不通过</option>
+							</c:when>
+							<c:when test="${row.STATUS == 3}">
+								<option value="1" selected>申请中</option>
+								<option value="2" >审核通过</option>
+								<option value="3" >审核不通过</option>
+							</c:when>
+							<c:otherwise>
+								<option value="" selected>请选择...</option>
+								<option value="1" >申请中</option>
+								<option value="2" >审核通过</option>
+								<option value="3" >审核不通过</option>
+							</c:otherwise>
+						</c:choose>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<th>
-					请选择状态:
+					申请时间:
 				</th>
 				<td>
-					<select id="STATE" name="STATE" class="text" maxlength="200"  style="width:190px;">
-						<c:if test="${role.STATE ==1}">
-							<option value="1" selected>有效</option>
-							<option value="0">无效</option>
-						</c:if>
-						<c:if test="${role.STATE ==0}">
-							<option value="1" >有效</option>
-							<option value="0" selected>无效</option>
-						</c:if>
-					</select>
+					${row.CREATE_TIME}
 				</td>
 			</tr>
 			<tr>
 				<th>
-					有效期起始时间:
+					备注:
 				</th>
 				<td>
-					<input type="text" name="ROLE_BEGINTIME" value="${role.ROLE_BEGINTIME}" maxlength="200" class="text Wdate" onfocus="WdatePicker();" />
+					<input type="text" name="REMARK" class="text" maxlength="200" value="${row.REMARK}"/>
 				</td>
 			</tr>
-			<tr>
-				<th>
-					有效期结束时间:
-				</th>
-				<td>
-					<input type="text" name="ROLE_ENDTIME" value="${role.ROLE_ENDTIME}" maxlength="200" class="text Wdate" onfocus="WdatePicker();"/>
-				</td>
-			</tr>
-			<tr>
-				<th>
-					功能简介:
-				</th>
-				<td>
-					<input type="text" name="ROLE_DESC" value="${role.ROLE_DESC}" class="text" maxlength="200" />
-				</td>
-			</tr>
-
 			<tr>
 				<th>
 					&nbsp;

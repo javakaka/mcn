@@ -44,6 +44,14 @@ $().ready(function() {
 		<table class="input">
 			<tr>
 				<th>
+					企业TOKEN:
+				</th>
+				<td>
+					${bureau.TOKEN}
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<span class="requiredField">*</span>企业名称:
 				</th>
 				<td>
@@ -143,6 +151,12 @@ $().ready(function() {
 					<input type="checkbox" id="check_reimburse"   name="modules"  maxlength="10" value="reimburse" <c:if test="${module.REIMBURSE == 1}">checked</c:if> />报销
 					<input type="checkbox" id="check_task"        name="modules"  maxlength="10" value="task" <c:if test="${module.TASK == 1}">checked</c:if> />任务
 					<input type="checkbox" id="check_meeting_room" name="modules"  maxlength="10" value="meeting_room" <c:if test="${module.MEETING_ROOM == 1}">checked</c:if> />会议室
+					<input type="checkbox" id="check_checkin" name="modules"  maxlength="10" value="checkin" <c:if test="${module.CHECKIN == 1}">checked</c:if>  />签到
+					<input type="checkbox" id="check_ask_leave" name="modules"  maxlength="10" value="ask_leave" <c:if test="${module.ASK_LEAVE == 1}">checked</c:if>  />请假
+					<input type="checkbox" id="check_query_leave" name="modules"  maxlength="10" value="query_leave"  <c:if test="${module.QUERY_LEAVE == 1}">checked</c:if> />请假查询
+					<input type="checkbox" id="check_query_base" name="modules"  maxlength="10" value="query_base" <c:if test="${module.QUERY_BASE == 1}">checked</c:if>  />基本查询
+					<input type="checkbox" id="check_change_pwd" name="modules"  maxlength="10" value="change_pwd" <c:if test="${module.CHANGE_PWD == 1}">checked</c:if>  />修改密码
+					<input type="checkbox" id="check_message" name="modules"  maxlength="10" value="message" <c:if test="${module.MESSAGE == 1}">checked</c:if>  />通知
 				</td>
 			</tr>
 			<tr>

@@ -81,7 +81,7 @@ $().ready(function() {
 	<table class="main">
 		<tr>
 			<th class="logo">
-				<a href="login.jsp">
+				<a href="http://www.qhrico.com" target="_blank">
 					<!-- <img src="<%=basePath%>/res/images/login_logo.gif" alt="Logo" />-->
 					<c:choose >
 						<c:when test="${staff.STAFF_NAME == 'admin@fdzk'}">
