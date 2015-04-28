@@ -75,7 +75,7 @@ public class PunchRuleController extends BaseController{
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id !=null && org_id.replace(" ", "").length() >0)
-		model.addAttribute("sites",systemSiteService.queryOrgSite(org_id));
+		model.addAttribute("sites",systemSiteService.queryOrgSiteWhereNotRuled(org_id));
 		return "/mcnpage/user/punch/rule/add";
 	}
 

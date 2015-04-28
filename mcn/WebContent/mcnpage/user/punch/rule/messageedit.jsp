@@ -14,8 +14,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
+<script type="text/javascript" src="<%=basePath%>/resources/admin/editor/kindeditor.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 	var $selectAll = $("#selectall");
@@ -61,7 +63,7 @@ $().ready(function() {
 					<span class="requiredField">*</span>内容:
 				</th>
 				<td>
-					<textarea rows="10" id="content" name="message_content" cols="100">${row.MESSAGE_CONTENT}</textarea>
+					<textarea id="editor"  name="message_content" class="editor">${row.MESSAGE_CONTENT}</textarea>
 				</td>
 			</tr>
 			<tr>

@@ -227,6 +227,14 @@ public class SystemSite  extends Service{
 		return ds;
 	}
 	
+	public DataSet queryOrgSiteWhereNotRuled(String org_id)
+	{
+		DataSet ds=new DataSet();
+		sql ="select * from sm_site  where bureau_no='"+org_id+"' and site_no not in (select depart_id from mcn_punch_rule where org_id='"+org_id+"' );";
+		ds =queryDataSet(sql);
+		return ds;
+	}
+	
 	public DataSet queryOrgSiteAsFun(String org_id)
 	{
 		DataSet ds=new DataSet();

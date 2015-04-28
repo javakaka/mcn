@@ -79,7 +79,7 @@ $().ready( function() {
 if(typeof(KindEditor) != "undefined") {
 	KindEditor.ready(function(K) {
 		editor = K.create("#editor", {
-			height: "650px",
+			height: "400px",
 			items: [
 				"source", "|", "undo", "redo", "|", "preview", "print", "template", "cut", "copy", "paste",
 				"plainpaste", "wordpaste", "|", "justifyleft", "justifycenter", "justifyright",

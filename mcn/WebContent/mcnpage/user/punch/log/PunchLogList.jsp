@@ -183,6 +183,12 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 							<li>
 								<a href="javascript:;" name="punch_type" val="6" <c:if test="${punch_type == '6'}"> class="checked" </c:if> >加班结束</a>
 							</li>
+							<li>
+								<a href="javascript:;" name="punch_type" val="7" <c:if test="${punch_type == '7'}"> class="checked" </c:if> >签到</a>
+							</li>
+							<li>
+								<a href="javascript:;" name="punch_type" val="8" <c:if test="${punch_type == '8'}"> class="checked" </c:if> >签退</a>
+							</li>
 							<li class="separator">
 								<a href="javascript:;" name="punch_result" val="1" <c:if test="${punch_result == '1'}"> class="checked" </c:if> >正常</a>
 							</li>

@@ -14,6 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
+<script type="text/javascript" src="<%=basePath%>/resources/admin/editor/kindeditor.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
@@ -26,7 +27,7 @@ $().ready(function() {
 	
 });
 function leavespgz(){
-	var content = $('#content').val();
+	var content = $('#editor').val();
 	if(content == null || content == ""){
 		alert("提交内容不能为空！");
 	}else{
@@ -50,7 +51,7 @@ function leavespgz(){
 					<span class="requiredField">*</span>审批规则说明:
 				</th>
 				<td>
-					<textarea rows="10" id="content" name="content" cols="100">${content_spgz}</textarea>
+					<textarea id="editor"  name="content" class="editor">${content_spgz}</textarea>
 				</td>
 			</tr>
 			
