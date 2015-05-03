@@ -104,6 +104,7 @@ public class PunchRuleService extends Service{
 		String AM_END=getRow().getString("AM_END","");
 		String PM_START=getRow().getString("PM_START","");
 		String PM_END=getRow().getString("PM_END","");
+		String PUNCH_NUM=getRow().getString("PUNCH_NUM","");
 		row.put("DEPART_ID", DEPART_ID);
 		row.put("AM_START", AM_START);
 		row.put("AM_END", AM_END);

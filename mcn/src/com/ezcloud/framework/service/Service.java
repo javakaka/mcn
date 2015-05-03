@@ -134,6 +134,47 @@ public class Service {
 		rowNum = jdbcTemplate.update(sql);
 		return rowNum;
 	}
+	// 更新
+	public int updateWithoutFilterEmptyStirng(String tableName, Row row, String where) {
+		int rowNum = 0;
+		if (tableName == null || tableName.replace(" ", "").length() == 0)
+			return rowNum;
+		if (where == null || where.replace(" ", "").length() == 0)
+			return rowNum;
+		if (row == null)
+			return rowNum;
+		if (row.keySet().size() == 0)
+			return rowNum;
+		Object[] colnums = row.keySet().toArray();
+		sql = "update " + tableName + " set ";
+		String colName = "";
+		String colValue = "";
+		int notNullValueIndex =0;
+		for (int i = 0; i < colnums.length; i++) {
+			colName = (String) colnums[i];
+			colValue = row.getString(colName,null);
+			if(colValue != null && colValue.replace(" ", "").length() > 0)
+			{
+				if (notNullValueIndex > 0) {
+					sql += ",";
+				}
+				sql += colName + "='" + colValue + "' ";
+				notNullValueIndex ++;
+			}
+			else
+			{
+				colValue ="";
+				if (notNullValueIndex > 0) {
+					sql += ",";
+				}
+				sql += colName + "='" + colValue + "' ";
+				notNullValueIndex ++;
+			}
+		}
+		sql += " where " + where;
+		rowNum = jdbcTemplate.update(sql);
+		return rowNum;
+	}
 
 	// 更新
 	public int update(String sql) {

@@ -19,30 +19,18 @@ public class MessageReadLogService extends Service{
 	 * @Title: queryPage
 	 * @return Page
 	 */
-	public Page queryPageForCompany() {
+	public Page queryPageForCompany(Pageable pageable) {
 		Page page = null;
-		Pageable pageable = (Pageable) row.get("pageable");
-		String org_id =row.getString("org_id",null);
-		String status =row.getString("status",null);
-		String start_date =row.getString("start_date",null);
-		String end_date =row.getString("end_date",null);
+		String org_id =row.getString("org_id","");
+		String m_id =row.getString("m_id","");
 		sql = "select a.*, b.name  from mcn_message_read_log a left join mcn_users b on a.user_id=b.id where 1=1 ";
-		if(org_id == null || org_id.replace(" ", "").length() == 0)
+		if(!StringUtils.isEmptyOrNull(org_id))
 		{
-			return page;
+			sql +=" and b.org_id='"+org_id+"'  ";
 		}
-		sql +=" and a.org_id='"+org_id+"'  ";
-		if(! StringUtils.isEmptyOrNull(status))
+		if(!StringUtils.isEmptyOrNull(m_id))
 		{
-			sql +=" and a.status='"+status+"' ";
-		}
-		if(! StringUtils.isEmptyOrNull(start_date))
-		{
-			sql +=" and a.start_date >='"+start_date+"' ";
-		}
-		if(! StringUtils.isEmptyOrNull(end_date))
-		{
-			sql +=" and a.end_date < '"+end_date+"' ";
+			sql +=" and a.m_id='"+m_id+"'  ";
 		}
 		sql += "ORDER BY a.id DESC ";
 		String restrictions = addRestrictions(pageable);
@@ -50,21 +38,15 @@ public class MessageReadLogService extends Service{
 		sql += restrictions;
 		sql += orders;
 		String countSql = "select count(*) from mcn_message_read_log a left join mcn_users b  on a.user_id=b.id  where 1=1 ";
-		countSql +=" and a.org_id='"+org_id+"' ";
-		if(! StringUtils.isEmptyOrNull(status))
+		if(!StringUtils.isEmptyOrNull(org_id))
 		{
-			countSql +=" and a.status='"+status+"' ";
+			countSql +=" and b.org_id='"+org_id+"' ";
 		}
-		if(! StringUtils.isEmptyOrNull(start_date))
+		if(!StringUtils.isEmptyOrNull(m_id))
 		{
-			countSql +=" and a.start_date >='"+start_date+"' ";
-		}
-		if(! StringUtils.isEmptyOrNull(end_date))
-		{
-			countSql +=" and a.end_date < '"+end_date+"' ";
+			countSql +=" and a.m_id='"+m_id+"'  ";
 		}
 		countSql += restrictions;
-//		countSql += orders;
 		long total = count(countSql);
 		int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
 		if (totalPages < pageable.getPageNumber()) 
@@ -73,33 +55,8 @@ public class MessageReadLogService extends Service{
 		}
 		int startPos = (pageable.getPageNumber() - 1) * pageable.getPageSize();
 		sql += " limit " + startPos + " , " + pageable.getPageSize();
-		System.out.println("url========"+sql);
 		dataSet = queryDataSet(sql);
-		DataSet data = new DataSet();
-		if(dataSet.size()>0){
-		for(int i=0;i<dataSet.size();i++){
-			Row row = new Row();
-			row = (Row) dataSet.get(i);
-			String leave_id = row.getString("id");
-			String sql2 = "SELECT b.name as status_name from check_up_log a,mcn_users b WHERE a.up_check_id=b.id and a.leave_id='"+leave_id+"'";
-			DataSet dataSet2 = queryDataSet(sql2);
-			String statu_name = "";
-			if(dataSet2.size()>0){
-				for(int j=0;j<dataSet2.size();j++){
-					Row row2 = new Row();
-					row2 = (Row) dataSet2.get(j);
-					if(j==0){
-					statu_name += row2.getString("status_name");
-					}else{
-					statu_name += ","+row2.getString("status_name");
-					}
-				}
-			}
-			row.put("statu_name", statu_name);
-			data.add(row);
-		}
-		}
-		page = new Page(data, total, pageable);
+		page = new Page(dataSet, total, pageable);
 		return page;
 	}
 

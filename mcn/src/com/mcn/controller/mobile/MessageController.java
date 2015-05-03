@@ -98,7 +98,7 @@ public class MessageController extends BaseController{
 			return json;
 		}
 		Row msgRow =messageService.queryMessageById(id);
-		String content =msgRow.getString("content","");
+		String content =msgRow.getString("message_content","");
 		String attach =msgRow.getString("message_fj","");
 		//保存阅读记录
 		Row read_log_row =messageReadLogService.findByUserId(user_id);
@@ -106,6 +106,7 @@ public class MessageController extends BaseController{
 		{
 			read_log_row =new Row();
 			read_log_row.put("user_id", user_id);
+			read_log_row.put("m_id", id);
 			messageReadLogService.save(read_log_row);
 		}
 		else

@@ -571,11 +571,12 @@ public class TestApi {
 		
 		//通知公告
 		public static void message() {
-		//	String url ="http://localhost:8080/mcn/api/punch/message.do";
-			String url ="http://116.31.92.48:8080/mcn/api/punch/message.do";
+			String url ="http://localhost:8080/mcn/api/message/org_message_list.do";
+//			String url ="http://116.31.92.48:8080/mcn/api/punch/message.do";
 			IVO ivo =new IVO();
 			   try {
 				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("user_id", "25");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
 				String res =NetUtil.getNetResponse(url, json,"UTF-8");
@@ -584,6 +585,24 @@ public class TestApi {
 			   } catch (JException e) {
 					e.printStackTrace();
 				}
+		}
+		//通知公告
+		public static void messageDetail() {
+			String url ="http://localhost:8080/mcn/api/message/org_message_detail.do";
+//			String url ="http://116.31.92.48:8080/mcn/api/punch/message.do";
+			IVO ivo =new IVO();
+			try {
+				ivo.set("token", "MTAwMDc=");
+				ivo.set("user_id", "25");
+				ivo.set("id", "4");
+				String json =  VOConvert.ivoToJson(ivo);
+				System.out.println("\n ivo to json ====>>"+json);
+				String res =NetUtil.getNetResponse(url, json,"UTF-8");
+				System.out.println("========================================\n");
+				System.out.print(res);
+			} catch (JException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		// 分页查询已审批过的请假列表
@@ -622,7 +641,7 @@ public class TestApi {
 	 public static void main(String[] args) {
 		 //String token = nQd9zWGtvBeGWqdnZ%2F9ZfQ%3D%3D;
 		 //登陆
-		 login();
+//		 login();
 		 //修改密码
 //		 changePwd();
 		// room list
@@ -680,6 +699,8 @@ public class TestApi {
 //	 	 punchsz();
 		 //查询通知公告
 //		 message();
+		 //查询通知公告详情
+		 messageDetail();
 		 //查询已审批过的记录
 	//	 statusList();
 		 //查询客户端版本更新接口

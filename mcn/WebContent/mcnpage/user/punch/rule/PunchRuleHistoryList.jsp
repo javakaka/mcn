@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>打卡规则</title>
+<title>打卡规则切换记录</title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
@@ -25,14 +25,16 @@ $().ready(function() {
 </head>
 <body>
 	<div class="path">
-		管理中心 &raquo;打卡规则
+		管理中心 &raquo;打卡规则切换记录
 		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
-	<form id="listForm" action="PunchRuleList.do" method="get">
+	<form id="listForm" action="PunchRuleHistoryList.do" method="get">
 		<div class="bar">
+			<!-- 
 			<a href="add.do" class="iconButton">
 				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
 			</a>
+			-->
 			<div class="buttonWrap">
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span><cc:message key="admin.common.delete" />
@@ -82,6 +84,12 @@ $().ready(function() {
 						<li>
 							<a href="javascript:;" <c:if test="${page.searchProperty == 'PM_END'}">class="current"</c:if> val="PM_END">下午下班</a>
 						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'BAK_DATE'}">class="current"</c:if> val="BAK_DATE">备份日期</a>
+						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'RUN_DATE'}">class="current"</c:if> val="RUN_DATE">生效日期</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -106,10 +114,20 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="PM_END">下午下班时间</a>
 				</th>
-				
+				<th>
+					<a href="javascript:;" class="sort" name="BAK_DATE">备份日期</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="RUN_DATE">生效日期</a>
+				</th>
+				<th>
+					<a href="javascript:;" class="sort" name="IS_DEAL">状态</a>
+				</th>
+				<!-- 
 				<th>
 					<span><cc:message key="admin.common.handle" /></span>
 				</th>
+				-->
 			</tr>
 			<c:forEach items="${page.content}" var="row" varStatus="status">
 				<tr>
@@ -132,9 +150,23 @@ $().ready(function() {
 						${row.PM_END}
 					</td>
 					<td>
+						${row.BAK_DATE}
+					</td>
+					<td>
+						${row.RUN_DATE}
+					</td>
+					<td>
+						<c:choose>
+							<c:when test="${row.IS_DEAL ==1 }">已处理</c:when>
+							<c:when test="${row.IS_DEAL ==0 }">待处理</c:when>
+						</c:choose>
+					</td>
+					<!-- 
+					<td>
 						<a href="edit.do?id=${row.ID}"><cc:message key="admin.common.edit" /></a>
 						<a href="PunchRuleHistoryList.do?d_id=${row.DEPART_ID }" target="_blank">切换记录</a>
 					</td>
+					-->
 				</tr>
 			</c:forEach>
 		</table>

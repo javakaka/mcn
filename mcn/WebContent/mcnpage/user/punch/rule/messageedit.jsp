@@ -42,6 +42,18 @@ $().ready(function() {
 	});
 	
 });
+
+var depart_ids ="${row.MESSAGE_QZ}";
+function selectDepartCheckbox()
+{
+	var arr =depart_ids.split(",");
+	for(var i=0;i<arr.length;i++)
+	{
+		var id_value =arr[i];
+		$("input:checkbox[value='"+id_value+"']").attr('checked',true);
+	}
+	
+}
 </script>
 </head>
 <body>
@@ -80,7 +92,9 @@ $().ready(function() {
 				</th>
 				<td>
 					<c:forEach items="${sites}" var="row" varStatus="status">
-							<input type="checkbox" id="message_qz" name="message_qz" value="${row.SITE_NO}"/>${row.SITE_NAME}&nbsp;
+						
+							<input type="checkbox" id="message_qz" name="message_qz" value="${row.SITE_NO}"  />${row.SITE_NAME}&nbsp;
+						
 					</c:forEach>&nbsp;<input type="button" id="selectall" value="全选">
 				</td>
 			</tr>
@@ -99,5 +113,8 @@ $().ready(function() {
 			</tr>
 		</table>
 	</form>
+<script type="text/javascript">
+	selectDepartCheckbox();
+</script>
 </body>
 </html>

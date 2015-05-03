@@ -18,24 +18,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">
 $().ready(function() {
 
-	[@flash_message /]
+	${flash_message}
 
 });
 </script>
 </head>
 <body>
 	<div class="path">
-		平台管理 &raquo;通知公告列表
+		平台管理 &raquo;通知公告已读列表
 	</div>
-	<form id="listForm" action="CompanyList.do" method="get">
+	<form id="listForm" action="messageview_list.do" method="get">
 		<div class="bar">
+			<!-- 
 			<a href="add2.do" class="iconButton">
 				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
 			</a>
+			-->
 			<div class="buttonWrap">
+				<!-- 
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span><cc:message key="admin.common.delete" />
 				</a>
+				-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span><cc:message key="admin.common.refresh" />
 				</a>
@@ -47,53 +51,22 @@ $().ready(function() {
 					<input type="checkbox" id="selectAll" />
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" >编号</a>
+					<a href="javascript:;" class="sort" >用户姓名</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" >标题</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" >内容</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" >阅读数</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" >附件</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" >发送群组</a>
-				</th>
-				<th>
-					<span><cc:message key="admin.common.handle" /></span>
+					<a href="javascript:;" class="sort" >阅读次数</a>
 				</th>
 			</tr>
-			<c:forEach items="${page}" var="row" varStatus="status">
+			<c:forEach items="${page.content}" var="row" varStatus="status">
 				<tr>
 					<td>
 						<input type="checkbox" name="ids" value="${row.ID}" />
 					</td>
 					<td>
-						${row.ID}
+						${row.NAME}
 					</td>
 					<td>
-						${row.MESSAGE_NAME}
-					</td>
-					<td>
-						${row.MESSAGE_CONTENT}
-					</td>
-					<td>
-						${row.READ_TOTAL_NUM}
-					</td>
-					<td>
-						<span>${row.MESSAGE_FJ}</span>
-					</td>
-					<td>
-						<span>${row.MESSAGE_QZ}</span>
-					</td>
-					<td>
-						<a href="messageedit2.do?id=${row.ID}"><cc:message key="admin.common.edit" /></a>
-						<a href="messageview_list.do?id=${row.ID}" target="_blank">已读清单</a>
+						${row.READ_NUM}
 					</td>
 				</tr>
 			</c:forEach>

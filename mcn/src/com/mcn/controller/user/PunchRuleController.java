@@ -28,6 +28,8 @@ import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
+import com.mcn.service.MessageReadLogService;
+import com.mcn.service.PunchRuleBakService;
 import com.mcn.service.PunchRuleService;
 import com.mcn.service.PunchSettingService;
 
@@ -43,6 +45,12 @@ public class PunchRuleController extends BaseController{
 	
 	@Resource(name ="mcnPunchSettingService")
 	private PunchSettingService punchSettingService;
+	
+	@Resource(name ="mcnMessageReadLogService")
+	private MessageReadLogService messageReadLogService;
+	
+	@Resource(name ="mcnPunchRuleBakService")
+	private PunchRuleBakService punchRuleBakService;
 	
 	
 	/**
@@ -68,6 +76,34 @@ public class PunchRuleController extends BaseController{
 		Page page = punchRuleService.queryPageForCompany();
 		model.addAttribute("page", page);
 		return "/mcnpage/user/punch/rule/PunchRuleList";
+	}
+	/**
+	 * 企业查询自己的打卡规则,历史记录
+	 * @param pageable
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/PunchRuleHistoryList")
+	public String historyList(String d_id,Pageable pageable, ModelMap model) {
+//		HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+		HttpSession session = getSession();
+		Row staff =(Row)session.getAttribute("staff");
+		String org_id =null;
+		if(staff != null){
+			org_id =staff.getString("bureau_no", null);
+		}
+		if(org_id == null){
+			return "/mcnpage/user/punch/rule/PunchRuleHistoryList";
+		}
+		if(d_id == null){
+			return "/mcnpage/user/punch/rule/PunchRuleHistoryList";
+		}
+		punchRuleBakService.getRow().put("org_id", org_id);
+		punchRuleBakService.getRow().put("depart_id", d_id);
+		punchRuleBakService.getRow().put("pageable", pageable);
+		Page page = punchRuleBakService.queryPageForCompany();
+		model.addAttribute("page", page);
+		return "/mcnpage/user/punch/rule/PunchRuleHistoryList";
 	}
 
 	@RequestMapping(value = "/add")
@@ -100,7 +136,32 @@ public class PunchRuleController extends BaseController{
 	@RequestMapping(value = "/edit")
 	public String edit(Long id, ModelMap model) {
 		punchRuleService.getRow().put("id", id);
-		model.addAttribute("row", punchRuleService.find());
+		Row row =punchRuleService.find();
+		model.addAttribute("row", row);
+		String time1 =row.getString("am_start","");
+		String time2 =row.getString("am_end","");
+		String time3 =row.getString("pm_start","");
+		String time4 =row.getString("pm_end","");
+		int num =0;
+		if(!StringUtils.isEmptyOrNull(time1)){
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(time2)){
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(time3)){
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(time4)){
+			num ++;
+		}
+		if(num >=2){
+			num =4;
+		}
+		else{
+			num=2;
+		}
+		model.addAttribute("punch_num", num);
 		Row staff =(Row)getSession().getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id !=null && org_id.replace(" ", "").length() >0)
@@ -109,21 +170,102 @@ public class PunchRuleController extends BaseController{
 	}
 
 	@RequestMapping(value = "/update")
-	public String update(String ID,String DEPART_ID,String AM_START,String AM_END, String PM_START,String PM_END, ModelMap model) {
+	public String update(String ID,String DEPART_ID,String AM_START,String AM_END, String PM_START,String PM_END,String PUNCH_NUM, ModelMap model) {
 		punchRuleService.getRow().clear();
 		Assert.notNull(ID, "ID can not be null");
 		Assert.notNull(DEPART_ID, "DEPART_ID can not be null");
+		if(AM_END.equals("-1"))
+		{
+			AM_END ="";
+		}
+		if(PM_START.equals("-1"))
+		{
+			PM_START ="";
+		}
 		punchRuleService.getRow().put("ID", ID);
 		punchRuleService.getRow().put("DEPART_ID", DEPART_ID);
 		punchRuleService.getRow().put("AM_START", AM_START);
 		punchRuleService.getRow().put("AM_END", AM_END);
 		punchRuleService.getRow().put("PM_START", PM_START);
 		punchRuleService.getRow().put("PM_END", PM_END);
+		punchRuleService.getRow().put("PUNCH_NUM", PUNCH_NUM);
 		Row staff =(Row)getSession().getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id ==null  ||org_id.replace(" ", "").length() == 0)
 			return "redirect:PunchRuleList.do";
-		punchRuleService.update();
+//		punchRuleService.update();
+		//是否需要切换打卡次数
+		punchRuleService.getRow().put("ID", ID);
+		Row row=punchRuleService.find();
+		String time1 =row.getString("am_start","");
+		String time2 =row.getString("am_end","");
+		String time3 =row.getString("pm_start","");
+		String time4 =row.getString("pm_end","");
+		int num =0;
+		if(!StringUtils.isEmptyOrNull(time1)){
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(time2)){
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(time3)){
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(time4)){
+			num ++;
+		}
+		if(num >=2){
+			num =4;
+		}
+		else{
+			num=2;
+		}
+		int p_num=Integer.parseInt(PUNCH_NUM);
+		System.out.println("p_num----->>"+p_num);
+		System.out.println("num----->>"+num);
+		if(p_num == num)
+		{
+			// nothing to bak 
+			punchRuleService.update();
+		}
+		else
+		{
+			//bak save row
+			String cur_date =DateUtil.getCurrentDateTime();
+			String year =cur_date.substring(0,4);
+			String month =cur_date.substring(5,7);
+			String day =cur_date.substring(8,10);
+			String bak_date =cur_date.substring(0,10);
+			Row curBakRow =punchRuleBakService.findByDepartId(DEPART_ID, year, month);
+			if(curBakRow == null)
+			{
+				//insert
+				row.put("bak_year", year);
+				row.put("bak_month", month);
+				row.put("bak_day", day);
+				row.put("bak_date", bak_date);
+				row.put("am_start", AM_START);
+				row.put("am_end", AM_END);
+				row.put("pm_start", PM_START);
+				row.put("pm_end", PM_END);
+				row.put("is_deal", 0);
+				punchRuleBakService.save(row);
+			}
+			else
+			{
+				//update 
+				curBakRow.put("bak_year", year);
+				curBakRow.put("bak_month", month);
+				curBakRow.put("bak_day", day);
+				curBakRow.put("bak_date", bak_date);
+				curBakRow.put("am_start", AM_START);
+				curBakRow.put("am_end", AM_END);
+				curBakRow.put("pm_start", PM_START);
+				curBakRow.put("pm_end", PM_END);
+				curBakRow.put("is_deal", 0);
+				punchRuleBakService.update(curBakRow);
+			}
+		}
 		return "redirect:PunchRuleList.do";
 	}
 
@@ -232,7 +374,17 @@ public class PunchRuleController extends BaseController{
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		Row row = punchRuleService.messageView(id);
+		String message_qz =row.getString("message_qz","");
+		String arr[]=message_qz.split(",");
+		DataSet existedDs =new DataSet();
+		for(int i=0;i<arr.length;i++)
+		{
+			Row temp =new Row();
+			temp.put("id", arr[i]);
+			existedDs.add(temp);
+		}
 		model.addAttribute("row", row);
+		model.addAttribute("message_depart_id_list", existedDs);
 		model.addAttribute("sites",systemSiteService.queryOrgSite(org_id));
 		return "/mcnpage/user/punch/rule/messageedit";
 	}
@@ -244,6 +396,18 @@ public class PunchRuleController extends BaseController{
 		Row row = punchRuleService.messageView(id);
 		model.addAttribute("row", row);
 		return "/mcnpage/user/punch/rule/messageview";
+	}
+	//通知公告已读列表
+	@RequestMapping(value = "/messageview_list")
+	public String messageViewList(String id,Pageable pageable,ModelMap model,RedirectAttributes redirectAttributes,HttpSession session) {
+		System.out.println("通过");
+		Row staff =(Row)getSession().getAttribute("staff");
+		String org_id=staff.getString("bureau_no",null);
+		messageReadLogService.getRow().put("org_id", org_id);
+		messageReadLogService.getRow().put("m_id", id);
+		Page page =messageReadLogService.queryPageForCompany(pageable);
+		model.addAttribute("page", page);
+		return "/mcnpage/user/punch/rule/messageviewList";
 	}
 	//通知公告添加
 	@RequestMapping(value = "/messageadd")

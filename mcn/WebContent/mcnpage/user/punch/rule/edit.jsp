@@ -18,6 +18,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
+var am_end="${row.AM_END}";
+var pm_start="${row.PM_START}";
+var punch_num="${punch_num}";
+
 $().ready(function() {
 
 	var $inputForm = $("#inputForm");
@@ -35,7 +39,44 @@ $().ready(function() {
 		}
 	});
 	
+	$('input:radio[name="PUNCH_NUM"]').change( function(){
+			var val =this.value;
+			if(val == 4)
+			{
+				$("#AM_END_TR").show();
+				$("#PM_START_TR").show();
+				$("#AM_END").val(am_end);
+				$("#PM_START").val(pm_start);
+			}
+			else if(val == 2)
+			{
+				$("#AM_END_TR").hide();
+				$("#PM_START_TR").hide();
+				$("#AM_END").val("-1");
+				$("#PM_START").val("-1");
+				
+			}
+	});
 });
+
+function initPunchNum()
+{
+	var val =punch_num;
+	if(val == 4)
+	{
+		$("#AM_END_TR").show();
+		$("#PM_START_TR").show();
+		$("#AM_END").val(am_end);
+		$("#PM_START").val(pm_start);
+	}
+	else if(val == 2)
+	{
+		$("#AM_END_TR").hide();
+		$("#PM_START_TR").hide();
+		$("#AM_END").val("-1");
+		$("#PM_START").val("-1");
+	}
+}
 </script>
 </head>
 <body>
@@ -65,36 +106,45 @@ $().ready(function() {
 					</select>
 				</td>
 			</tr>
-			<tr>
+			<tr id="AM_START_TR">
 				<th>
 					<span class="requiredField">*</span>上午上班:
 				</th>
 				<td>
-					<input type="text" name="AM_START" class="text Wdate" value="${row.AM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"  maxlength="200" />
+					<input type="text" id="AM_START" name="AM_START" class="text Wdate" value="${row.AM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"  maxlength="200" />
 				</td>
 			</tr>
-			<tr>
+			<tr id="AM_END_TR">
 				<th>
 					<span class="requiredField">*</span>上午下班:
 				</th>
 				<td>
-					<input type="text" name="AM_END" class="text Wdate" value="${row.AM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+					<input type="text" id="AM_END"  name="AM_END" class="text Wdate" value="${row.AM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
 				</td>
 			</tr>
-			<tr>
+			<tr id="PM_START_TR">
 				<th>
 					<span class="requiredField">*</span>下午上班:
 				</th>
 				<td>
-					<input type="text" name="PM_START" class="text Wdate" value="${row.PM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+					<input type="text" id="PM_START"  name="PM_START" class="text Wdate" value="${row.PM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+				</td>
+			</tr>
+			<tr id="PM_END_TR">
+				<th>
+					<span class="requiredField">*</span>下午下班:
+				</th>
+				<td>
+					<input type="text" id="PM_END"  name="PM_END" class="text Wdate" value="${row.PM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
 				</td>
 			</tr>
 			<tr>
 				<th>
-					<span class="requiredField">*</span>下午上班:
+					<span class="requiredField">*</span>打卡次数:
 				</th>
 				<td>
-					<input type="text" name="PM_END" class="text Wdate" value="${row.PM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+					<input type="radio" name="PUNCH_NUM"  value="4" checked/>4次
+					<input type="radio" name="PUNCH_NUM"  value="2" />2次(请注意：打卡次数切换，需要等到下个月才能生效，本月继续使用当前的打卡规则)
 				</td>
 			</tr>
 			<tr>
@@ -108,5 +158,8 @@ $().ready(function() {
 			</tr>
 		</table>
 	</form>
+	<script type="text/javascript">
+	initPunchNum();
+	</script>
 </body>
 </html>
