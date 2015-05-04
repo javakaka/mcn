@@ -141,6 +141,12 @@ public class SystemSite  extends Service{
 		row = queryRow(sql);
 		return row;
 	}
+	public Row find(String id) {
+		Row row = new Row();
+		sql = "select * from sm_site where site_no='" + id + "'";
+		row = queryRow(sql);
+		return row;
+	}
 
 	/**
 	 * 更新
@@ -333,6 +339,20 @@ public class SystemSite  extends Service{
 		}
 		return childrenDataSet;
 	}
+	
+	
+	public String  isHaveUpSite(String site_no)
+	{
+		Row row =null;
+		row =this.find(site_no);
+		String up_id =row.getString("up_site_no","");
+		if(StringUtils.isEmptyOrNull(up_id))
+		{
+			up_id =null;
+		}
+		return up_id;
+	}
+	
 	public String queryBureauNo(String id)
 	{
 		String bureau_no =null;
@@ -353,7 +373,94 @@ public class SystemSite  extends Service{
 		String site_no =row.getString("site_no",null);
 		update("sm_site",row, " site_no='"+site_no+"'");
 	}
+	/**
+	 * stop child site  ,loop
+	 * @param row
+	 */
+	public void stopChildrenOrgSite(String site_no)
+	{
+		DataSet ds =queryAllSiteBySiteNo(site_no);
+		if(ds != null && ds.size()>0)
+		{
+			for(int i=0;i<ds.size();i++)
+			{
+				Row temp =(Row)ds.get(i);
+				String s_no =temp.getString("site_no","");
+				String sql ="update sm_site set state='0' where site_no='"+s_no+"' ";
+				update(sql);
+			}
+		}
+		
+	}
+	/**
+	 * 根据指定的部门编号查询部门以及其递归子部门
+	 * @param site_no
+	 */
+	public DataSet queryAllSiteBySiteNo(String site_no)
+	{
+		DataSet ds =queryAllSites();
+		DataSet filterDs =filterSitesBySiteNo(site_no,ds);
+		
+		return filterDs;
+	}
 	
+	public DataSet queryAllSites()
+	{
+		DataSet ds =new DataSet();
+		String sql ="select * from sm_site ";
+		ds =queryDataSet(sql);
+		
+		return ds;
+	}
+	
+	public DataSet filterSitesBySiteNo(String site_no,DataSet all_ds)
+	{
+		DataSet filter_ds =new DataSet();
+		Row temp =null;
+		if(all_ds != null && all_ds.size() > 0)
+		{
+			for(int i=0;i<all_ds.size();i++)
+			{
+				temp =(Row)all_ds.get(i);
+				String t_site_no =temp.getString("site_no","");
+				if(!StringUtils.isEmptyOrNull(t_site_no) && site_no.equals(t_site_no))
+				{
+					filter_ds.add(temp);
+					break;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			//children sites
+			getChildSite(site_no,all_ds,filter_ds);
+		}
+		return filter_ds;
+	}
+	
+	public void getChildSite(String site_no,DataSet all_ds,DataSet filter_ds)
+	{
+		Row row =null;
+		Row temp =null;
+		if(all_ds != null && all_ds.size() > 0)
+		{
+			for(int i=0;i<all_ds.size();i++)
+			{
+				temp =(Row)all_ds.get(i);
+				String up_site_no =temp.getString("up_site_no",null);
+				if(!StringUtils.isEmptyOrNull(up_site_no))
+				{
+					if(up_site_no.equals(site_no))
+					{
+						filter_ds.add(temp);
+						String next_site_no=temp.getString("site_no","");
+						getChildSite(next_site_no,all_ds,filter_ds);
+					}
+				}
+			}
+		}
+	}
 	//根据给定的部门编号，取出部门名称，如：1,2,3
 	public String queryOrgSiteNameByIds(String ids)
 	{

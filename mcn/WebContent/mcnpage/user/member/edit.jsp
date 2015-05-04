@@ -30,7 +30,8 @@ $().ready(function() {
 			DEPART_ID: "required",
 			NAME: "required",
 			USERNAME: "required",
-			PASSWORD: "required"
+			PASSWORD: "required",
+			DEFAULT_MANAGER: "required"
 		}
 	});
 	
@@ -222,14 +223,21 @@ function cancelUsername()
 				</th>
 				<td>
 					<select id="DEFAULT_MANAGER" name="DEFAULT_MANAGER" class="text" maxlength="200"  style="width:190px;" >
-						<c:if test="${row.DEFAULT_MANAGER == '0'}">
-						<option value="0" selected>否</option>
-						<option value="1" >是</option>
-					</c:if>
-					<c:if test="${row.DEFAULT_MANAGER == '1'}">
-						<option value="0" >否</option>
-						<option value="1" selected>是</option>
-					</c:if>
+					<c:choose>
+						<c:when test="${row.DEFAULT_MANAGER == '0'}">
+							<option value="0" selected>否</option>
+							<option value="1" >是</option>
+						</c:when>
+						<c:when test="${row.DEFAULT_MANAGER == '1'}">
+							<option value="0" >否</option>
+							<option value="1" selected>是</option>
+						</c:when>
+						<c:otherwise>
+							<option value="" selected>请选择...</option>
+							<option value="0" >否</option>
+							<option value="1" >是</option>
+						</c:otherwise>
+					</c:choose>
 					</select>(每个部门只有一个默认审批人,如果新设置默认审批人，新的会自动覆盖原来的审批人)
 				</td>
 			</tr>

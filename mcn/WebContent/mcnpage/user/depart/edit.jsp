@@ -18,9 +18,66 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
+
 $().ready(function() {
 
 	var $inputForm = $("#inputForm");
+	var $state = $("#STATE");
+	
+	$state.change(function(){
+		
+		var val=this.value;
+		if(val ==0)
+		{
+			if(confirm("该部门下级部门及人员都将被停用，是否继续本操作？"))
+			{
+				//alert('ok');
+				$("#submitBtn").removeAttr("disabled");
+			}
+			else
+			{
+				this.value =1;
+			}
+			
+		}
+		else
+		{
+			//该部门上级部门停用,请先启用上级部门
+			var site_no ="${row.SITE_NO}";
+			var url ="<%=basePath%>/mcnpage/user/depart/checkUpSiteState.do";
+			var params ={site_no:site_no};
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: params,
+				dataType: "json",
+				cache: false,
+				beforeSend: function (XMLHttpRequest){
+				},
+				success: function(ovo, textStatus) {
+					var code =ovo.code;
+					var state =ovo.oForm.STATE;
+					if(code >=0)
+					{
+						if(state == "0")
+						{
+							$.message("error","请先启用上级部门");
+							$("#submitBtn").attr("disabled","disabled");
+						}
+					}
+					else
+					{
+						$.message("error","处理出错!");
+					}
+				},
+				complete: function (XMLHttpRequest, textStatus){
+				},
+				error: function (){
+					$.message("error","处理出错!");
+				}
+			});
+		}
+	});
 	
 	//[@flash_message /]
 	
@@ -101,7 +158,7 @@ $().ready(function() {
 					&nbsp;
 				</th>
 				<td>
-					<input type="submit" class="button" value="<cc:message key="admin.common.submit" />" />
+					<input type="submit" class="button" id="submitBtn" value="<cc:message key="admin.common.submit" />" />
 					<input type="button" id="backButton" class="button" value="<cc:message key="admin.common.back" />" />
 				</td>
 			</tr>

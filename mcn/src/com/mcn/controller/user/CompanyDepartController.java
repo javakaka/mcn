@@ -14,6 +14,8 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.ResponseVO;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.Row;
 import com.mcn.service.PunchRuleService;
 
@@ -165,6 +167,16 @@ public class CompanyDepartController extends BaseController{
 			return "redirect:DepartList.do";
 		}
 		systemSiteService.saveOrgSite(siteRow);
+		// 停用,停用子部门以及子部门的人员
+		if(STATE.equals("0"))
+		{
+			systemSiteService.stopChildrenOrgSite(SITE_NO);
+		}
+		// 启用，判断上级部门是否启用，并启用本部门的人员
+		else if(STATE.equals("1"))
+		{
+			
+		}
 		return "redirect:DepartList.do";
 	}
 	
@@ -173,5 +185,26 @@ public class CompanyDepartController extends BaseController{
 	Message delete(Long[] ids) {
 		systemSiteService.deleteOrgSite(ids);
 		return SUCCESS_MESSAGE;
+	}
+	@RequestMapping(value = "/checkUpSiteState")
+	public @ResponseBody
+	ResponseVO checkUpSiteState(String site_no) {
+		ResponseVO ovo =new ResponseVO(0,"");
+		String up_id =systemSiteService.isHaveUpSite(site_no);
+		if(StringUtils.isEmptyOrNull(up_id))
+		{
+			ovo.put("state", "1");
+		}
+		else
+		{
+			Row up_row =systemSiteService.find(up_id);
+			String state =up_row.getString("state","");
+			if(StringUtils.isEmptyOrNull(state))
+			{
+				state ="0";
+			}
+			ovo.put("state", state);
+		}
+		return ovo;
 	}
 }
