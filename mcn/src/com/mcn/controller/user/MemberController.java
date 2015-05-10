@@ -14,10 +14,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ezcloud.framework.controller.BaseController;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
+import com.ezcloud.framework.service.system.Bureau;
 import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.util.ResponseVO;
 import com.ezcloud.framework.util.StringUtils;
+import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.mcn.service.MemberService;
 
@@ -31,6 +33,8 @@ public class MemberController extends BaseController{
 	@Resource(name ="frameworkSystemSiteService")
 	private SystemSite systemSiteService;
 	
+	@Resource(name = "frameworkSystemBureauService")
+	private Bureau bureauService;
 	
 	/**
 	 * 企业查询自己的用户
@@ -200,6 +204,41 @@ public class MemberController extends BaseController{
 	ResponseVO changeUserName(String id,String old_name, String new_name) {
 		ResponseVO ovo =null;
 		ovo =memberService.changeUserName(id,old_name,new_name);
+		return ovo;
+	}
+	
+	@RequestMapping(value = "/queryUserBySiteno")
+	public @ResponseBody
+	ResponseVO queryUserBySiteno(String site_no) {
+		ResponseVO ovo =new ResponseVO(0,"");
+		DataSet ds=memberService.queryUsersBySiteNo(site_no);
+		ovo.put("list", ds);
+		return ovo;
+	}
+	
+	@RequestMapping(value = "/checkCompanyUserIsOverNum")
+	public @ResponseBody
+	ResponseVO checkCompanyUserIsOverNum() {
+		ResponseVO ovo =new ResponseVO(0,"");
+		HttpSession session =getSession();
+		Row staff =(Row)session.getAttribute("staff");
+		if(staff == null)
+		{
+			ovo =new ResponseVO(-1,"请先登录");
+			return ovo;
+		}
+		String org_id =staff.getString("bureau_no","");
+		Row bureauRow =bureauService.find(org_id);
+		int totalUserNum =Integer.parseInt(bureauRow.getString("user_sum","0"));
+		//当前已启用的人数
+		int curUsingTotalNum =memberService.queryOrgUserNumByStatus("1",org_id);
+		if(curUsingTotalNum >= totalUserNum)
+		{
+			ovo =new ResponseVO(-1,"已达到企业购买的用户数上限，不能新加启用状态的用户","已达到企业购买的用户数上限，不能新加启用状态的用户");
+			return ovo;
+		}
+		ovo =new ResponseVO(0,"");
+		ovo.put("num", (totalUserNum -curUsingTotalNum));
 		return ovo;
 	}
 	

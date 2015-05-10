@@ -147,16 +147,19 @@ $().ready(function() {
 					功能选项:
 				</th>
 				<td>
-					<input type="checkbox" id="check_punch"       name="modules"  maxlength="10" value="punch" <c:if test="${module.PUNCH == 1}">checked</c:if> />打卡
-					<input type="checkbox" id="check_reimburse"   name="modules"  maxlength="10" value="reimburse" <c:if test="${module.REIMBURSE == 1}">checked</c:if> />报销
-					<input type="checkbox" id="check_task"        name="modules"  maxlength="10" value="task" <c:if test="${module.TASK == 1}">checked</c:if> />任务
-					<input type="checkbox" id="check_meeting_room" name="modules"  maxlength="10" value="meeting_room" <c:if test="${module.MEETING_ROOM == 1}">checked</c:if> />会议室
-					<input type="checkbox" id="check_checkin" name="modules"  maxlength="10" value="checkin" <c:if test="${module.CHECKIN == 1}">checked</c:if>  />签到
-					<input type="checkbox" id="check_ask_leave" name="modules"  maxlength="10" value="ask_leave" <c:if test="${module.ASK_LEAVE == 1}">checked</c:if>  />请假
-					<input type="checkbox" id="check_query_leave" name="modules"  maxlength="10" value="query_leave"  <c:if test="${module.QUERY_LEAVE == 1}">checked</c:if> />请假查询
-					<input type="checkbox" id="check_query_base" name="modules"  maxlength="10" value="query_base" <c:if test="${module.QUERY_BASE == 1}">checked</c:if>  />基本查询
-					<input type="checkbox" id="check_change_pwd" name="modules"  maxlength="10" value="change_pwd" <c:if test="${module.CHANGE_PWD == 1}">checked</c:if>  />修改密码
-					<input type="checkbox" id="check_message" name="modules"  maxlength="10" value="message" <c:if test="${module.MESSAGE == 1}">checked</c:if>  />通知
+					<input type="checkbox" id="check_punch"       name="modules"  maxlength="100" value="punch" <c:if test="${module.PUNCH == 1}">checked</c:if> />打卡
+					<input type="checkbox" id="check_reimburse"   name="modules"  maxlength="100" value="reimburse" <c:if test="${module.REIMBURSE == 1}">checked</c:if> />报销
+					<input type="checkbox" id="check_task"        name="modules"  maxlength="100" value="task" <c:if test="${module.TASK == 1}">checked</c:if> />任务
+					<input type="checkbox" id="check_meeting_room" name="modules"  maxlength="100" value="meeting_room" <c:if test="${module.MEETING_ROOM == 1}">checked</c:if> />会议室
+					<input type="checkbox" id="check_checkin" name="modules"  maxlength="100" value="checkin" <c:if test="${module.CHECKIN == 1}">checked</c:if>  />签到
+					<input type="checkbox" id="check_ask_leave" name="modules"  maxlength="100" value="ask_leave" <c:if test="${module.ASK_LEAVE == 1}">checked</c:if>  />请假
+					<input type="checkbox" id="check_query_leave" name="modules"  maxlength="100" value="query_leave"  <c:if test="${module.QUERY_LEAVE == 1}">checked</c:if> />签到查询
+					<input type="checkbox" id="check_query_base" name="modules"  maxlength="100" value="query_base" <c:if test="${module.QUERY_BASE == 1}">checked</c:if>  />基本查询
+					<input type="checkbox" id="check_change_pwd" name="modules"  maxlength="100" value="change_pwd" <c:if test="${module.CHANGE_PWD == 1}">checked</c:if>  />修改密码
+					<input type="checkbox" id="check_message" name="modules"  maxlength="100" value="message" <c:if test="${module.MESSAGE == 1}">checked</c:if>  />通知
+					<input type="checkbox" id="check_base_statistic" name="modules"  maxlength="100" value="base_statistic" <c:if test="${module.BASE_STATISTIC == 1}">checked</c:if>  />基本统计
+					<input type="checkbox" id="check_punch_statistic" name="modules"  maxlength="100" value="punch_statistic" <c:if test="${module.PUNCH_STATISTIC == 1}">checked</c:if>  />签到统计
+					<input type="checkbox" id="check_audit" name="modules"  maxlength="10" value="audit" <c:if test="${module.AUDIT == 1}">checked</c:if>  />审批
 				</td>
 			</tr>
 			<tr>

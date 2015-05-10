@@ -361,6 +361,7 @@ public class LeaveController extends BaseController{
 			json =VOConvert.ovoToJson(ovo);
 			return json;
 		} 
+		
 		//审批规则说明
 		@RequestMapping("/leavespgz")
 		public @ResponseBody String queryLeaveSPGZ(HttpServletRequest request) throws JException
@@ -374,5 +375,27 @@ public class LeaveController extends BaseController{
 			json =VOConvert.ovoToJson(ovo);
 			return json;
 		} 
+		
+		//分页查询自己的外出申请单
+		@RequestMapping("leaveLogList")
+		public @ResponseBody String queryLeaveListByUserId(HttpServletRequest request) throws Exception
+		{
+			String json ="";
+			parseRequest(request);
+			String token =ivo.getString("token",null);
+			String page =ivo.getString("page","1");
+			String page_size =ivo.getString("page_size","10");
+			String user_id =ivo.getString("user_id",null);
+			if(StringUtils.isEmptyOrNull(user_id))
+			{
+				ovo =new OVO(-10022,"用户编号不能为空","用户编号不能为空");
+				return VOConvert.ovoToJson(ovo);
+			}
+			DataSet ds=leaveService.queryLeaveListByType(user_id, "7", Integer.parseInt(page),  Integer.parseInt(page_size));
+			ovo =new OVO(0, "请求成功", "请求成功");
+			ovo.set("list",ds); 
+			json =VOConvert.ovoToJson(ovo);
+			return json;
+		}
 		
 }

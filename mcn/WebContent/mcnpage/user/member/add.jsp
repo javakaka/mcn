@@ -22,7 +22,51 @@ $().ready(function() {
 
 	var $inputForm = $("#inputForm");
 	
-	//[@flash_message /]
+	${flash_message}
+	var $status = $("#STATUS");
+	
+	$status.change(function(){
+		var val=this.value;
+		if(val == '1')
+		{
+			//
+			var url ="<%=basePath%>/mcnpage/user/member/checkCompanyUserIsOverNum.do";
+			var params ={};
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: params,
+				dataType: "json",
+				cache: false,
+				beforeSend: function (XMLHttpRequest){
+				},
+				success: function(ovo, textStatus) {
+					var code =ovo.code;
+					if(code >=0)
+					{
+						var num =ovo.oForm.NUM;
+						$.message("success","还可以添加"+num+"个启用状态的用户");
+						$("#submitBtn").removeAttr("disabled");
+					}
+					else
+					{
+						$.message("error",ovo.msg);
+						$("#submitBtn").attr("disabled","disabled");
+					}
+				},
+				complete: function (XMLHttpRequest, textStatus){
+				},
+				error: function (){
+					$.message("error","处理出错!");
+					$("#submitBtn").attr("disabled","disabled");
+				}
+			});
+		}
+		else
+		{
+			$("#submitBtn").removeAttr("disabled");
+		}
+	});
 	
 	// 表单验证
 	$inputForm.validate({
@@ -144,10 +188,8 @@ $().ready(function() {
 				</th>
 				<td>
 					<select id="STATUS" name="STATUS" class="text" maxlength="200"  style="width:190px;">
-						<option value="" selected>请选择...</option>
 						<option value="1" >正常</option>
-						<option value="2" >停用</option>
-						<option value="3" >删除</option>
+						<option value="2" selected>停用</option>
 					</select>
 				</td>
 			</tr>
@@ -164,7 +206,7 @@ $().ready(function() {
 					&nbsp;
 				</th>
 				<td>
-					<input type="submit" class="button" value="<cc:message key="admin.common.submit" />" />
+					<input type="submit" id="submitBtn" name="submitBtn" class="button" value="<cc:message key="admin.common.submit" />" />
 					<input type="button" id="backButton" class="button" value="<cc:message key="admin.common.back" />" />
 				</td>
 			</tr>

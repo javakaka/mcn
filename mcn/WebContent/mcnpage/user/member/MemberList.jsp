@@ -17,9 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
 <script type="text/javascript">
 $().ready(function() {
-
-	[@flash_message /]
-
+	${flash_message};
 });
 </script>
 </head>

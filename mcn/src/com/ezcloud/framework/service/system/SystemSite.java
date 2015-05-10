@@ -373,6 +373,7 @@ public class SystemSite  extends Service{
 		String site_no =row.getString("site_no",null);
 		update("sm_site",row, " site_no='"+site_no+"'");
 	}
+	
 	/**
 	 * stop child site  ,loop
 	 * @param row

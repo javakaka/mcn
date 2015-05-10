@@ -37,5 +37,9 @@ public class Test {
 		System.out.println("year --->>"+year);
 		System.out.println("month --->>"+month);
 		System.out.println("day --->>"+day);
+		System.out.println("System.currentTimeMillis()1 --->>"+System.currentTimeMillis());
+		System.out.println("System.currentTimeMillis()2 --->>"+System.currentTimeMillis());
+		System.out.println("System.currentTimeMillis()3 --->>"+System.currentTimeMillis());
+//		System.currentTimeMillis() --->>1431152376348
 	}
 }

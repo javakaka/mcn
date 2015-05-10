@@ -200,7 +200,7 @@ public class CheckStatisService extends Service{
 		System.out.println("month=="+month);
 		DataSet dataSet = new DataSet();
 		sql = "select img_path,punch_type,punch_time,place_name from mcn_punch_log WHERE org_id='"+org_id+"' and user_id='"+user_id+"' and "+
-			  "punch_type in (7) and punch_time like '"+year+"_"+month+"%'";
+			  "punch_type in (7) and punch_time like '"+year+"-"+month+"%' order by punch_time desc ";
 		dataSet = queryDataSet(sql);
 		System.out.println("dataSet=="+dataSet.toString());
 		return dataSet;

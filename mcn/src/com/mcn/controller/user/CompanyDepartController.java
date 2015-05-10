@@ -16,7 +16,9 @@ import com.ezcloud.framework.service.system.SystemSite;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.util.ResponseVO;
 import com.ezcloud.framework.util.StringUtils;
+import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
+import com.mcn.service.MemberService;
 import com.mcn.service.PunchRuleService;
 
 @Controller("mcnCompanyDepartController")
@@ -28,6 +30,9 @@ public class CompanyDepartController extends BaseController{
 	
 	@Resource(name ="mcnPunchRuleService")
 	private PunchRuleService punchRuleService;
+	
+	@Resource(name ="mcnMemberService")
+	private MemberService memberService;
 	
 	/**
 	 * 企业查询自己的用户
@@ -171,6 +176,8 @@ public class CompanyDepartController extends BaseController{
 		if(STATE.equals("0"))
 		{
 			systemSiteService.stopChildrenOrgSite(SITE_NO);
+			DataSet siteDs =systemSiteService.queryAllSiteBySiteNo(SITE_NO);
+			memberService.stopUserStateBySiteNo(siteDs);
 		}
 		// 启用，判断上级部门是否启用，并启用本部门的人员
 		else if(STATE.equals("1"))

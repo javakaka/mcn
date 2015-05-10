@@ -6,8 +6,19 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 String time = session.getAttribute("datatime2").toString();
-String year = time.substring(0,4);
-String month = time.substring(5,7);
+String year = "";
+String month ="";
+if(time != null)
+{
+	if(time.length()  >=4)
+	{
+		year = time.substring(0,4);
+	}
+	if(time.length()  >=7)
+	{
+		month = time.substring(5,7);
+	}
+}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,6 +29,7 @@ String month = time.substring(5,7);
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/list.js"></script>
+<script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 $().ready(function() {
 	 $('#year').val("<%=year%>");
@@ -26,7 +38,22 @@ $().ready(function() {
 function findList(){
 	 var year=$('#year').val(); 
 	 var month=$('#month').val();
-	 var time=year+"-"+month
+	 var time="";
+	 if(typeof year =="undefined" || year.trim() =="")
+	 {
+		 $.message("error","请选择年份");
+		 /* $('#year').focus(); */ 
+		 return false;
+	 }
+	 if(typeof month !="undefined" && month.trim() !="")
+	 {
+		 time=year+"-"+month;
+	 }
+	 else
+	 {
+		 time=year
+	 }
+	 alert(time);
 	 window.location.href = "<%=basePath%>mcnpage/user/punch/log/personQList.do?time="+time;
 }
 function se (){
@@ -43,21 +70,24 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 <% if (exportToExcel == null) { %>
 	<div class="path">
 		管理中心 &raquo;签到记录
-		<span></span>
+		<span><cc:message key="admin.page.total" args="${page.total}"/></span>
 	</div>
 	<form id="listForm" action="personQList.do" method="get">
 		<div class="bar">
+			<!-- 
 			<a href="add.do" class="iconButton">
 				<span class="addIcon">&nbsp;</span><cc:message key="admin.common.add" />
 			</a>
+			-->
 			<div class="buttonWrap">
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span><cc:message key="admin.common.refresh" />
 				</a>
-			</div>
-			<div class="iconButton">
 				<a id="refreshButton" class="iconButton">
-							<span >&nbsp;</span><input id="year" name="year" type="text" value="2014" onfocus="if (value =='2014'){value =''}" onblur="if (value ==''){value='2014'}"/>年<input type="text" id="month" name="month" value="08" onfocus="if (value =='08'){value =''}" onblur="if (value ==''){value='08'}"/>月&nbsp; &nbsp;<input type="button" value="查 找" onclick="findList();"/>
+							<span >&nbsp;</span>
+							<input id="year" name="year" type="text" class="text Wdate" onfocus="WdatePicker({dateFmt:'yyyy'});" />年
+							<input type="text" id="month" name="month" class="text Wdate" onfocus="WdatePicker({dateFmt:'MM'});" value="" />月&nbsp; &nbsp;
+							<input type="button" value="查 找" class="button" onclick="findList();"/>
 				</a>
 			</div>
 			<div>
@@ -71,55 +101,52 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 					<input type="text" id="searchValue" name="searchValue" value="" maxlength="200" />
 					<button type="submit">&nbsp;</button>
 				</div>
+				<div class="popupMenu">
+					<ul id="searchPropertyOption">
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'USER_NAME'}"> class="current"</c:if> val="USER_NAME">用户姓名</a>
+						</li>
+						<li>
+							<a href="javascript:;" <c:if test="${page.searchProperty == 'SITE_NAME'}">class="current"</c:if> val="SITE_NAME">部门名称</a>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 		<% }  %> 
 		<table id="listTable" class="list">
 			<tr align='center'>
 				<th>
-					<a href="javascript:;" class="sort" name="PUNCH_TYPE">所属部门</a>
+					<a href="javascript:;" class="sort" name="SITE_NAME">所属部门</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="PUNCH_TIME">姓名</a>
+					<a href="javascript:;" class="sort" name="USER_NAME">姓名</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="PUNCH_RESULT">签到时间</a>
+					<a href="javascript:;" class="sort" name="PUNCH_TIME">签到时间</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="PUNCH_RESULT">签到地址</a>
+					<a href="javascript:;" class="sort" name="PlACE_NAME">签到地址</a>
 				</th>
-				<th>
-					<a href="javascript:;" class="sort" name="PUNCH_RESULT">签退时间</a>
-				</th>
-				<th>
-					<a href="javascript:;" class="sort" name="PUNCH_RESULT">签退地址</a>
-				</th>
-			
 			</tr>
-			<c:forEach items="${page}" var="row" varStatus="status">
-				<tr align='center'>
+			<c:forEach items="${page.content}" var="row" varStatus="status">
+				<tr>
 					<td>
-						<span title="${row.DEPART_NAME}">${row.DEPART_NAME}</span>
+						<span title="${row.SITE_NAME}">${row.SITE_NAME}</span>
 					</td>
 					<td>
 						${row.USER_NAME}
 					</td>
 					<td>
-						${row.QDTIME}
+						${row.PUNCH_TIME}
 					</td>
 					<td>
-					${row.QD_ADDRESS}
+						${row.PLACE_NAME}
 					</td>
-					<td>
-					${row.QT_TIME}
-					</td>
-					<td>
-					${row.QT_ADDRESS}
-					</td>
-					
 				</tr>
 			</c:forEach>
 		</table> 
+		<%@ include file="/include/pagination.jsp" %> 
 	</form>
 </body>
 </html>

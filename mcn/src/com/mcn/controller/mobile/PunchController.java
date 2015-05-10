@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.util.AesUtil;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
@@ -90,28 +91,39 @@ public class PunchController extends BaseController{
 		String id =ivo.getString("id",null);
 		String punch_time =ivo.getString("punch_time",null);
 		String punch_type =ivo.getString("punch_type",null);
-		//判断是否已经打过卡
-		if(!punch_type.equals("7")){
-		if(!punchLogService.checkBooleanPuncn(token,id,punch_time,punch_type)){
-			ovo =new OVO(-20000,"打卡失败","你已经打过卡了");
-			json =VOConvert.ovoToJson(ovo);
-			return json;
-		}}
+		String leave_id =ivo.getString("leave_id","");
 		if(id == null)
 		{
 			ovo =new OVO(-20005,"人员编号:id不能为空","人员编号:id不能为空");
 			json =VOConvert.ovoToJson(ovo);
 			return json;
 		}
-		ovo =new OVO();
-		
 		if(punch_type == null)
 		{
 			ovo =new OVO(-20025,"punch_type不能为空","punch_type不能为空");
 			json =VOConvert.ovoToJson(ovo);
 			return json;
 		}
+		//判断是否已经打过卡
+		if(!punch_type.equals("7"))
+		{
+			if(!punchLogService.checkBooleanPuncn(token,id,punch_time,punch_type)){
+				ovo =new OVO(-20000,"打卡失败","你已经打过卡了");
+				json =VOConvert.ovoToJson(ovo);
+				return json;
+			}
+		}
+		else
+		{
+			
+			if(StringUtils.isEmptyOrNull(leave_id))
+			{
+				ovo =new OVO(-20000,"签到必须关联外出申请单,leave_id参数不能为空","签到必须关联外出申请单,leave_id参数不能为空");
+				return VOConvert.ovoToJson(ovo);
+			}
+		}
 		
+		ovo =new OVO();
 		if(punch_time == null)
 		{
 			ovo =new OVO(-20026,"punch_time打卡时间不能为空","punch_time打卡时间不能为空");
@@ -128,7 +140,7 @@ public class PunchController extends BaseController{
 		String imgName =ivo.getString("picture_name",null);
 		if(imgName == null || imgName.trim().equals(""))
 		{
-			imgName =StringUtil.getRandKeys(12);
+			imgName =System.currentTimeMillis()+"_"+StringUtil.getRandKeys(16)+"";
 		}
 		if(userPic != null && !userPic.trim().equals(""))
 		{
@@ -159,6 +171,15 @@ public class PunchController extends BaseController{
 		punchRow.put("img_path", imgpath);
 		punchRow.put("punch_status", "0");
 		punchLogService.mobilePunch(punchRow);
+		//保存签到关联表mcn_punch_leave
+		if(! StringUtils.isEmptyOrNull(leave_id))
+		{
+			String p_id =punchLogService.getRow().getString("id","");
+			Row punch_leave_row =new Row();
+			punch_leave_row.put("p_id", p_id);
+			punch_leave_row.put("l_id", leave_id);
+			punchLogService.savePunchLeaveRecord(punch_leave_row);
+		}
 		ovo =new OVO(0,"success","");
 		json =VOConvert.ovoToJson(ovo);
 		return json;
@@ -220,5 +241,8 @@ public class PunchController extends BaseController{
 		json =VOConvert.ovoToJson(ovo);
 		return json;
 	}
+	
+	
+	
 	
 }

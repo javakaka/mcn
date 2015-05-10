@@ -42,7 +42,7 @@ public class LeaveService extends Service{
 		}
 		if(! StringUtils.isEmptyOrNull(end_date))
 		{
-			sql +=" and a.end_date < '"+end_date+"' ";
+			sql +=" and a.end_date <= '"+end_date+"' ";
 		}
 		sql += "ORDER BY a.id DESC ";
 		String restrictions = addRestrictions(pageable);
@@ -61,7 +61,7 @@ public class LeaveService extends Service{
 		}
 		if(! StringUtils.isEmptyOrNull(end_date))
 		{
-			countSql +=" and a.end_date < '"+end_date+"' ";
+			countSql +=" and a.end_date <= '"+end_date+"' ";
 		}
 		countSql += restrictions;
 //		countSql += orders;
@@ -246,7 +246,11 @@ public class LeaveService extends Service{
 		sql ="select a.id,name,leave_type,start_date, end_date, reason,status, audit_objection from mcn_leave_log a left join mcn_users b on a.user_id=b.id  where user_id "
 		+" in ( select id from mcn_users where depart_id in (select depart_id from mcn_users where id='"+user_id+"') and id !='"+user_id+"')  limit "+iStart+" , "+page_size;
 		*/
-		sql = "SELECT b.sum_day as sum_day,check_type,a.id as check_id,b.id,c.name,b.leave_type,b.start_date, b.end_date, b.reason,a.check_content as audit_objection from check_up_log a ,mcn_leave_log b,mcn_users c WHERE a.leave_id=b.id and b.user_id=c.id and a.up_check_id='"+user_id+"' and b.status='1' limit "+iStart+" , "+page_size;
+		sql = "SELECT b.sum_day as sum_day,check_type,a.id as check_id,b.id,b.status,c.name,"
+				+ "b.leave_type,b.start_date, b.end_date, b.reason,a.check_content as audit_objection "
+				+ "from check_up_log a ,mcn_leave_log b,mcn_users c "
+				+ "WHERE a.leave_id=b.id and b.user_id=c.id and a.up_check_id='"+user_id+"' "
+				+ "and b.status='1' limit "+iStart+" , "+page_size;
 		ds =queryDataSet(sql);
 		return ds;
 	}
@@ -371,5 +375,16 @@ public class LeaveService extends Service{
 			String sql2="update leave_spgz set content='"+content+"',update_time='"+curTime+"' where org_id='"+org_id+"'";
 			update(sql2);
 		}
+	}
+	
+	
+	public DataSet queryLeaveListByType(String id,String type,int page,int page_size)
+	{
+		DataSet ds =new DataSet();
+		int iStart=(page-1)*page_size;
+		String sql =" select * from mcn_leave_log where leave_type='"+type+"' and user_id='"+id+"' "
+				+ "order by create_time desc limit "+iStart+" ,"+page_size;
+		ds =queryDataSet(sql);
+		return ds;
 	}
 }

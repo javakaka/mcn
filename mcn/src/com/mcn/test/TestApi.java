@@ -12,13 +12,15 @@ public class TestApi {
 	// login 
 	public static void login()
 	{
-//		String url ="http://localhost:8080/mcn/api/action/login.do";
-		String url ="http://211.154.151.145:8080/mcn/api/action/login.do";
+		String url ="http://localhost:8080/mcn/api/action/login.do";
+//		String url ="http://211.154.151.145:8080/mcn/api/action/login.do";
 		IVO ivo =new IVO();
 		   try {
 //			ivo.set("username", "1001");
 			ivo.set("username", "13924642229");
 			ivo.set("password", "888888");
+			ivo.set("username", "10066");
+			ivo.set("password", "222222");
 			ivo.set("token", "TUpZQzMx");
 			String json =  VOConvert.ivoToJson(ivo);
 			System.out.print("ivo to json ====>>"+json);
@@ -145,7 +147,7 @@ public class TestApi {
 			IVO ivo =new IVO();
 			   try {
 				ivo.set("id", "66");
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("leave_type","6");
 				ivo.set("start_date","2014-12-02");
 				ivo.set("end_date","2014-12-04");
@@ -170,7 +172,7 @@ public class TestApi {
 			IVO ivo =new IVO();
 			   try {
 				ivo.set("id", "66");
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("page","1");
 				ivo.set("page_size","10");
 				ivo.set("status","1");
@@ -192,7 +194,7 @@ public class TestApi {
 			IVO ivo =new IVO();
 			   try {
 				ivo.set("id", "66");
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("page","1");
 				ivo.set("page_size","10");
 				String json =  VOConvert.ivoToJson(ivo);
@@ -255,7 +257,7 @@ public class TestApi {
 			String url ="http://116.31.92.48:8080/mcn/api/punch/times.do";
 			IVO ivo =new IVO();
 			   try {
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("id", "66");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
@@ -275,7 +277,7 @@ public class TestApi {
 		//	String url ="http://211.154.151.145:8080/mcn/api/punch/add.do";
 			IVO ivo =new IVO();
 			   try {
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("id", "66");
 				ivo.set("punch_type", "4");
 				ivo.set("punch_time", "2014-12-16 16:00:00");
@@ -323,7 +325,7 @@ public class TestApi {
 			String url ="http://116.31.92.48:8080/mcn/api/checkstatis/company.do";
 			IVO ivo =new IVO();
 			   try {
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("date", "2014-12");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
@@ -341,7 +343,7 @@ public class TestApi {
 			//String url ="http://116.31.92.48:8080/mcn/api/checkstatis/depart.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				   ivo.set("date", "2014-11");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
@@ -359,7 +361,7 @@ public class TestApi {
 			//String url ="http://116.31.92.48:8080/mcn/api/checkstatis/person.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				   ivo.set("depart_id", "23");
 				   ivo.set("date", "2014-11");
 				String json =  VOConvert.ivoToJson(ivo);
@@ -394,10 +396,11 @@ public class TestApi {
 		//统计该员工该月签到详细情况
 		public static void checkStatisPersonDetail2() {
 			//String url ="http://localhost:8080/mcn/api/checkstatis/personQDdetail.do";
-			String url ="http://116.31.92.48:8080/mcn/api/checkstatis/personQDdetail.do";
+//			String url ="http://116.31.92.48:8080/mcn/api/checkstatis/personQDdetail.do";
+			String url ="http://211.154.151.145:8080/mcn/api/checkstatis/personQDdetail.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				   ivo.set("user_id", "66");
 				   ivo.set("date", "2014-11");
 				String json =  VOConvert.ivoToJson(ivo);
@@ -416,7 +419,7 @@ public class TestApi {
 			//String url ="http://116.31.92.48:8080/mcn/api/checkstatis/leaveUserId.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				   ivo.set("user_id", "66");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
@@ -434,7 +437,7 @@ public class TestApi {
 			String url ="http://116.31.92.48:8080/mcn/api/checkstatis/companymodel.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				   ivo.set("date", "2014-12-02");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
@@ -524,7 +527,7 @@ public class TestApi {
 		//	String url ="http://116.31.92.48:8080/mcn/api/checkstatis/companymodel.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
 				String res =NetUtil.getNetResponse(url, json,"UTF-8");
@@ -541,7 +544,7 @@ public class TestApi {
 		//	String url ="http://116.31.92.48:8080/mcn/api/checkstatis/companymodel.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
 				String res =NetUtil.getNetResponse(url, json,"UTF-8");
@@ -558,7 +561,7 @@ public class TestApi {
 			String url ="http://116.31.92.48:8080/mcn/api/punch/punchsz.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
 				String res =NetUtil.getNetResponse(url, json,"UTF-8");
@@ -575,7 +578,7 @@ public class TestApi {
 //			String url ="http://116.31.92.48:8080/mcn/api/punch/message.do";
 			IVO ivo =new IVO();
 			   try {
-				   ivo.set("token", "MTAwMDc=");
+				   ivo.set("token", "TUpZQzMx");
 				   ivo.set("user_id", "25");
 				String json =  VOConvert.ivoToJson(ivo);
 				System.out.println("\n ivo to json ====>>"+json);
@@ -592,7 +595,7 @@ public class TestApi {
 //			String url ="http://116.31.92.48:8080/mcn/api/punch/message.do";
 			IVO ivo =new IVO();
 			try {
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("user_id", "25");
 				ivo.set("id", "4");
 				String json =  VOConvert.ivoToJson(ivo);
@@ -613,7 +616,7 @@ public class TestApi {
 			IVO ivo =new IVO();
 			   try {
 				ivo.set("id", "66");
-				ivo.set("token", "MTAwMDc=");
+				ivo.set("token", "TUpZQzMx");
 				ivo.set("page","1");
 				ivo.set("page_size","10");
 				String json =  VOConvert.ivoToJson(ivo);
@@ -624,6 +627,28 @@ public class TestApi {
 			   } catch (JException e) {
 					e.printStackTrace();
 				}
+		}
+		
+		// 分页查询外出申请单列表
+		public static void queryLeaveList()
+		{
+//				String url ="http://localhost:8080/mcn/api/leave/leaveLogList.do";
+//			String url ="http://116.31.92.48:8080/mcn/api/leave/leaveLogList.do";
+			String url ="http://211.154.151.145:8080/mcn/api/leave/leaveLogList.do";
+			IVO ivo =new IVO();
+			try {
+				ivo.set("user_id", "77");
+				ivo.set("token", "TUpZQzMx");
+				ivo.set("page","1");
+				ivo.set("page_size","10");
+				String json =  VOConvert.ivoToJson(ivo);
+				System.out.println("\n ivo to json ====>>"+json);
+				String res =NetUtil.getNetResponse(url, json,"UTF-8");
+				System.out.println("========================================\n");
+				System.out.print(res);
+			} catch (JException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		public static void selectB()
@@ -641,7 +666,7 @@ public class TestApi {
 	 public static void main(String[] args) {
 		 //String token = nQd9zWGtvBeGWqdnZ%2F9ZfQ%3D%3D;
 		 //登陆
-//		 login();
+		 login();
 		 //修改密码
 //		 changePwd();
 		// room list
@@ -700,10 +725,13 @@ public class TestApi {
 		 //查询通知公告
 //		 message();
 		 //查询通知公告详情
-		 messageDetail();
+//		 messageDetail();
 		 //查询已审批过的记录
 	//	 statusList();
 		 //查询客户端版本更新接口
 //		 selectB();
+		 
+		// 分页查询外出申请单列表
+//		queryLeaveList();
 	 }
 	 }

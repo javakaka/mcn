@@ -1,18 +1,35 @@
 package com.ezcloud.framework.util;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import com.ezcloud.framework.vo.DataSet;
+import com.ezcloud.framework.vo.Row;
+import com.ezcloud.utility.DateUtil;
+import com.ezcloud.utility.FileUtil;
 /**
  * 
  * 
@@ -24,7 +41,6 @@ public class ExcelUtil {
 
 	
 	 private static Logger logger = Logger.getLogger(ExcelUtil.class);
-
 	    
 	 public static List<Map<String ,Object>> parseExcel(String filePath) throws FileNotFoundException, IOException
 	 {
@@ -95,7 +111,7 @@ public class ExcelUtil {
 	        }
 	        return result;
 	    }
-
+	    
 	    /**
 	     * 获得单元格中的内容
 	     * 
@@ -139,32 +155,166 @@ public class ExcelUtil {
 	        return result;
 	    }
 
-	    @SuppressWarnings("unchecked")
-		public static void main(String[] args) throws Exception {
-	    	String filePath="/users/JianBoTong/Desktop/test.xls";
-	       List<Map<String,Object>>sheetlist =ExcelUtil.parseExcel(filePath);
-	       String index ="";
-	       String sheetName="";
-	       List<Object> sheetData=null;
-	        for (int i = 0; i < sheetlist.size(); i++) {// 显示数据
-	            Map<String,Object> map=  (Map<String,Object>)sheetlist.get(i);
-	            index=(String)map.get("index");
-	            sheetName=(String)map.get("name");
-	            sheetData=(List<Object>)map.get("data");
-	            System.out.println("=============sheet:"+index+" sheet name:"+sheetName);
-	            for (short n = 0; n < sheetData.size(); n++) {
-	            	List<Object> rowData =(List<Object>)sheetData.get(n);
-//	            	System.out.println("row----------------------->> "+n);
-	            	for(int m=0;m<rowData.size();m++)
-	            	{
-	            		Object value = rowData.get(m);
-	 	                String data = String.valueOf(value);
-	 	                System.out.print(data + "\t");
-	            	}
-	            	System.out.println();
-	            }
-	            System.out.println();
+	    /**
+	     * 
+	     * @param titleDs 中文标题列表
+	     * @param keyDs   数据字段key列表
+	     * @param dataDs  数据列表
+	     * @param out_path 文件保存路径
+	     * @throws IOException
+	     */
+	    public static void writeExcel(DataSet titleDs,DataSet keyDs,DataSet dataDs,String out_path,String fileName,String sheetName) throws IOException
+	    {
+	        String exportPath = out_path+"/"+fileName;
+	        FileUtil.mkdir(out_path);
+	        OutputStream out = new FileOutputStream(new File(exportPath));  
+	  
+	        // 声明一个工作薄  
+	        HSSFWorkbook workbook = new HSSFWorkbook();  
+	        // 生成一个表格  
+	        if(StringUtils.isEmptyOrNull(sheetName))
+	        {
+	        	sheetName ="SHEET_"+DateUtil.getCurrentDateTime().replaceAll(":", "").replaceAll("-", "").replaceAll(" ", "");
 	        }
+	        HSSFSheet sheet = workbook.createSheet(sheetName);  
+	        // 设置表格默认列宽度为15个字节  
+	        sheet.setDefaultColumnWidth(15);  
+	  
+	        // 设置标题  
+	        HSSFCellStyle titleStyle = workbook.createCellStyle();  
+	        // 居中显示  
+	        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);  
+	        // 标题字体  
+	        HSSFFont titleFont = workbook.createFont();  
+	        // 字体大小  
+	        titleFont.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);  
+	        titleStyle.setFont(titleFont);  
+	  
+	        HSSFCellStyle contentStyle = workbook.createCellStyle();  
+	        contentStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);  
+	        HSSFFont contentFont = workbook.createFont();  
+	        contentFont.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);  
+	        contentStyle.setFont(contentFont);  
+	  
+	        // 产生表格标题行  
+	        HSSFRow row = sheet.createRow(0);
+	        for (int i = 0; i < titleDs.size(); i++) 
+	        {  
+	            HSSFCell cell = row.createCell(i);  
+	            HSSFRichTextString text = new HSSFRichTextString(String.valueOf(titleDs.get(i)));  
+	            cell.setCellValue(text);  
+	            cell.setCellStyle(titleStyle);  
+	        }  
+	  
+	        int rowCount = 1;  
+	        for (int i = 0; i < dataDs.size(); i++, rowCount++) 
+	        {  
+	            HSSFRow dataRow = sheet.createRow(rowCount);  
+	            Row data_row = (Row)dataDs.get(i);  
+	            for (int j = 0; j < keyDs.size(); j++) 
+	            {  
+	            	HSSFCell cell = dataRow.createCell(j);
+	            	String value =data_row.getString(String.valueOf(keyDs.get(j)));
+	            	if(StringUtils.isEmptyOrNull(value))
+	            	{
+	            		value ="";
+	            	}
+	            	cell.setCellValue(value);  
+		            cell.setCellStyle(contentStyle);  
+	            }
+	        }  
+	        workbook.write(out);  
+	        out.close();
+	    }  
+
+	  //自定义的方法,插入某个图片到指定索引的位置
+	    public static void insertImage(HSSFWorkbook wb,HSSFPatriarch pa,byte[] data,int row,int column,int index)
+	    {
+	       int x1=index*250;
+	       int y1=0;
+	       int x2=x1+255;
+	       int y2=255;
+	        HSSFClientAnchor anchor = new HSSFClientAnchor(x1,y1,x2,y2,(short)column,row,(short)column,row);
+	        anchor.setAnchorType(2);
+	        pa.createPicture(anchor , wb.addPicture(data,HSSFWorkbook.PICTURE_TYPE_JPEG));
+	    }
+	    
+	    //从图片里面得到字节数组
+	    public static  byte[] getImageData(BufferedImage bi)
+	    {
+	       try{
+	            ByteArrayOutputStream bout=new ByteArrayOutputStream();
+	            ImageIO.write(bi,"PNG",bout);
+	           return bout.toByteArray();
+	        }catch(Exception exe){
+	            exe.printStackTrace();
+	           return null;
+	        }
+	    }
+	    
+//	    @SuppressWarnings("unchecked")
+//		public static void main(String[] args) throws Exception {
+//	    	String filePath="/users/JianBoTong/Desktop/test.xls";
+//	       List<Map<String,Object>>sheetlist =ExcelUtil.parseExcel(filePath);
+//	       String index ="";
+//	       String sheetName="";
+//	       List<Object> sheetData=null;
+//	        for (int i = 0; i < sheetlist.size(); i++) {// 显示数据
+//	            Map<String,Object> map=  (Map<String,Object>)sheetlist.get(i);
+//	            index=(String)map.get("index");
+//	            sheetName=(String)map.get("name");
+//	            sheetData=(List<Object>)map.get("data");
+//	            System.out.println("=============sheet:"+index+" sheet name:"+sheetName);
+//	            for (short n = 0; n < sheetData.size(); n++) {
+//	            	List<Object> rowData =(List<Object>)sheetData.get(n);
+////	            	System.out.println("row----------------------->> "+n);
+//	            	for(int m=0;m<rowData.size();m++)
+//	            	{
+//	            		Object value = rowData.get(m);
+//	 	                String data = String.valueOf(value);
+//	 	                System.out.print(data + "\t");
+//	            	}
+//	            	System.out.println();
+//	            }
+//	            System.out.println();
+//	        }
+//	    }
+	    
+	    @SuppressWarnings("unchecked")
+		public static void main(String[] args) throws Exception 
+	    {
+	    	DataSet titleDs =new DataSet();
+	    	for(int i=0;i<10;i++)
+	    	{
+	    		titleDs.add("title"+i);
+	    	}
+	    	DataSet keyDs =new DataSet();
+	    	for(int i=0;i<10;i++)
+	    	{
+	    		keyDs.add("title"+i);
+	    	}
+	    	DataSet dataDs =new DataSet();
+	    	for(int i=0;i<10;i++)
+	    	{
+	    		Row row =new Row();
+	    		row.put("title0", "1");
+	    		row.put("title1", "1");
+	    		row.put("title2", "1");
+	    		row.put("title3", "1");
+	    		row.put("title4", "1");
+	    		row.put("title5", "1");
+	    		row.put("title6", "1");
+	    		row.put("title7", "1");
+	    		row.put("title8", "1");
+	    		row.put("title9", "1");
+	    		dataDs.add(row);
+	    	}
+	    	
+//	    	String out_path="/Users/TongJianbo/work/测试.xls";
+	    	String out_path="/usr/local/tomcat/tomcat7/webapps/mcn/resources/export_excel/10007";
+	    	String fileName ="2015企业考勤汇总表.xls";
+	    	String sheetName="测试表";
+	    	ExcelUtil.writeExcel(titleDs, keyDs, dataDs, out_path,fileName, sheetName);
 	    }
 
 }

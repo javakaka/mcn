@@ -6,6 +6,8 @@ import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.ResponseVO;
+import com.ezcloud.framework.util.StringUtils;
+import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
 @Component("mcnMemberService")
@@ -216,4 +218,43 @@ public class MemberService extends Service{
 		}
 	}
 	
+	public DataSet queryUsersBySiteNo(String site_no)
+	{
+		DataSet ds =new DataSet();
+		String sql ="select * from mcn_users where depart_id='"+site_no+"' ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
+	
+	public int queryOrgUserNumByStatus(String status,String org_id)
+	{
+		int sum =0;
+		String sql ="select count(*) from mcn_users where status='"+status+"' and org_id='"+org_id+"'";
+		sum =Integer.parseInt(queryField(sql));
+		return sum;
+	}
+	
+	public void stopUserStateBySiteNo(DataSet ds)
+	{
+		String ids ="";
+		if(ds != null && ds.size()>0 )
+		{
+			for(int i=0; i<ds.size(); i++)
+			{
+				Row temp =(Row)ds.get(i);
+				String site_no =temp.getString("site_no","");
+				if(! StringUtils.isEmptyOrNull(site_no))
+				{
+					if(ids.length()>0)
+					{
+						ids +=",";
+					}
+					ids +="'"+site_no+"'";
+				}
+			}
+			String sql ="update mcn_users set status='2' where depart_id in ("+ids+")";
+//			System.out.println("sql =====>>"+sql);
+			update(sql);
+		}
+	}
 }

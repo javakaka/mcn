@@ -123,6 +123,9 @@ public class LoginController extends BaseController {
 				String query_base=module.getString("query_base","0");
 				String change_pwd=module.getString("change_pwd","0");
 				String message=module.getString("message","0");
+				String  base_statistic=module.getString("base_statistic","0");
+				String punch_statistic=module.getString("punch_statistic","0");
+				String audit=module.getString("audit","0");
 				ovo.set("punch", punch);
 				ovo.set("checkin", checkin);
 				ovo.set("ask_leave", ask_leave);
@@ -130,6 +133,9 @@ public class LoginController extends BaseController {
 				ovo.set("query_base", query_base);
 				ovo.set("change_pwd", change_pwd);
 				ovo.set("message", message);
+				ovo.set("base_statistic", base_statistic);
+				ovo.set("punch_statistic", punch_statistic);
+				ovo.set("audit", audit);
 			}
 		}
 		return VOConvert.ovoToJson(ovo);

@@ -1,9 +1,17 @@
 package com.mcn.controller.user;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -19,10 +27,13 @@ import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
+import com.ezcloud.framework.util.ExcelUtil;
 import com.ezcloud.framework.util.Message;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
+import com.mcn.service.MemberService;
 import com.mcn.service.PunchLogService;
 
 @Controller("mcnPunchLogController")
@@ -34,6 +45,9 @@ public class PunchLogController extends BaseController{
 	
 	@Resource(name ="frameworkSystemSiteService")
 	private SystemSite systemSiteService;
+	
+	@Resource(name ="mcnMemberService")
+	private MemberService memberService;
 	
 	/**
 	 * 查询企业的打卡汇总记录
@@ -106,7 +120,7 @@ public class PunchLogController extends BaseController{
 	 */
 	
 	@RequestMapping(value = "/PunchLogList")
-	public String list(String punch_type,String punch_result,String depart_id,
+	public String list(String punch_type,String punch_result,String depart_id,String user_id,
 			String start_date,String end_date,Pageable pageable, ModelMap model) {
 //		HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
 		HttpSession session = getSession();
@@ -123,6 +137,8 @@ public class PunchLogController extends BaseController{
 		punchLogService.getRow().put("punch_type", punch_type);
 		punchLogService.getRow().put("punch_result", punch_result);
 		punchLogService.getRow().put("depart_id", depart_id);
+		System.out.println("user_id---------->>"+user_id);
+		punchLogService.getRow().put("user_id", user_id);
 		punchLogService.getRow().put("start_date", start_date);
 		punchLogService.getRow().put("end_date", end_date);
 		Page page = punchLogService.queryPageForCompany();
@@ -130,11 +146,19 @@ public class PunchLogController extends BaseController{
 		model.addAttribute("punch_type", punch_type);
 		model.addAttribute("punch_result", punch_result);
 		model.addAttribute("depart_id", depart_id);
+		model.addAttribute("user_id", user_id);
 		model.addAttribute("start_date", start_date);
 		model.addAttribute("end_date", end_date);
 		//site list 
 		DataSet siteDs =systemSiteService.queryOrgSite(org_id);
 		model.addAttribute("site_list", siteDs);
+		//user list 
+		DataSet userDs =null;
+		if(!StringUtils.isEmptyOrNull(depart_id))
+		{
+			userDs =memberService.queryUsersBySiteNo(depart_id);
+		}
+		model.addAttribute("user_list", userDs);
 		return "/mcnpage/user/punch/log/PunchLogList";
 	}
 	
@@ -265,39 +289,8 @@ public class PunchLogController extends BaseController{
 		if(org_id == null){
 			return "/mcnpage/user/punch/log/personQList";
 		}
-		DataSet pageSet = null;
-		String curTime =DateUtil.getCurrentDateTime();
-		System.out.println("critime==="+curTime+"===="+curTime.substring(0,7));
-		if(time == null){
-			time=curTime.substring(0,7);
-		}
-		if(session.getAttribute("datatime2")==null){
-		session.setAttribute("datatime2", time);
-		}
-		if(!session.getAttribute("datatime2").equals(time)){
-		session.removeAttribute("dataset2");
-		session.removeAttribute("datatime2");
-		session.setAttribute("datatime2", time);
-		}
-		if(session.getAttribute("dataset2")==null){
-		pageSet = punchLogService.personQLoglist(org_id,time);
-		session.setAttribute("dataset2", pageSet);
-		}else{
-		pageSet = (DataSet) session.getAttribute("dataset2");
-		}
-		if(searchValue == null){
-		model.addAttribute("page", pageSet);
-		}else{
-		DataSet data = new DataSet();
-		for(int i=0;i<pageSet.size();i++){
-			Row row = new Row();
-			row = (Row) pageSet.get(i);
-			if(row.getString("user_name").equals(searchValue)){
-				data.add(row);
-			}
-		}
-		model.addAttribute("page", data);
-		}
+		Page page =punchLogService.personQLoglist(pageable,org_id,time);
+		model.addAttribute("page", page);
 		return "/mcnpage/user/punch/log/personQList";
 	}
 	
@@ -308,5 +301,133 @@ public class PunchLogController extends BaseController{
 		System.out.println("punch_status==="+punch_status+"-------id===="+id);
 		punchLogService.queryUserPunchLog(punch_status,id);
 		return json;
+	} 
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/exportCompanyLog")
+	public  String exportCompanyLog(HttpServletRequest request,HttpServletResponse response,String year,String month) throws JException, IOException
+	{
+		HttpSession session = getSession();
+		Row staff =(Row)session.getAttribute("staff");
+		String org_id =null;
+		if(staff != null){
+			org_id =staff.getString("bureau_no", null);
+		}
+		if(org_id == null){
+			return null;
+		}
+		DataSet pageSet = null;
+		String time =year+month;
+		if(StringUtils.isEmptyOrNull(year) && StringUtils.isEmptyOrNull(month))
+		{
+			time =null;
+		}
+		if(!StringUtils.isEmptyOrNull(year))
+		{
+			time =year;
+		}
+		if(!StringUtils.isEmptyOrNull(month))
+		{
+			if(time.length() >0)
+			{
+				time +="-"+month;
+			}
+		}
+		String curTime =DateUtil.getCurrentDateTime();
+		if( time == null )
+		{
+			time=curTime.substring(0,7);
+		}
+		if( session.getAttribute("datatime") == null )
+		{
+			session.setAttribute("datatime", time);
+		}
+		if(!session.getAttribute("datatime").equals(time))
+		{
+			session.removeAttribute("dataset");
+			session.removeAttribute("datatime");
+			session.setAttribute("datatime", time);
+		}
+		if(session.getAttribute("dataset")==null)
+		{
+			try 
+			{
+				pageSet = punchLogService.queryPageForCompanyDepart(org_id,time);
+			} 
+			catch (ParseException e) 
+			{
+				pageSet =null;
+				e.printStackTrace();
+			}
+			session.setAttribute("dataset", pageSet);
+		}
+		else
+		{
+			pageSet = (DataSet) session.getAttribute("dataset");
+		}
+		DataSet titleDs =new DataSet();
+		titleDs.add("所属部门");
+		titleDs.add("姓名");
+		titleDs.add("打卡");
+		titleDs.add("外出");
+		titleDs.add("年假");
+		titleDs.add("事假");
+		titleDs.add("病假");
+		titleDs.add("调休");
+		titleDs.add("加班");
+		titleDs.add("早退");
+		titleDs.add("漏打卡");
+		titleDs.add("迟到10分钟以内");
+		titleDs.add("大于10小于30分钟");
+		titleDs.add("超过30分钟");
+		DataSet keyDs =new DataSet();
+		keyDs.add("DEPART_NAME");
+		keyDs.add("MANAGER_NAME");
+		keyDs.add("ALL_DAY");
+		keyDs.add("WAI_DAY");
+		keyDs.add("YEAR_DAY");
+		keyDs.add("SHI_DAY");
+		keyDs.add("SICK_DAY");
+		keyDs.add("TIAO_DAY");
+		keyDs.add("ADD_DAY");
+		keyDs.add("LEAVE_EARLY");
+		keyDs.add("LOST_PUNCH");
+		keyDs.add("XSHI");
+		keyDs.add("DSHI");
+		keyDs.add("CSHI");
+		String basePath =request.getSession().getServletContext().getRealPath("/resources");
+		basePath +="/export_excel"+"/"+org_id;
+		String fileName =time+"企业考勤汇总表.xls";
+		String out_path=basePath;
+		String file_path=basePath+"/"+fileName;
+		System.out.println("out_path========>>>"+out_path);
+		System.out.println("file_path========>>>"+file_path);
+    	String sheetName="企业考勤汇总表";
+    	ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		InputStream is = new FileInputStream(file_path);
+		response.reset();
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes(), "iso-8859-1"));
+        ServletOutputStream out = response.getOutputStream();
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(is);
+            bos = new BufferedOutputStream(out);
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            // Simple read/write loop.
+            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff, 0, bytesRead);
+            }
+        } catch (final IOException e) {
+            throw e;
+        } finally {
+            if (bis != null)
+                bis.close();
+            if (bos != null)
+                bos.close();
+        }
+		return null;
 	} 
 }

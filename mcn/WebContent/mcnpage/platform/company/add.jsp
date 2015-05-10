@@ -112,16 +112,19 @@ $().ready(function() {
 					功能选项:
 				</th>
 				<td>
-					<input type="checkbox" id="check_punch"        name="modules"  maxlength="10" value="punch" />打卡
-					<input type="checkbox" id="check_reimburse"    name="modules"  maxlength="10" value="reimburse" />报销
-					<input type="checkbox" id="check_task"         name="modules"  maxlength="10" value="task" />任务
-					<input type="checkbox" id="check_meeting_room" name="modules"  maxlength="10" value="meeting_room" />会议室
-					<input type="checkbox" id="check_checkin" name="modules"  maxlength="10" value="checkin" />签到
-					<input type="checkbox" id="check_ask_leave" name="modules"  maxlength="10" value="ask_leave" />请假
-					<input type="checkbox" id="check_query_leave" name="modules"  maxlength="10" value="query_leave" />请假查询
-					<input type="checkbox" id="check_query_base" name="modules"  maxlength="10" value="query_base" />基本查询
-					<input type="checkbox" id="check_change_pwd" name="modules"  maxlength="10" value="change_pwd" />修改密码
-					<input type="checkbox" id="check_message" name="modules"  maxlength="10" value="message" />通知
+					<input type="checkbox" id="check_punch"        name="modules"  maxlength="100" value="punch" />打卡
+					<input type="checkbox" id="check_reimburse"    name="modules"  maxlength="100" value="reimburse" />报销
+					<input type="checkbox" id="check_task"         name="modules"  maxlength="100" value="task" />任务
+					<input type="checkbox" id="check_meeting_room" name="modules"  maxlength="100" value="meeting_room" />会议室
+					<input type="checkbox" id="check_checkin" name="modules"  maxlength="100" value="checkin" />签到
+					<input type="checkbox" id="check_ask_leave" name="modules"  maxlength="100" value="ask_leave" />请假
+					<input type="checkbox" id="check_query_leave" name="modules"  maxlength="100" value="query_leave" />签到查询
+					<input type="checkbox" id="check_query_base" name="modules"  maxlength="100" value="query_base" />基本查询
+					<input type="checkbox" id="check_change_pwd" name="modules"  maxlength="100" value="change_pwd" />修改密码
+					<input type="checkbox" id="check_message" name="modules"  maxlength="100" value="message" />通知
+					<input type="checkbox" id="check_base_statistic" name="modules"  maxlength="100" value="base_statistic" />基本查询
+					<input type="checkbox" id="check_punch_statistic" name="modules"  maxlength="100" value="punch_statistic" />签到查询
+					<input type="checkbox" id="check_audit" name="modules"  maxlength="100" value="audit" />审批
 				</td>
 			</tr>
 			<tr>

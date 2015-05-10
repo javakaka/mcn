@@ -55,10 +55,21 @@ $().ready(function() {
 					+'<tr>'
 					+'<th>部门:<\/th>'
 					+'<td>'
-					+'<select id="depart_id" name="depart_id" class="text" style="width:190px;">'
+					+'<select id="depart_id" name="depart_id" class="text" style="width:190px;" onchange="selectUser(this)">'
 					+'<option value="">请选择...<\/option>'
 					+'<c:forEach items="${site_list}" var="row" varStatus="status">'
 					+'<c:choose><c:when test="${depart_id == row.SITE_NO}"><option value="${row.SITE_NO}" selected>${row.SITE_NAME}<\/option></c:when><c:otherwise><option value="${row.SITE_NO}" >${row.SITE_NAME}<\/option></c:otherwise></c:choose>'
+					+'</c:forEach>'
+					+'<\/select>'
+					+'<\/td>'
+					+'<\/tr>'
+					+'<tr>'
+					+'<th>人员:<\/th>'
+					+'<td>'
+					+'<select id="user_id" name="user_id" class="text" style="width:190px;">'
+					+'<option value="">请选择...<\/option>'
+					+'<c:forEach items="${user_list}" var="row" varStatus="status">'
+					+'<c:choose><c:when test="${user_id == row.ID}"><option value="${row.ID}" selected>${row.NAME}<\/option></c:when><c:otherwise><option value="${row.ID}" >${row.NAME}<\/option></c:otherwise></c:choose>'
 					+'</c:forEach>'
 					+'<\/select>'
 					+'<\/td>'
@@ -124,6 +135,48 @@ $.post(url,params,function cbk(){
 alert("修改成功");
 });
 }
+
+
+function selectUser(obj)
+{
+	var site_no =obj.value;
+	if(typeof site_no == "undefined" || site_no =="")
+	{
+		return false;
+	}
+	var url ="<%=basePath%>mcnpage/user/member/queryUserBySiteno.do";
+	var params ={site_no: site_no};
+	$.ajax({
+		url: url,
+		type: "POST",
+		data: params,
+		dataType: "json",
+		cache: false,
+		beforeSend: function (XMLHttpRequest){
+		},
+		success: function(ovo, textStatus) {
+			var code =ovo.code;
+			if(code >=0)
+			{
+				var list =ovo.oForm.LIST;
+				var html ="<option value=''>请选择...</option>";
+				$.each(list,function(i,item){
+					html +="<option value='"+item.ID+"'>"+item.NAME+"</option>";
+				});
+				$("#moreTable").find("#user_id").html(html);
+			}
+			else
+			{
+				$.message("error",ovo.msg);
+			}
+		},
+		complete: function (XMLHttpRequest, textStatus){
+		},
+		error: function (){
+			$.message("error","处理出错!");
+		}
+	});
+}
 </script>
 </head>
 <body>
@@ -142,6 +195,7 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 	<input type="hidden" id="punch_type" name="punch_type" value="<c:if test="${punch_type !=''}">${punch_type}</c:if>" />
 	<input type="hidden" id="punch_result" name="punch_result" value="<c:if test="${punch_result !=''}">${punch_result}</c:if>" />
 	<input type="hidden" id="depart_id" name="depart_id" value="${depart_id}" />
+	<input type="hidden" id="user_id" name="user_id" value="${user_id}" />
 	<input type="hidden" id="start_date" name="start_date" value="${start_date}" />
 	<input type="hidden" id="end_date" name="end_date" value="${end_date}" />
 		<div class="bar">

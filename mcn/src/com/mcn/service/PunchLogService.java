@@ -24,8 +24,24 @@ public class PunchLogService extends Service{
 	 */
 	public DataSet queryPageForCompanyDepart(String org_id,String time) throws ParseException {
 		String year = time.substring(0, 4);
-		System.out.println("year=="+year);
-		String month = time.substring(5, 7);
+		String month ="";
+		if(StringUtils.isEmptyOrNull(time))
+		{
+			year ="";
+			month ="";
+		}
+		else
+		{
+			if(time.length() >=4)
+			{
+				year = time.substring(0, 4);
+			}
+			if(time.length() >=7)
+			{
+				month = time.substring(5, 7);
+			}
+		}
+		
 		System.out.println("month=="+month);
 		DataSet dataSet = new DataSet();
 		DataSet dataSet2 = null;
@@ -53,49 +69,106 @@ public class PunchLogService extends Service{
 					int leave_early =queryUserMonthLeaveEarlyNumByUserId(user_id,time);
 					row.put("leave_early", leave_early);
 					row.put("lost_punch", 0);
-					String sq2 = "SELECT SUM(day_status) as all_day from mcn_punch_log WHERE org_id='"+org_id+"' and user_id='"+user_id+"' and punch_time like '"+year+"_"+month+"%'";
+					String sq2 = "SELECT SUM(day_status) as all_day from mcn_punch_log WHERE org_id='"+org_id+"' and user_id='"+user_id+"' and punch_time like '";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq2 +=year;
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq2 +="-"+month;
+					}
+					sq2 +="%'";
 					String all_day2 = queryField(sq2);
 					double all_day = 0;
 					if(all_day2 != null){
 						all_day = Double.parseDouble(all_day2)/2;
 					}
 					row.put("all_day", all_day);
-					String sq3 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='1' and user_id='"+user_id+"' and status='2' and year='"+year+"' and month='"+month+"'";
+					String sq3 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='1' and user_id='"+user_id+"' and status='2' ";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq3 +=" and year='"+year+"' ";
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq3 +="and month='"+month+"' ";
+					}
 					String year_day = queryField(sq3);
 					if(year_day == null){
 						row.put("year_day", "0");
 					}else{
 					row.put("year_day", year_day);
 					}
-					String sq4 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='2' and user_id='"+user_id+"' and status='2' and year='"+year+"' and month='"+month+"'";
+					String sq4 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='2' and user_id='"+user_id+"' and status='2' ";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq4 +=" and year='"+year+"' ";
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq4 +="  and month='"+month+"' ";
+					}
 					String sick_day = queryField(sq4);
 					if(sick_day == null){
 						row.put("sick_day", "0");
 					}else{
 					row.put("sick_day", sick_day);
 					}
-					String sq5 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='3' and user_id='"+user_id+"' and status='2' and year='"+year+"' and month='"+month+"'";
+					String sq5 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='3' and user_id='"+user_id+"' and status='2' ";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq5 +=" and year='"+year+"' ";
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq5 +=" and month='"+month+"' ";
+					}
 					String tiao_day = queryField(sq5);
 					if(tiao_day == null){
 						row.put("tiao_day", "0");
 					}else{
 					row.put("tiao_day", tiao_day);
 					}
-					String sq6 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='4' and user_id='"+user_id+"' and status='2' and year='"+year+"' and month='"+month+"'";
+					String sq6 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='4' and user_id='"+user_id+"' and status='2' ";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq6 +=" and year='"+year+"' ";
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq6 +=" and month='"+month+"' ";
+					}
 					String add_day = queryField(sq6);
 					if(add_day == null){
 						row.put("add_day", "0");
 					}else{
 					row.put("add_day", add_day);
 					}
-					String sq7 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='5' and user_id='"+user_id+"' and status='2' and year='"+year+"' and month='"+month+"'";
+					String sq7 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='5' and user_id='"+user_id+"' and status='2' ";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq7 +=" and year='"+year+"' ";
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq7 +=" and month='"+month+"' ";
+					}
 					String shi_day = queryField(sq7);
 					if(shi_day == null){
 						row.put("shi_day", "0");
 					}else{
 					row.put("shi_day", shi_day);
 					}
-					String sq8 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='6' and user_id='"+user_id+"' and status='2' and year='"+year+"' and month='"+month+"'";
+					String sq8 = "SELECT SUM(sum_day) as day FROM mcn_leave_log WHERE org_id='"+org_id+"' and leave_type='6' and user_id='"+user_id+"' and status='2' ";
+					if(StringUtils.isEmptyOrNull(year))
+					{
+						sq8 +=" and year='"+year+"' ";
+					}
+					if(StringUtils.isEmptyOrNull(month))
+					{
+						sq8 +=" and month='"+month+"' ";
+					}
 					String wai_day = queryField(sq8);
 					if(wai_day == null){
 						row.put("wai_day", "0");
@@ -110,8 +183,26 @@ public class PunchLogService extends Service{
 					if(row5 != null){
 						String am_start = row5.getString("AM_START");
 						String pm_start = row5.getString("PM_START");
-						String sql8 = "SELECT punch_time from mcn_punch_log a,mcn_users b WHERE a.user_id=b.id and a.user_id='"+user_id+"' and a.org_id='"+org_id+"' and a.punch_type='1' and a.punch_time like '"+year+"_"+month+"%'";
-						String sql9 = "SELECT punch_time from mcn_punch_log a,mcn_users b WHERE a.user_id=b.id and a.user_id='"+user_id+"' and a.org_id='"+org_id+"' and a.punch_type='3' and a.punch_time like '"+year+"_"+month+"%'";
+						String sql8 = "SELECT punch_time from mcn_punch_log a,mcn_users b WHERE a.user_id=b.id and a.user_id='"+user_id+"' and a.org_id='"+org_id+"' and a.punch_type='1' and a.punch_time like '";
+						if(StringUtils.isEmptyOrNull(year))
+						{
+							sql8 +=year;
+						}
+						if(StringUtils.isEmptyOrNull(month))
+						{
+							sql8 +="-"+month;
+						}
+						sql8 +="%'";
+						String sql9 = "SELECT punch_time from mcn_punch_log a,mcn_users b WHERE a.user_id=b.id and a.user_id='"+user_id+"' and a.org_id='"+org_id+"' and a.punch_type='3' and a.punch_time like '";
+						if(StringUtils.isEmptyOrNull(year))
+						{
+							sql9 +=year;
+						}
+						if(StringUtils.isEmptyOrNull(month))
+						{
+							sql9 +="-"+month;
+						}
+						sql9 +="%'";
 						DataSet data8 = queryDataSet(sql8);
 						DataSet data9 = queryDataSet(sql9);
 						if(data8.size() > 0){
@@ -274,6 +365,7 @@ public class PunchLogService extends Service{
 		String punch_type =row.getString("punch_type",null);
 		String punch_result =row.getString("punch_result",null);
 		String depart_id =row.getString("depart_id",null);
+		String user_id =row.getString("user_id",null);
 		String start_date =row.getString("start_date",null);
 		String end_date =row.getString("end_date",null);
 		sql = "select a.*, b.name   from mcn_punch_log a left join mcn_users b on a.user_id=b.id where 1=1 ";
@@ -293,6 +385,10 @@ public class PunchLogService extends Service{
 		if(! StringUtils.isEmptyOrNull(depart_id))
 		{
 			sql +=" and a.user_id in (select id from mcn_users where depart_id='"+depart_id+"') ";
+		}
+		if(! StringUtils.isEmptyOrNull(user_id))
+		{
+			sql +=" and a.user_id='"+user_id+"' ";
 		}
 		String start_time="";
 		String end_time="";
@@ -323,6 +419,10 @@ public class PunchLogService extends Service{
 		if(! StringUtils.isEmptyOrNull(depart_id))
 		{
 			countSql +=" and a.user_id in (select id from mcn_users where depart_id='"+depart_id+"') ";
+		}
+		if(! StringUtils.isEmptyOrNull(user_id))
+		{
+			countSql +=" and a.user_id='"+user_id+"' ";
 		}
 		if(! StringUtils.isEmptyOrNull(start_date))
 		{
@@ -623,31 +723,47 @@ public class PunchLogService extends Service{
 		return sum;
 	}
 	
-	public DataSet personQLoglist(String org_id,String time) {
-		DataSet dataSet = new DataSet();
-		String sql = "SELECT a.user_id,c.SITE_NAME as depart_name,b.`name` as user_name,a.punch_time as qd_time,a.place_name as qd_address from mcn_punch_log a,mcn_users b,sm_site c WHERE "+
-				"a.user_id=b.id and b.depart_id=c.SITE_NO and a.org_id='"+org_id+"' and punch_type='7' and punch_time like '"+time+"%'";
-		DataSet da = queryDataSet(sql);
-		for(int i=0;i<da.size();i++){
-			Row row = new Row();
-			row = (Row) da.get(i);
-			String user_id = row.getString("user_id");
-			String qdtime = row.getString("qd_time").substring(0,10);
-			System.out.println("qdtime===="+qdtime);
-			String sql2 = "SELECT a.punch_time as qt_time,a.place_name as qt_address from mcn_punch_log a,mcn_users b,sm_site c WHERE "+
-				"a.user_id=b.id and b.depart_id=c.SITE_NO and a.org_id='"+org_id+"' and punch_type='8' and a.user_id='"+user_id+"' and punch_time like '"+qdtime+"%' ORDER BY a.id DESC LIMIT 0,1";
-			Row row2 = queryRow(sql2);
-			if(row2 != null){
-			row.put("qt_time", row2.getString("qt_time"));
-			row.put("qt_address", row2.getString("qt_address"));
-			}else{
-				row.put("qt_time", "");
-				row.put("qt_address", "");
-			}
-			dataSet.add(row);
+	public Page personQLoglist(Pageable pageable,String org_id,String time) {
+		
+		Page page =null;
+		String sql ="select * from "
+		+" ( "
+		+" select a.*,b.`name` as user_name,c.site_name from mcn_punch_log a "
+		+" left join mcn_users b on a.user_id=b.id "
+		+" left join sm_site c on b.depart_id=c.SITE_NO "
+		+" where a.punch_type in ('7','8')  and b.org_id='"+org_id+"' " ;
+		if(! StringUtils.isEmptyOrNull(time))
+		{
+			sql+=" and create_time like'"+time+"%'";
 		}
-		System.out.println("data=========="+dataSet.toString());
-		return dataSet;
+		sql+=" ) as tab where 1=1";
+		String restrictions = addRestrictions(pageable);
+		String orders = addOrders(pageable);
+		sql += restrictions;
+		sql += orders;
+		String countSql ="select count(*) from "
+		+" ( "
+		+" select a.*,b.`name` as user_name,c.site_name from mcn_punch_log a "
+		+" left join mcn_users b on a.user_id=b.id "
+		+" left join sm_site c on b.depart_id=c.SITE_NO "
+		+" where a.punch_type in ('7','8')  and b.org_id='"+org_id+"' " ;
+		if(! StringUtils.isEmptyOrNull(time))
+		{
+			countSql+=" and create_time like'"+time+"%'";
+		}
+		countSql+=" ) as tab where 1=1 ";
+		countSql += restrictions;
+		countSql += orders;
+		long total = count(countSql);
+		int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
+		if (totalPages < pageable.getPageNumber()) {
+			pageable.setPageNumber(totalPages);
+		}
+		int startPos = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+		sql += " limit " + startPos + " , " + pageable.getPageSize();
+		DataSet dataSet = queryDataSet(sql);
+		page = new Page(dataSet, total, pageable);
+		return page;
 	}
 	
 	public void queryUserPunchLog(String punch_status,String id){
@@ -682,4 +798,12 @@ public class PunchLogService extends Service{
 		ds =queryDataSet(sql);
 		return ds;
 	}
+	
+	public int savePunchLeaveRecord(Row row)
+	{
+		int num =0;
+		insert("mcn_punch_leave",row);
+		return num;
+	}
+	
 }
