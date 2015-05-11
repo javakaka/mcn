@@ -766,6 +766,24 @@ public class PunchLogService extends Service{
 		return page;
 	}
 	
+	public DataSet queryUserCheckinLog(String org_id,String time) {
+		
+		DataSet ds =new DataSet();
+		String sql ="select * from "
+				+" ( "
+				+" select a.punch_time,a.place_name,b.`name` as user_name,c.site_name from mcn_punch_log a "
+				+" left join mcn_users b on a.user_id=b.id "
+				+" left join sm_site c on b.depart_id=c.site_no "
+				+" where a.punch_type in ('7','8')  and b.org_id='"+org_id+"' " ;
+		if(! StringUtils.isEmptyOrNull(time))
+		{
+			sql+=" and create_time like'"+time+"%'";
+		}
+		sql+=" ) as tab where 1=1 ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
+	
 	public void queryUserPunchLog(String punch_status,String id){
 		String sql= "update mcn_punch_log set punch_status='"+punch_status+"' WHERE id='"+id+"'";
 		update(sql);
@@ -804,6 +822,77 @@ public class PunchLogService extends Service{
 		int num =0;
 		insert("mcn_punch_leave",row);
 		return num;
+	}
+	
+	public DataSet queryUserPunchLog(String org_id,String depart_id,String user_id,String start_date,String end_date)
+	{
+		DataSet ds =new DataSet();
+		String sql ="select b.`name` ,a.punch_time,a.punch_type,a.punch_result,a.place_name,c.site_name from mcn_punch_log a "
+		+" left join mcn_users b on a.user_id=b.id "
+		+" left join sm_site c on b.depart_id=c.site_no " 
+		+" where 1=1 ";
+		if(!StringUtils.isEmptyOrNull(user_id))
+		{
+			sql+=" and a.user_id='"+user_id+"' ";
+		}
+		if(!StringUtils.isEmptyOrNull(depart_id))
+		{
+			sql+=" and c.site_no ='"+depart_id+"' ";
+		}
+		if(!StringUtils.isEmptyOrNull(start_date))
+		{
+			sql+=" and a.punch_time >='"+start_date+"' ";
+		}
+		if(!StringUtils.isEmptyOrNull(end_date))
+		{
+			sql+=" and a.punch_time <='"+end_date+"' ";
+		}
+		System.out.println("sql----->>"+sql);
+		ds =queryDataSet(sql);
+		if(ds != null && ds.size()>0)
+		{
+			for(int i=0;i<ds.size();i++)
+			{
+				Row temp =(Row)ds.get(i);
+				String punch_type =temp.getString("punch_type","");
+				String punch_type_name ="";
+				if(punch_type.equals("1"))
+				{
+					punch_type_name ="上午上班";
+				}
+				else if(punch_type.equals("2"))
+				{
+					punch_type_name ="上午下班";
+				}
+				else if(punch_type.equals("3"))
+				{
+					punch_type_name ="下午上班";
+				}
+				else if(punch_type.equals("4"))
+				{
+					punch_type_name ="下午下班";
+				}
+				else if(punch_type.equals("5"))
+				{
+					punch_type_name ="加班开始";
+				}
+				else if(punch_type.equals("6"))
+				{
+					punch_type_name ="加班结束";
+				}
+				else if(punch_type.equals("7"))
+				{
+					punch_type_name ="签到";
+				}
+				else if(punch_type.equals("8"))
+				{
+					punch_type_name ="签到";
+				}
+				temp.put("punch_type_name",punch_type_name );
+				ds.set(i, temp);
+			}
+		}
+		return ds;
 	}
 	
 }

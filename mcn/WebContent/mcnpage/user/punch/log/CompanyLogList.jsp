@@ -120,13 +120,13 @@ function findList(){
 	 var year=$('#year').val(); 
 	 var month=$('#month').val();
 	 var time="";
-	 if(typeof year =="undefined" || year.trim() =="")
+	 if(typeof year =="undefined" || year=="")
 	 {
 		 $.message("error","请选择年份");
 		 /* $('#year').focus(); */ 
 		 return false;
 	 }
-	 if(typeof month !="undefined" && month.trim() !="")
+	 if(typeof month !="undefined" && month !="")
 	 {
 		 time=year+"-"+month;
 	 }
@@ -145,11 +145,11 @@ function exportExcel()
 {
 	var year=$('#year').val(); 
 	var month=$('#month').val();
-	if(typeof year =="undefined" || year.trim() =="")
+	if(typeof year =="undefined" || year =="")
 	 {
 		year ="";
 	 }
-	 if(typeof month =="undefined" || month.trim() =="")
+	 if(typeof month =="undefined" || month =="")
 	 {
 		 month ="";
 	 }

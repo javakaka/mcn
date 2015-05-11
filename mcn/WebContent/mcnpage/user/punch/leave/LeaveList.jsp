@@ -105,6 +105,25 @@ $().ready(function() {
 	});
 
 });
+
+
+function exportExcel()
+{
+	var start_date=$('#start_date').val(); 
+	var end_date=$('#end_date').val();
+	if(typeof start_date =="undefined" || start_date =="")
+	{
+		start_date ="";
+	}
+	if(typeof end_date =="undefined" || end_date =="")
+	{
+		end_date ="";
+	}
+	var url ="<%=basePath%>mcnpage/user/punch/log/exportUserLeaveLog.do?";
+	url +="start_date="+start_date;
+	url +="&end_date="+end_date;
+	window.open(url);
+}
 </script>
 <style type="text/css">
 table { table-layout: fixed; } 
@@ -185,9 +204,8 @@ response.setHeader("Content-disposition","attachment; filename=excel.xls");//下
 				</div>
 			</div>
 			<div>
-				<a href="?exportToExcel=YES" class="iconButton">
-				<span>导 出&nbsp;</span>
-			</a>
+				<a href="javascript:void(0);" target="_blank"  onclick="exportExcel()" class="iconButton">
+				导 出</a>
 			</div>
 		</div>
 		<% }  %> 
@@ -202,7 +220,7 @@ response.setHeader("Content-disposition","attachment; filename=excel.xls");//下
 					<a href="javascript:;" class="sort" name="NAME">姓名</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="START_DATE">请假天数</a>
+					<a href="javascript:;" class="sort" name="SUM_DAY">请假天数</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="START_DATE">开始时间</a>
@@ -211,16 +229,16 @@ response.setHeader("Content-disposition","attachment; filename=excel.xls");//下
 					<a href="javascript:;" class="sort" name="END_DATE">结束时间</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="END_DATE">假期类型</a>
+					<a href="javascript:;" class="sort" name="LEAVE_TYPE">假期类型</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="END_DATE">请假原因</a>
+					<a href="javascript:;" class="sort" name="REASON">请假原因</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="END_DATE">流程过程</a>
+					<a href="javascript:;" class="sort" name="STATU_NAME">流程过程</a>
 				</th>
 				<th>
-					<a href="javascript:;" class="sort" name="END_DATE">审批状态</a>
+					<a href="javascript:;" class="sort" name="STATUS">审批状态</a>
 				</th>
 				<th>
 					<a href="javascript:;" class="sort" name="STATUS">请假提交时间</a>
@@ -248,10 +266,10 @@ response.setHeader("Content-disposition","attachment; filename=excel.xls");//下
 						<span title="${row.SUM_DAY}">${row.SUM_DAY}</span>
 					</td>
 					<td>
-						<span title="${row.SUM_DAY}">${row.START_DATE}</span>
+						<span title="${row.START_DATE}">${row.START_DATE}</span>
 					</td>
 					<td>
-						<span title="${row.SUM_DAY}">${row.END_DATE}</span>
+						<span title="${row.END_DATE}">${row.END_DATE}</span>
 					</td>
 					<td>
 					<c:if test="${row.LEAVE_TYPE == 1}">
@@ -277,7 +295,7 @@ response.setHeader("Content-disposition","attachment; filename=excel.xls");//下
 					</c:if>
 					</td>
 					<td width="20%">
-						<span title="${row.STATU_NAME}">${row.REASON}</span>
+						<span title="${row.REASON}">${row.REASON}</span>
 					</td>
 					<td>
 						<span title="${row.STATU_NAME}">${row.STATU_NAME}</span>

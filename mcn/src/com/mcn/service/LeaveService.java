@@ -387,4 +387,102 @@ public class LeaveService extends Service{
 		ds =queryDataSet(sql);
 		return ds;
 	}
+	
+	public DataSet queryOrgLeaveList(String org_id,String start_date,String end_date)
+	{
+		DataSet ds =new DataSet();
+		String sql = "select a.*, b.name  from mcn_leave_log a "
+				+ "left join mcn_users b on a.user_id=b.id where 1=1 ";
+		if(org_id == null || org_id.replace(" ", "").length() == 0)
+		{
+			return ds;
+		}
+		sql +=" and a.org_id='"+org_id+"'  ";
+		if(! StringUtils.isEmptyOrNull(start_date))
+		{
+			sql +=" and a.start_date >='"+start_date+"' ";
+		}
+		if(! StringUtils.isEmptyOrNull(end_date))
+		{
+			sql +=" and a.end_date <= '"+end_date+"' ";
+		}
+		ds =queryDataSet(sql);
+		if(ds != null && ds.size()>0)
+		{
+			for(int i=0;i<ds.size();i++)
+			{
+				Row temp =(Row)ds.get(i);
+				String leave_type =temp.getString("leave_type","");
+				String leave_type_name ="";
+				String status =temp.getString("status","");
+				String status_name ="";
+				if(leave_type.equals("1"))
+				{
+					leave_type_name ="年假";
+				}
+				else if(leave_type.equals("2"))
+				{
+					leave_type_name ="病假";
+				}
+				else if(leave_type.equals("3"))
+				{
+					leave_type_name ="调休";
+				}
+				else if(leave_type.equals("4"))
+				{
+					leave_type_name ="加班";
+				}
+				else if(leave_type.equals("5"))
+				{
+					leave_type_name ="事假";
+				}
+				else if(leave_type.equals("6"))
+				{
+					leave_type_name ="外出";
+				}
+				else if(leave_type.equals("7"))
+				{
+					leave_type_name ="其它";
+				}
+				
+				if(status.equals("1"))
+				{
+					status_name ="审批中";
+				}
+				else if(status.equals("2"))
+				{
+					status_name ="审批通过";
+				}
+				else if(status.equals("3"))
+				{
+					status_name ="审批不通过";
+				}
+				temp.put("leave_type_name", leave_type_name);
+				temp.put("status_name", status_name);
+				//审批人
+				String leave_id = temp.getString("id","");
+				String sql2 = "SELECT b.name as status_name from check_up_log a,mcn_users b WHERE a.up_check_id=b.id and a.leave_id='"+leave_id+"'";
+				DataSet dataSet2 = queryDataSet(sql2);
+				String audit_name = "";
+				if(dataSet2.size()>0)
+				{
+					for(int j=0;j<dataSet2.size();j++)
+					{
+						Row row2 = new Row();
+						row2 = (Row) dataSet2.get(j);
+						if(j==0){
+							audit_name += row2.getString("status_name");
+						}else{
+							audit_name += ","+row2.getString("status_name");
+						}
+					}
+				}
+				temp.put("audit_name", audit_name);
+				ds.set(i, temp);
+			}
+		}
+		return ds;
+	}
+	
+	
 }

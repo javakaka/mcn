@@ -27,12 +27,14 @@ import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
+import com.ezcloud.framework.util.DateUtils;
 import com.ezcloud.framework.util.ExcelUtil;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
+import com.mcn.service.LeaveService;
 import com.mcn.service.MemberService;
 import com.mcn.service.PunchLogService;
 
@@ -49,6 +51,8 @@ public class PunchLogController extends BaseController{
 	@Resource(name ="mcnMemberService")
 	private MemberService memberService;
 	
+	@Resource(name ="mcnLeaveService")
+	private LeaveService leaveService;
 	/**
 	 * 查询企业的打卡汇总记录
 	 * @param pageable
@@ -281,6 +285,11 @@ public class PunchLogController extends BaseController{
 	public String personQLoglist(Pageable pageable, ModelMap model,String time,String searchValue) throws ParseException {
 		System.out.println("timeff================"+time+"------------"+searchValue);
 		HttpSession session = getSession();
+		if(StringUtils.isEmptyOrNull(time))
+		{
+			time =DateUtil.getCurrentDateTime().substring(0,7);
+		}
+		session.setAttribute("datatime2", time);
 		Row staff =(Row)session.getAttribute("staff");
 		String org_id =null;
 		if(staff != null){
@@ -428,6 +437,254 @@ public class PunchLogController extends BaseController{
             if (bos != null)
                 bos.close();
         }
+		return null;
+	} 
+	
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/exportUserCheckinLog")
+	public  String exportUserCheckinLog(HttpServletRequest request,HttpServletResponse response,String year,String month) throws JException, IOException
+	{
+		HttpSession session = getSession();
+		Row staff =(Row)session.getAttribute("staff");
+		String org_id =null;
+		if(staff != null){
+			org_id =staff.getString("bureau_no", null);
+		}
+		if(org_id == null){
+			return null;
+		}
+		DataSet pageSet = null;
+		String time =year+month;
+		if(StringUtils.isEmptyOrNull(year) && StringUtils.isEmptyOrNull(month))
+		{
+			time =null;
+		}
+		if(!StringUtils.isEmptyOrNull(year))
+		{
+			time =year;
+		}
+		if(!StringUtils.isEmptyOrNull(month))
+		{
+			if(time.length() >0)
+			{
+				time +="-"+month;
+			}
+		}
+		String curTime =DateUtil.getCurrentDateTime();
+		if( time == null )
+		{
+			time=curTime.substring(0,7);
+		}
+		pageSet = punchLogService.queryUserCheckinLog(org_id,time);
+		DataSet titleDs =new DataSet();
+		titleDs.add("所属部门");
+		titleDs.add("用户姓名");
+		titleDs.add("签到时间");
+		titleDs.add("签到地址");
+//		titleDs.add("用户图像");
+		DataSet keyDs =new DataSet();
+		keyDs.add("SITE_NAME");
+		keyDs.add("USER_NAME");
+		keyDs.add("PUNCH_TIME");
+		keyDs.add("PlACE_NAME");
+		String basePath =request.getSession().getServletContext().getRealPath("/resources");
+		basePath +="/export_excel"+"/"+org_id;
+		String fileName =time+"用户签到表.xls";
+		String out_path=basePath;
+		String file_path=basePath+"/"+fileName;
+		System.out.println("out_path========>>>"+out_path);
+		System.out.println("file_path========>>>"+file_path);
+		String sheetName="用户签到表";
+		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		InputStream is = new FileInputStream(file_path);
+		response.reset();
+		response.setContentType("application/vnd.ms-excel;charset=utf-8");
+		response.setHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes(), "iso-8859-1"));
+		ServletOutputStream out = response.getOutputStream();
+		BufferedInputStream bis = null;
+		BufferedOutputStream bos = null;
+		try {
+			bis = new BufferedInputStream(is);
+			bos = new BufferedOutputStream(out);
+			byte[] buff = new byte[2048];
+			int bytesRead;
+			// Simple read/write loop.
+			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+				bos.write(buff, 0, bytesRead);
+			}
+		} catch (final IOException e) {
+			throw e;
+		} finally {
+			if (bis != null)
+				bis.close();
+			if (bos != null)
+				bos.close();
+		}
+		return null;
+	} 
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/exportUserPunchLog")
+	public  String exportUserPunchLog(HttpServletRequest request,HttpServletResponse response,
+			String start_date,String end_date,String depart_id,String user_id) throws JException, IOException
+	{
+		HttpSession session = getSession();
+		Row staff =(Row)session.getAttribute("staff");
+		String org_id =null;
+		if(staff != null){
+			org_id =staff.getString("bureau_no", null);
+		}
+		if(org_id == null){
+			return null;
+		}
+		DataSet pageSet = null;
+		if(! StringUtils.isEmptyOrNull(start_date))
+		{
+			start_date =start_date.replaceAll(" ", "");
+			start_date +=" 00:00:00";
+		}
+		if(! StringUtils.isEmptyOrNull(end_date))
+		{
+			end_date =end_date.replaceAll(" ", "");
+			end_date +=" 00:00:00";
+		}
+		pageSet = punchLogService.queryUserPunchLog(org_id,depart_id,user_id,start_date,end_date);
+		DataSet titleDs =new DataSet();
+		titleDs.add("所属部门");
+		titleDs.add("用户姓名");
+		titleDs.add("打卡类型");
+		titleDs.add("打卡时间");
+		titleDs.add("打卡结果");
+		titleDs.add("打卡地址");
+		titleDs.add("用户头像");
+//		titleDs.add("用户图像");
+		DataSet keyDs =new DataSet();
+		keyDs.add("SITE_NAME");
+		keyDs.add("NAME");
+		keyDs.add("PUNCH_TYPE_NAME");
+		keyDs.add("PUNCH_TIME");
+		keyDs.add("PUNCH_RESULT");
+		keyDs.add("PlACE_NAME");
+		keyDs.add("IMG_PATH");
+		String basePath =request.getSession().getServletContext().getRealPath("/resources");
+		basePath +="/export_excel"+"/"+org_id;
+		String fileName ="用户打卡表.xls";
+		String out_path=basePath;
+		String file_path=basePath+"/"+fileName;
+		System.out.println("out_path========>>>"+out_path);
+		System.out.println("file_path========>>>"+file_path);
+		String sheetName="用户打卡表";
+		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		InputStream is = new FileInputStream(file_path);
+		response.reset();
+		response.setContentType("application/vnd.ms-excel;charset=utf-8");
+		response.setHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes(), "iso-8859-1"));
+		ServletOutputStream out = response.getOutputStream();
+		BufferedInputStream bis = null;
+		BufferedOutputStream bos = null;
+		try {
+			bis = new BufferedInputStream(is);
+			bos = new BufferedOutputStream(out);
+			byte[] buff = new byte[2048];
+			int bytesRead;
+			// Simple read/write loop.
+			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+				bos.write(buff, 0, bytesRead);
+			}
+		} catch (final IOException e) {
+			throw e;
+		} finally {
+			if (bis != null)
+				bis.close();
+			if (bos != null)
+				bos.close();
+		}
+		return null;
+	} 
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/exportUserLeaveLog")
+	public  String exportUserLeaveLog(HttpServletRequest request,HttpServletResponse response,
+			String start_date,String end_date) throws JException, IOException
+	{
+		HttpSession session = getSession();
+		Row staff =(Row)session.getAttribute("staff");
+		String org_id =null;
+		if(staff != null){
+			org_id =staff.getString("bureau_no", null);
+		}
+		if(org_id == null){
+			return null;
+		}
+		DataSet pageSet = null;
+		if(! StringUtils.isEmptyOrNull(start_date))
+		{
+			start_date =start_date.replaceAll(" ", "");
+			start_date +=" 00:00:00";
+		}
+		if(! StringUtils.isEmptyOrNull(end_date))
+		{
+			end_date =end_date.replaceAll(" ", "");
+			end_date +=" 00:00:00";
+		}
+		pageSet = leaveService.queryOrgLeaveList(org_id,start_date,end_date);
+		DataSet titleDs =new DataSet();
+//		titleDs.add("所属部门");
+		titleDs.add("用户姓名");
+		titleDs.add("请假天数");
+		titleDs.add("开始时间");
+		titleDs.add("结束时间");
+		titleDs.add("假期类型");
+		titleDs.add("请假原因");
+		titleDs.add("流程过程");
+		titleDs.add("审批状态");
+		titleDs.add("请假提交时间");
+		titleDs.add("最后审批时间");
+		DataSet keyDs =new DataSet();
+//		keyDs.add("SITE_NAME");
+		keyDs.add("NAME");
+		keyDs.add("SUM_DAY");
+		keyDs.add("START_DATE");
+		keyDs.add("END_DATE");
+		keyDs.add("LEAVE_TYPE_NAME");
+		keyDs.add("REASON");
+		keyDs.add("AUDIT_NAME");
+		keyDs.add("STATUS_NAME");
+		keyDs.add("CREATE_TIME");
+		keyDs.add("MODIFY_TIME");
+		String basePath =request.getSession().getServletContext().getRealPath("/resources");
+		basePath +="/export_excel"+"/"+org_id;
+		String fileName ="用户请假表.xls";
+		String out_path=basePath;
+		String file_path=basePath+"/"+fileName;
+		System.out.println("out_path========>>>"+out_path);
+		System.out.println("file_path========>>>"+file_path);
+		String sheetName="用户请假表";
+		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		InputStream is = new FileInputStream(file_path);
+		response.reset();
+		response.setContentType("application/vnd.ms-excel;charset=utf-8");
+		response.setHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes(), "iso-8859-1"));
+		ServletOutputStream out = response.getOutputStream();
+		BufferedInputStream bis = null;
+		BufferedOutputStream bos = null;
+		try {
+			bis = new BufferedInputStream(is);
+			bos = new BufferedOutputStream(out);
+			byte[] buff = new byte[2048];
+			int bytesRead;
+			// Simple read/write loop.
+			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+				bos.write(buff, 0, bytesRead);
+			}
+		} catch (final IOException e) {
+			throw e;
+		} finally {
+			if (bis != null)
+				bis.close();
+			if (bos != null)
+				bos.close();
+		}
 		return null;
 	} 
 }

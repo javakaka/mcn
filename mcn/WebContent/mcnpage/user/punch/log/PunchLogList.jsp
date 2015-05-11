@@ -177,6 +177,37 @@ function selectUser(obj)
 		}
 	});
 }
+
+function exportExcel()
+{
+	var depart_id=$('#depart_id').val(); 
+	var user_id=$('#user_id').val(); 
+	var start_date=$('#start_date').val(); 
+	var end_date=$('#end_date').val();
+	if(typeof depart_id =="undefined" || depart_id =="")
+	{
+		 depart_id ="";
+	}
+	if(typeof user_id =="undefined" || user_id =="")
+	{
+		 user_id ="";
+	}
+	if(typeof start_date =="undefined" || start_date =="")
+	{
+		start_date ="";
+	}
+	if(typeof end_date =="undefined" || end_date =="")
+	{
+		end_date ="";
+	}
+	var url ="<%=basePath%>mcnpage/user/punch/log/exportUserPunchLog.do?";
+	url +="start_date="+start_date;
+	url +="&end_date="+end_date;
+	url +="&depart_id="+depart_id;
+	url +="&user_id="+user_id;
+	window.open(url);
+}
+
 </script>
 </head>
 <body>
@@ -277,7 +308,9 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 						</ul>
 					</div>
 				</div>
-				<a href="?exportToExcel=YES" class="iconButton"><span>导 出&nbsp;</span></a>
+				<a href="javascript:void(0);" target="_blank"  onclick="exportExcel()" class="iconButton">
+				导 出</a>
+				<!-- <a href="?exportToExcel=YES" class="iconButton"><span>导 出&nbsp;</span></a>-->
 			</div>
 			<div class="menuWrap">
 				<div class="search">

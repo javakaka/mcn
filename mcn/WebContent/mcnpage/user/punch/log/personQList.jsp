@@ -5,7 +5,8 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-String time = session.getAttribute("datatime2").toString();
+String time =(String)session.getAttribute("datatime2");
+System.out.println("time ---->>>"+time);
 String year = "";
 String month ="";
 if(time != null)
@@ -39,24 +40,42 @@ function findList(){
 	 var year=$('#year').val(); 
 	 var month=$('#month').val();
 	 var time="";
-	 if(typeof year =="undefined" || year.trim() =="")
+	 if(typeof year =="undefined" || year =="")
 	 {
 		 $.message("error","请选择年份");
 		 /* $('#year').focus(); */ 
 		 return false;
 	 }
-	 if(typeof month !="undefined" && month.trim() !="")
+	 if(typeof month !="undefined" && month !="")
 	 {
 		 time=year+"-"+month;
 	 }
 	 else
 	 {
-		 time=year
+		 time=year;
 	 }
-	 alert(time);
 	 window.location.href = "<%=basePath%>mcnpage/user/punch/log/personQList.do?time="+time;
 }
 function se (){
+}
+
+
+function exportExcel()
+{
+	var year=$('#year').val(); 
+	var month=$('#month').val();
+	if(typeof year =="undefined" || year =="")
+	 {
+		year ="";
+	 }
+	 if(typeof month =="undefined" || month =="")
+	 {
+		 month ="";
+	 }
+	var url ="<%=basePath%>mcnpage/user/punch/log/exportUserCheckinLog.do?";
+	url +="year="+year;
+	url +="&month="+month;
+	window.open(url);
 }
 </script>
 </head>
@@ -91,8 +110,12 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 				</a>
 			</div>
 			<div>
+				<a href="javascript:void(0);" target="_blank"  onclick="exportExcel()" class="iconButton">
+				导 出</a>
+				<!-- 
 				<a href="?exportToExcel=YES" class="iconButton">
 				<span>导 出&nbsp;</span>
+				-->
 			</a>
 			</div>
 			<div class="menuWrap">
