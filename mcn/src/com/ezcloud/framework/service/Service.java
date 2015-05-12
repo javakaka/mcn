@@ -135,7 +135,7 @@ public class Service {
 		return rowNum;
 	}
 	// 更新
-	public int updateWithoutFilterEmptyStirng(String tableName, Row row, String where) {
+	public int updateWithoutFilterEmptyString(String tableName, Row row, String where) {
 		int rowNum = 0;
 		if (tableName == null || tableName.replace(" ", "").length() == 0)
 			return rowNum;
@@ -172,6 +172,7 @@ public class Service {
 			}
 		}
 		sql += " where " + where;
+		System.out.println("sql---->>"+sql);
 		rowNum = jdbcTemplate.update(sql);
 		return rowNum;
 	}

@@ -5,11 +5,10 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
-import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
-@Component("mcnPunchRuleBakService")
-public class PunchRuleBakService extends Service{
+@Component("mcnPunchRuleHistoryService")
+public class PunchRuleHistoryService extends Service{
 
 	/**
 	 * 分页查询
@@ -22,7 +21,7 @@ public class PunchRuleBakService extends Service{
 		Pageable pageable = (Pageable) row.get("pageable");
 		String org_id =row.getString("org_id",null);
 		String depart_id =row.getString("depart_id",null);
-		sql = "select a.*, b.site_name as depart_name  from mcn_punch_rule_bak a left join sm_site b on a.depart_id=b.site_no where 1=1 ";
+		sql = "select a.*, b.site_name as depart_name  from mcn_punch_rule_history a left join sm_site b on a.depart_id=b.site_no where 1=1 ";
 		if(org_id == null || org_id.replace(" ", "").length() == 0)
 		{
 			return page;
@@ -37,7 +36,7 @@ public class PunchRuleBakService extends Service{
 		String orders = addOrders(pageable);
 		sql += restrictions;
 		sql += orders;
-		String countSql = "select count(*) from mcn_punch_rule_bak where 1=1 ";
+		String countSql = "select count(*) from mcn_punch_rule_history where 1=1 ";
 		countSql +=" and org_id='"+org_id+"'";
 		countSql +=" and depart_id='"+depart_id+"' ";
 		countSql += restrictions;
@@ -62,15 +61,15 @@ public class PunchRuleBakService extends Service{
 	 * @return void
 	 */
 	public void save(Row row) {
-		int id = getTableSequence("mcn_punch_rule_bak", "id", 1);
+		int id = getTableSequence("mcn_punch_rule_history", "id", 1);
 		row.put("ID", id);
-		insert("mcn_punch_rule_bak", row);
+		insert("mcn_punch_rule_history", row);
 	}
 
 	public void insert(Row row) {
-		int id = getTableSequence("mcn_punch_rule_bak", "id", 1);
+		int id = getTableSequence("mcn_punch_rule_history", "id", 1);
 		row.put("ID", id);
-		insert("mcn_punch_rule_bak", row);
+		insert("mcn_punch_rule_history", row);
 	}
 	/**
 	 * 根据id查找
@@ -81,7 +80,7 @@ public class PunchRuleBakService extends Service{
 	public Row find() {
 		Row row = new Row();
 		String id = getRow().getString("id");
-		sql = "select * from mcn_punch_rule_bak where id='" + id + "'";
+		sql = "select * from mcn_punch_rule_history where id='" + id + "'";
 		row = queryRow(sql);
 		return row;
 	}
@@ -94,14 +93,14 @@ public class PunchRuleBakService extends Service{
 	 */
 	public Row findByDepartId(String depart_id,String year,String month) {
 		Row row = new Row();
-		sql = "select * from mcn_punch_rule_bak where depart_id='" + depart_id + "' and bak_year='"+year+"' and bak_month='"+month+"'";
+		sql = "select * from mcn_punch_rule_history where depart_id='" + depart_id + "' and bak_year='"+year+"' and bak_month='"+month+"'";
 		System.out.println("sys====>>"+sql);
 		row = queryRow(sql);
 		return row;
 	}
 	public Row findByDepartId(String depart_id) {
 		Row row = new Row();
-		sql = "select * from mcn_punch_rule_bak where depart_id='" + depart_id + "' ";
+		sql = "select * from mcn_punch_rule_history where depart_id='" + depart_id + "' ";
 		System.out.println("sys====>>"+sql);
 		row = queryRow(sql);
 		return row;
@@ -116,7 +115,7 @@ public class PunchRuleBakService extends Service{
 		String ID=row.getString("ID","");
 		row.put("ID", ID);
 		System.out.println("row====>>"+row);
-		updateWithoutFilterEmptyString("mcn_punch_rule_bak", row, " id='" + ID + "'");
+		updateWithoutFilterEmptyString("mcn_punch_rule_history", row, " id='" + ID + "'");
 	}
 
 	/**
@@ -135,20 +134,9 @@ public class PunchRuleBakService extends Service{
 				}
 				id += "'" + String.valueOf(ids[i]) + "'";
 			}
-			sql = "delete from mcn_punch_rule_bak where id in(" + id + ")";
+			sql = "delete from mcn_punch_rule_history where id in(" + id + ")";
 			update(sql);
 		}
 	}
 	
-	/**
-	 * 查询所有的下次打卡规则设置记录，切换打卡时间时需要用到
-	 * @return
-	 */
-	public DataSet queryAllPunchTimeBakRules()
-	{
-		DataSet ds =new DataSet();
-		String sql ="select * from mcn_punch_rule_bak ";
-		ds =queryDataSet(sql);
-		return ds;
-	}
 }

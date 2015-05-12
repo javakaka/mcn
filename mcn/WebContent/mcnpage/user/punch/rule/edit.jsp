@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>修改用户</title>
+<title>打卡时间维护</title>
 <link href="<%=basePath%>/res/admin/css/common.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/jquery.validate.js"></script>
@@ -18,8 +18,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>/res/js/input.js"></script>
 <script type="text/javascript" src="<%=basePath%>/res/js/datePicker/WdatePicker.js"></script>
 <script type="text/javascript">
-var am_end="${row.AM_END}";
-var pm_start="${row.PM_START}";
+var am_end="${row2.AM_END}";
+var pm_start="${row2.PM_START}";
 var punch_num="${punch_num}";
 
 $().ready(function() {
@@ -81,29 +81,71 @@ function initPunchNum()
 </head>
 <body>
 	<div class="path">
-		管理中心 &raquo; 修改用户
+		管理中心 &raquo; 打卡时间维护
 	</div>
 	<form id="inputForm" action="update.do" method="post">
 	<input type="hidden" name="ID" class="text" maxlength="200" value="${row.ID}"/>
 		<table class="input">
-			<tr>
+			<tr >
 				<th>
-					<span class="requiredField">*</span>部门:
+					当前打卡时间规则设置:
 				</th>
 				<td>
-					<select id="DEPART_ID" name="DEPART_ID" class="text" maxlength="200" >
-						<option value="" selected>请选择...</option>
-						<c:forEach items="${sites}" var="opt" varStatus="status">
-							<c:choose>
-							<c:when test="${row.DEPART_ID ==opt.SITE_NO }">
-								<option value="${opt.SITE_NO}" selected>${opt.SITE_NAME}</option>
-							</c:when>
-							<c:otherwise>
-								<option value="${opt.SITE_NO}">${opt.SITE_NAME}</option>
-							</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</select>
+					如果部门需要切换打卡时间，请在下面的表格中填写打卡时间，并点击“确定”按钮，系统将在下个月采用新的打卡时间设置
+				</td>
+			</tr>
+			<tr>
+				<th>
+					部门:
+				</th>
+				<td>
+				<input type="hidden" id="DEPART_ID" name="DEPART_ID" class="text" value="${row.DEPART_ID}"  maxlength="200" />
+				<c:forEach items="${sites}" var="opt" varStatus="status">
+					<c:if test="${row.DEPART_ID ==opt.SITE_NO }">
+						${opt.SITE_NAME}
+					</c:if>
+				</c:forEach>
+				</td>
+			</tr>
+			<tr >
+				<th>
+					上午上班:
+				</th>
+				<td>
+					${row.AM_START}
+				</td>
+			</tr>
+			<tr >
+				<th>
+					上午下班:
+				</th>
+				<td>
+					${row.AM_END}
+				</td>
+			</tr>
+			<tr >
+				<th>
+					下午上班:
+				</th>
+				<td>
+					${row.PM_START}
+				</td>
+			</tr>
+			<tr >
+				<th>
+					下午下班:
+				</th>
+				<td>
+					${row.PM_END}
+				</td>
+			</tr>
+			<tr >
+				<th>
+					下次打卡时间规则设置:
+				</th>
+				<td>
+					请注意:如果部门不需要切换打卡时间，请不要点击“确定按钮”，系统将按现有的打卡时间设置处理打卡流程<br/>
+					如果需要设置下次打卡时间，设置后将在下个月1号的0点30分生效
 				</td>
 			</tr>
 			<tr id="AM_START_TR">
@@ -111,7 +153,7 @@ function initPunchNum()
 					<span class="requiredField">*</span>上午上班:
 				</th>
 				<td>
-					<input type="text" id="AM_START" name="AM_START" class="text Wdate" value="${row.AM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"  maxlength="200" />
+					<input type="text" id="AM_START" name="AM_START" class="text Wdate" value="${row2.AM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"  maxlength="200" />
 				</td>
 			</tr>
 			<tr id="AM_END_TR">
@@ -119,7 +161,7 @@ function initPunchNum()
 					<span class="requiredField">*</span>上午下班:
 				</th>
 				<td>
-					<input type="text" id="AM_END"  name="AM_END" class="text Wdate" value="${row.AM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+					<input type="text" id="AM_END"  name="AM_END" class="text Wdate" value="${row2.AM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
 				</td>
 			</tr>
 			<tr id="PM_START_TR">
@@ -127,7 +169,7 @@ function initPunchNum()
 					<span class="requiredField">*</span>下午上班:
 				</th>
 				<td>
-					<input type="text" id="PM_START"  name="PM_START" class="text Wdate" value="${row.PM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+					<input type="text" id="PM_START"  name="PM_START" class="text Wdate" value="${row2.PM_START}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
 				</td>
 			</tr>
 			<tr id="PM_END_TR">
@@ -135,7 +177,7 @@ function initPunchNum()
 					<span class="requiredField">*</span>下午下班:
 				</th>
 				<td>
-					<input type="text" id="PM_END"  name="PM_END" class="text Wdate" value="${row.PM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
+					<input type="text" id="PM_END"  name="PM_END" class="text Wdate" value="${row2.PM_END}" onfocus="WdatePicker({dateFmt:'HH:mm'});"   maxlength="200" />
 				</td>
 			</tr>
 			<tr>

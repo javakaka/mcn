@@ -135,13 +135,30 @@ public class PunchRuleController extends BaseController{
 
 	@RequestMapping(value = "/edit")
 	public String edit(Long id, ModelMap model) {
+		
 		punchRuleService.getRow().put("id", id);
 		Row row =punchRuleService.find();
+		//下次打卡时间设置
+		String depart_id =row.getString("depart_id","");
+		String cur_date =DateUtil.getCurrentDateTime();
+		String year =cur_date.substring(0,4);
+		String month =cur_date.substring(5,7);
+		String day =cur_date.substring(8,10);
+		String bak_date =cur_date.substring(0,10);
+		Row row2 =punchRuleBakService.findByDepartId(depart_id);
 		model.addAttribute("row", row);
 		String time1 =row.getString("am_start","");
 		String time2 =row.getString("am_end","");
 		String time3 =row.getString("pm_start","");
 		String time4 =row.getString("pm_end","");
+		if(row2 != null)
+		{
+			 time1 =row2.getString("am_start","");
+			 time2 =row2.getString("am_end","");
+			 time3 =row2.getString("pm_start","");
+			 time4 =row2.getString("pm_end","");
+			
+		}
 		int num =0;
 		if(!StringUtils.isEmptyOrNull(time1)){
 			num ++;
@@ -162,6 +179,7 @@ public class PunchRuleController extends BaseController{
 			num=2;
 		}
 		model.addAttribute("punch_num", num);
+		model.addAttribute("row2", row2);
 		Row staff =(Row)getSession().getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id !=null && org_id.replace(" ", "").length() >0)
@@ -170,25 +188,49 @@ public class PunchRuleController extends BaseController{
 	}
 
 	@RequestMapping(value = "/update")
-	public String update(String ID,String DEPART_ID,String AM_START,String AM_END, String PM_START,String PM_END,String PUNCH_NUM, ModelMap model) {
+	public String update(String ID,String DEPART_ID,String AM_START,String AM_END, 
+			String PM_START,String PM_END,String PUNCH_NUM, ModelMap model,RedirectAttributes redirectAttributes) {
 		punchRuleService.getRow().clear();
 		Assert.notNull(ID, "ID can not be null");
 		Assert.notNull(DEPART_ID, "DEPART_ID can not be null");
+		int num =0;
 		if(AM_END.equals("-1"))
 		{
 			AM_END ="";
+		}
+		else
+		{
+			num ++;
 		}
 		if(PM_START.equals("-1"))
 		{
 			PM_START ="";
 		}
-		punchRuleService.getRow().put("ID", ID);
-		punchRuleService.getRow().put("DEPART_ID", DEPART_ID);
-		punchRuleService.getRow().put("AM_START", AM_START);
-		punchRuleService.getRow().put("AM_END", AM_END);
-		punchRuleService.getRow().put("PM_START", PM_START);
-		punchRuleService.getRow().put("PM_END", PM_END);
-		punchRuleService.getRow().put("PUNCH_NUM", PUNCH_NUM);
+		else
+		{
+			num ++;
+		}
+		if(!StringUtils.isEmptyOrNull(AM_START))
+		{
+			num++;
+		}
+		if(!StringUtils.isEmptyOrNull(PM_END))
+		{
+			num++;
+		}
+		if(num>2)
+		{
+			num =4;
+		}
+		else
+			num =2;
+//		punchRuleService.getRow().put("ID", ID);
+//		punchRuleService.getRow().put("DEPART_ID", DEPART_ID);
+//		punchRuleService.getRow().put("AM_START", AM_START);
+//		punchRuleService.getRow().put("AM_END", AM_END);
+//		punchRuleService.getRow().put("PM_START", PM_START);
+//		punchRuleService.getRow().put("PM_END", PM_END);
+//		punchRuleService.getRow().put("PUNCH_NUM", PUNCH_NUM);
 		Row staff =(Row)getSession().getAttribute("staff");
 		String org_id=staff.getString("bureau_no",null);
 		if(org_id ==null  ||org_id.replace(" ", "").length() == 0)
@@ -197,75 +239,43 @@ public class PunchRuleController extends BaseController{
 		//是否需要切换打卡次数
 		punchRuleService.getRow().put("ID", ID);
 		Row row=punchRuleService.find();
-		String time1 =row.getString("am_start","");
-		String time2 =row.getString("am_end","");
-		String time3 =row.getString("pm_start","");
-		String time4 =row.getString("pm_end","");
-		int num =0;
-		if(!StringUtils.isEmptyOrNull(time1)){
-			num ++;
-		}
-		if(!StringUtils.isEmptyOrNull(time2)){
-			num ++;
-		}
-		if(!StringUtils.isEmptyOrNull(time3)){
-			num ++;
-		}
-		if(!StringUtils.isEmptyOrNull(time4)){
-			num ++;
-		}
-		if(num >=2){
-			num =4;
-		}
-		else{
-			num=2;
-		}
-		int p_num=Integer.parseInt(PUNCH_NUM);
-		System.out.println("p_num----->>"+p_num);
-		System.out.println("num----->>"+num);
-		if(p_num == num)
+		String cur_date =DateUtil.getCurrentDateTime();
+		String year =cur_date.substring(0,4);
+		String month =cur_date.substring(5,7);
+		String day =cur_date.substring(8,10);
+		String bak_date =cur_date.substring(0,10);
+		Row curBakRow =punchRuleBakService.findByDepartId(DEPART_ID, year, month);
+		if(curBakRow == null)
 		{
-			// nothing to bak 
-			punchRuleService.update();
+			//insert
+			row.put("bak_year", year);
+			row.put("bak_month", month);
+			row.put("bak_day", day);
+			row.put("bak_date", bak_date);
+			row.put("am_start", AM_START);
+			row.put("am_end", AM_END);
+			row.put("pm_start", PM_START);
+			row.put("pm_end", PM_END);
+			row.put("is_deal", 0);
+			row.put("punch_num", num);
+			punchRuleBakService.save(row);
 		}
 		else
 		{
-			//bak save row
-			String cur_date =DateUtil.getCurrentDateTime();
-			String year =cur_date.substring(0,4);
-			String month =cur_date.substring(5,7);
-			String day =cur_date.substring(8,10);
-			String bak_date =cur_date.substring(0,10);
-			Row curBakRow =punchRuleBakService.findByDepartId(DEPART_ID, year, month);
-			if(curBakRow == null)
-			{
-				//insert
-				row.put("bak_year", year);
-				row.put("bak_month", month);
-				row.put("bak_day", day);
-				row.put("bak_date", bak_date);
-				row.put("am_start", AM_START);
-				row.put("am_end", AM_END);
-				row.put("pm_start", PM_START);
-				row.put("pm_end", PM_END);
-				row.put("is_deal", 0);
-				punchRuleBakService.save(row);
-			}
-			else
-			{
-				//update 
-				curBakRow.put("bak_year", year);
-				curBakRow.put("bak_month", month);
-				curBakRow.put("bak_day", day);
-				curBakRow.put("bak_date", bak_date);
-				curBakRow.put("am_start", AM_START);
-				curBakRow.put("am_end", AM_END);
-				curBakRow.put("pm_start", PM_START);
-				curBakRow.put("pm_end", PM_END);
-				curBakRow.put("is_deal", 0);
-				punchRuleBakService.update(curBakRow);
-			}
+			//update 
+			curBakRow.put("bak_year", year);
+			curBakRow.put("bak_month", month);
+			curBakRow.put("bak_day", day);
+			curBakRow.put("bak_date", bak_date);
+			curBakRow.put("am_start", AM_START);
+			curBakRow.put("am_end", AM_END);
+			curBakRow.put("pm_start", PM_START);
+			curBakRow.put("pm_end", PM_END);
+			curBakRow.put("is_deal", 0);
+			row.put("punch_num", num);
+			punchRuleBakService.update(curBakRow);
 		}
+		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
 		return "redirect:PunchRuleList.do";
 	}
 

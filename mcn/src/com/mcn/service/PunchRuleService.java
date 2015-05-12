@@ -78,6 +78,20 @@ public class PunchRuleService extends Service{
 		row.put("ID", id);
 		insert("mcn_punch_rule", row);
 	}
+	
+	public int update(Row row) {
+		int rowNum =0;
+		String id = row.getString("id");
+		rowNum =update("mcn_punch_rule", row, " id='"+id+"'");
+		return rowNum;
+	}
+	public int updateWithEmptyFields(Row row) {
+		int rowNum =0;
+		String id = row.getString("id");
+		rowNum =updateWithoutFilterEmptyString("mcn_punch_rule", row, " id='"+id+"'");
+		return rowNum;
+	}
+	
 	/**
 	 * 根据id查找
 	 * 
@@ -200,4 +214,15 @@ public class PunchRuleService extends Service{
 	insert("mcn_message", row);
 	}
 	
+	/**
+	 * 查询所有的打卡规则设置记录，切换打卡时间时需要用到
+	 * @return
+	 */
+	public DataSet queryAllPunchTimeRules()
+	{
+		DataSet ds =new DataSet();
+		String sql ="select * from mcn_punch_rule ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
 }

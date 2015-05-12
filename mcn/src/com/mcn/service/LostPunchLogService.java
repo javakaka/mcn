@@ -6,11 +6,11 @@ import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
 
-@Component("mcnLostPunchLogService")
 /**
  * 漏打卡业务处理
  * @author Administrator
  */
+@Component("mcnLostPunchLogService")
 public class LostPunchLogService extends Service{
 
 	public int insert(Row row)
@@ -20,7 +20,7 @@ public class LostPunchLogService extends Service{
 		String create_time =DateUtil.getCurrentDateTime();
 		row.put("id", id);
 		row.put("create_time", create_time);
-		insert(row);
+		insert("mcn_lost_punch_log", row);
 		return rowNum;
 	}
 }

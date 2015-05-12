@@ -314,4 +314,17 @@ public class CompanySite  extends Service{
 		}
 		return bool;
 	}
+	
+	/**
+	 * 根据部门编号查询部门的打卡时间
+	 * @param site_no
+	 * @return
+	 */
+	public Row querySitePunchTime(String site_no)
+	{
+		Row row =new Row();
+		String sql ="select * from mcn_punch_rule where depart_id='"+site_no+"' ";
+		row =queryRow(sql);
+		return row;
+	}
 }
