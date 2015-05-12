@@ -823,6 +823,12 @@ public class PunchLogService extends Service{
 		insert("mcn_punch_leave",row);
 		return num;
 	}
+	public int savePunchOvertimeRecord(Row row)
+	{
+		int num =0;
+		insert("mcn_punch_overtime",row);
+		return num;
+	}
 	
 	public DataSet queryUserPunchLog(String org_id,String depart_id,String user_id,String start_date,String end_date)
 	{
@@ -895,4 +901,225 @@ public class PunchLogService extends Service{
 		return ds;
 	}
 	
+	
+	/**
+	 * 计算打卡结果
+	 * 返回punch_result(打卡结果类型：1正常2早退3迟到) 
+	 * minus_time(打卡时间与规定时间的差值，单位为秒) 字段
+	 * @param user_id
+	 * @param punch_type
+	 * @param cur_punch_time
+	 * @return
+	 */
+	public Row getPunchResult(String user_id,String punch_type,String cur_punch_time,String overtime_id)
+	{
+		Row resultRow =new Row();
+		int punch_result =1;
+		String errorMsg ="";
+		// get punch_time
+		String sql ="select * from mcn_punch_rule where depart_id =(select depart_id from mcn_users where id='"+user_id+"')";
+		Row timeRow =queryRow(sql);
+		Row overRow =null;
+		if(! StringUtils.isEmptyOrNull(overtime_id))
+		{
+			sql ="select * from mcn_work_overtime where id='"+overtime_id+"'";
+			overRow =queryRow(sql);
+		}
+		String punch_time ="";
+		long minus =0;
+		String sdate_begin ="";
+		//1 上午上班打卡
+		if(punch_type.equals("1"))
+		{
+			punch_time =timeRow.getString("AM_START","");
+			if(StringUtils.isEmptyOrNull(punch_time))
+			{
+				errorMsg ="未设置上午上班打卡时间";
+				resultRow.put("errorMsg", errorMsg);
+				return resultRow;
+			}
+			if(punch_time.length()>4)
+			{
+				punch_time =punch_time.substring(0,4);
+			}
+			sdate_begin =cur_punch_time.substring(0,11)+punch_time+":00";
+			minus =DateUtil.getMinuteMinusOfTwoTime(sdate_begin, cur_punch_time);
+			if(minus >0)
+			{
+				punch_result =3;
+			}
+			else
+			{
+				punch_result =1;
+			}
+			resultRow.put("punch_result", punch_result);
+			resultRow.put("minus_time", minus);
+		}
+		//2 上午下班打卡
+		else if(punch_type.equals("2"))
+		{
+			punch_time =timeRow.getString("AM_END","");
+			if(StringUtils.isEmptyOrNull(punch_time))
+			{
+				errorMsg ="未设置上午下班打卡时间";
+				resultRow.put("errorMsg", errorMsg);
+				return resultRow;
+			}
+			if(punch_time.length()>4)
+			{
+				punch_time =punch_time.substring(0,4);
+			}
+			sdate_begin =cur_punch_time.substring(0,11)+punch_time+":00";
+			minus =DateUtil.getMinuteMinusOfTwoTime(sdate_begin, cur_punch_time);
+			if(minus >=0)
+			{
+				punch_result =1;
+			}
+			//早退
+			else
+			{
+				punch_result =2;
+			}
+			resultRow.put("punch_result", punch_result);
+			resultRow.put("minus_time", minus);
+		}
+		//3 下午上班打卡
+		else if(punch_type.equals("3"))
+		{
+			punch_time =timeRow.getString("PM_START","");
+			if(StringUtils.isEmptyOrNull(punch_time))
+			{
+				errorMsg ="未设置下午上班打卡时间";
+				resultRow.put("errorMsg", errorMsg);
+				return resultRow;
+			}
+			if(punch_time.length()>4)
+			{
+				punch_time =punch_time.substring(0,4);
+			}
+			sdate_begin =cur_punch_time.substring(0,11)+punch_time+":00";
+			minus =DateUtil.getMinuteMinusOfTwoTime(sdate_begin, cur_punch_time);
+			if(minus >0)
+			{
+				punch_result =3;
+			}
+			else
+			{
+				punch_result =1;
+			}
+			resultRow.put("punch_result", punch_result);
+			resultRow.put("minus_time", minus);
+		}
+		//4 下午下班打卡
+		else if(punch_type.equals("4"))
+		{
+			punch_time =timeRow.getString("PM_END","");
+			if(StringUtils.isEmptyOrNull(punch_time))
+			{
+				errorMsg ="未设置下午下班打卡时间";
+				resultRow.put("errorMsg", errorMsg);
+				return resultRow;
+			}
+			if(punch_time.length()>4)
+			{
+				punch_time =punch_time.substring(0,4);
+			}
+			sdate_begin =cur_punch_time.substring(0,11)+punch_time+":00";
+			minus =DateUtil.getMinuteMinusOfTwoTime(sdate_begin, cur_punch_time);
+			if(minus >=0)
+			{
+				punch_result =1;
+			}
+			//早退
+			else
+			{
+				punch_result =2;
+			}
+			resultRow.put("punch_result", punch_result);
+			resultRow.put("minus_time", minus);
+		}
+		//5 加班开始打卡
+		else if(punch_type.equals("5"))
+		{
+			punch_time =overRow.getString("start_time","");
+			if(StringUtils.isEmptyOrNull(punch_time))
+			{
+				errorMsg ="未设置加班开始打卡时间";
+				resultRow.put("errorMsg", errorMsg);
+				return resultRow;
+			}
+			sdate_begin =punch_time;
+			minus =DateUtil.getMinuteMinusOfTwoTime(sdate_begin, cur_punch_time);
+			if(minus >0)
+			{
+				punch_result =3;
+			}
+			else
+			{
+				punch_result =1;
+			}
+			resultRow.put("punch_result", punch_result);
+			resultRow.put("minus_time", minus);
+		}
+		//6加班结束打卡
+		else if(punch_type.equals("6"))
+		{
+			punch_time =overRow.getString("end_time","");
+			if(StringUtils.isEmptyOrNull(punch_time))
+			{
+				errorMsg ="未设置加班结束打卡时间";
+				resultRow.put("errorMsg", errorMsg);
+				return resultRow;
+			}
+			sdate_begin =punch_time;
+			minus =DateUtil.getMinuteMinusOfTwoTime(sdate_begin, cur_punch_time);
+			if(minus >=0)
+			{
+				punch_result =1;
+			}
+			//早退
+			else
+			{
+				punch_result =2;
+			}
+			resultRow.put("punch_result", punch_result);
+			resultRow.put("minus_time", minus);
+		}
+		//7 签到
+		else if(punch_type.equals("7"))
+		{
+			
+		}
+		//8签退 
+		else if(punch_type.equals("8"))
+		{
+			
+		}
+		return resultRow;
+	}
+	
+	public void calculateLostPunchLog()
+	{
+		
+	}
+	
+	/**
+	 * 
+	 * @param user_id
+	 * @param date yyyy-mm-dd
+	 * @return
+	 */
+	public String getUserPunchTypeStr(String user_id,String date)
+	{
+		String str ="";
+		String sql ="select * from mcn_punch_log where user_id='"+user_id+"' and punch_time like'"+date+"%'";
+		DataSet ds =queryDataSet(sql);
+		for(int i=0; i<ds.size(); i++)
+		{
+			Row temp =(Row)ds.get(i);
+			String p_type =temp.getString("punch_type","");
+			str +=p_type;
+		}
+		return str;
+	}
 }

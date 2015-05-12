@@ -91,7 +91,8 @@ public class PunchController extends BaseController{
 		String id =ivo.getString("id",null);
 		String punch_time =ivo.getString("punch_time",null);
 		String punch_type =ivo.getString("punch_type",null);
-		String leave_id =ivo.getString("leave_id","");
+		String leave_id =ivo.getString("leave_id","");//外出单id
+		String overtime_id =ivo.getString("overtime_id","");//加班单id
 		if(id == null)
 		{
 			ovo =new OVO(-20005,"人员编号:id不能为空","人员编号:id不能为空");
@@ -104,8 +105,25 @@ public class PunchController extends BaseController{
 			json =VOConvert.ovoToJson(ovo);
 			return json;
 		}
+		
+		if(punch_type.equals("7") || punch_type.equals("8"))
+		{
+			if(StringUtils.isEmptyOrNull(leave_id))
+			{
+				ovo =new OVO(-20000,"签到必须关联外出申请单,overtime_id参数不能为空","签到必须关联外出申请单,overtime_id参数不能为空");
+				return VOConvert.ovoToJson(ovo);
+			}
+		}
+		else if(punch_type.equals("5") || punch_type.equals("6"))
+		{
+			if(StringUtils.isEmptyOrNull(overtime_id))
+			{
+				ovo =new OVO(-20000,"加班打卡必须关联加班申请单,leave_id参数不能为空","签到必须关联外出申请单,leave_id参数不能为空");
+				return VOConvert.ovoToJson(ovo);
+			}
+		}
 		//判断是否已经打过卡
-		if(!punch_type.equals("7"))
+		else
 		{
 			if(!punchLogService.checkBooleanPuncn(token,id,punch_time,punch_type)){
 				ovo =new OVO(-20000,"打卡失败","你已经打过卡了");
@@ -113,16 +131,6 @@ public class PunchController extends BaseController{
 				return json;
 			}
 		}
-		else
-		{
-			
-			if(StringUtils.isEmptyOrNull(leave_id))
-			{
-				ovo =new OVO(-20000,"签到必须关联外出申请单,leave_id参数不能为空","签到必须关联外出申请单,leave_id参数不能为空");
-				return VOConvert.ovoToJson(ovo);
-			}
-		}
-		
 		ovo =new OVO();
 		if(punch_time == null)
 		{
@@ -157,11 +165,38 @@ public class PunchController extends BaseController{
 			imgPath =imgPath.replace("\\","/");
 			Base64Util.GenerateImage(userPic, imgPath);
 		}
+		//计算punch_result minus_time
+		String p_time =DateUtil.getCurrentDateTime();
+		String punch_result="";
+		String minus_time="";
+		String errorMsg="";
+		Row pRow =null;
+		//签到不计算结果
+		if("123456".indexOf(punch_type) != -1)
+		{
+			if("1234".indexOf(punch_type) != -1)
+			{
+				pRow =punchLogService.getPunchResult(id,punch_type,p_time,"");
+			}
+			else
+			{
+				pRow =punchLogService.getPunchResult(id,punch_type,p_time,overtime_id);
+			}
+			errorMsg =pRow.getString("errorMsg","");
+			if(! StringUtils.isEmptyOrNull(errorMsg))
+			{
+				ovo =new OVO(-20026,errorMsg,errorMsg);
+				json =VOConvert.ovoToJson(ovo);
+				return json;
+			}
+			punch_result =pRow.getString("punch_result","");
+			minus_time =pRow.getString("minus_time","");
+		}
 		Row punchRow =new Row();
 		String imgpath = "resources/"+token+"/"+imgName+".jpg";
 		System.out.println("imgpath============="+imgpath);
 		punchRow.put("punch_type", punch_type);
-		punchRow.put("punch_time", DateUtil.getCurrentDateTime());
+		punchRow.put("punch_time", p_time);
 		punchRow.put("longitude", longitude);
 		punchRow.put("latitude", latitude);
 		punchRow.put("place_name", place_name);
@@ -170,6 +205,14 @@ public class PunchController extends BaseController{
 		punchRow.put("user_id", id);
 		punchRow.put("img_path", imgpath);
 		punchRow.put("punch_status", "0");
+		if(! StringUtils.isEmptyOrNull(punch_result))
+		{
+			punchRow.put("punch_result", punch_result);
+		}
+		if(! StringUtils.isEmptyOrNull(minus_time))
+		{
+			punchRow.put("minus_time", minus_time);
+		}
 		punchLogService.mobilePunch(punchRow);
 		//保存签到关联表mcn_punch_leave
 		if(! StringUtils.isEmptyOrNull(leave_id))
@@ -180,6 +223,17 @@ public class PunchController extends BaseController{
 			punch_leave_row.put("l_id", leave_id);
 			punchLogService.savePunchLeaveRecord(punch_leave_row);
 		}
+		//保存到加班关联表mcn_punch_overtime
+		if(! StringUtils.isEmptyOrNull(overtime_id))
+		{
+			String p_id =punchLogService.getRow().getString("id","");
+			Row punch_overtime_row =new Row();
+			punch_overtime_row.put("p_id", p_id);
+			punch_overtime_row.put("o_id", overtime_id);
+			punchLogService.savePunchOvertimeRecord(punch_overtime_row);
+		}
+		//计算地理位置是否正确
+		
 		ovo =new OVO(0,"success","");
 		json =VOConvert.ovoToJson(ovo);
 		return json;
@@ -241,6 +295,7 @@ public class PunchController extends BaseController{
 		json =VOConvert.ovoToJson(ovo);
 		return json;
 	}
+	
 	
 	
 	

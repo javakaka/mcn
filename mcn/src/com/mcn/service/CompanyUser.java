@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
+import com.ezcloud.utility.DateUtil;
 
 @Component("companyUserService")
 public class CompanyUser extends Service{
@@ -125,4 +126,23 @@ public class CompanyUser extends Service{
 		return num;
 	}
 	
+	/**
+	 * 查询所有启用状态的用户，用于每日统计漏打卡
+	 * @return
+	 */
+	public DataSet queryAllRunningUsers()
+	{
+		DataSet ds =new DataSet();
+		String cur_date =DateUtil.getCurrentDate();
+		String sql ="select a.* from mcn_users a ,sm_site b ,sm_bureau c "
+		+" where a.depart_id=b.site_no  "
+		+" and a.org_id=c.bureau_no  "
+		+" and a.status='1' "
+		+" and b.state='1' "
+		+" and c.status='1' "
+		+" and '"+cur_date+"'>=c.begin_date "
+		+" and '"+cur_date+"'<=c.end_date ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
 }
