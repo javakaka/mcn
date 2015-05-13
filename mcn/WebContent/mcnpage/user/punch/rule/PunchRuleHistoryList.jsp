@@ -36,9 +36,11 @@ $().ready(function() {
 			</a>
 			-->
 			<div class="buttonWrap">
+				<!-- 
 				<a href="javascript:;" id="deleteButton" class="iconButton disabled">
 					<span class="deleteIcon">&nbsp;</span><cc:message key="admin.common.delete" />
 				</a>
+				-->
 				<a href="javascript:;" id="refreshButton" class="iconButton">
 					<span class="refreshIcon">&nbsp;</span><cc:message key="admin.common.refresh" />
 				</a>
@@ -64,6 +66,7 @@ $().ready(function() {
 					</div>
 				</div>
 			</div>
+			<!-- 
 			<div class="menuWrap">
 				<div class="search">
 					<span id="searchPropertySelect" class="arrow">&nbsp;</span>
@@ -93,6 +96,7 @@ $().ready(function() {
 					</ul>
 				</div>
 			</div>
+			-->
 		</div>
 		<table id="listTable" class="list">
 			<tr>
@@ -114,6 +118,7 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="PM_END">下午下班时间</a>
 				</th>
+				<!-- 
 				<th>
 					<a href="javascript:;" class="sort" name="BAK_DATE">备份日期</a>
 				</th>
@@ -123,6 +128,7 @@ $().ready(function() {
 				<th>
 					<a href="javascript:;" class="sort" name="IS_DEAL">状态</a>
 				</th>
+				-->
 				<!-- 
 				<th>
 					<span><cc:message key="admin.common.handle" /></span>
@@ -149,6 +155,7 @@ $().ready(function() {
 					<td>
 						${row.PM_END}
 					</td>
+					<!--
 					<td>
 						${row.BAK_DATE}
 					</td>
@@ -161,6 +168,7 @@ $().ready(function() {
 							<c:when test="${row.IS_DEAL ==0 }">待处理</c:when>
 						</c:choose>
 					</td>
+					-->
 					<!-- 
 					<td>
 						<a href="edit.do?id=${row.ID}"><cc:message key="admin.common.edit" /></a>

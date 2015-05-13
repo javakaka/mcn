@@ -30,6 +30,7 @@ import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
 import com.mcn.service.MessageReadLogService;
 import com.mcn.service.PunchRuleBakService;
+import com.mcn.service.PunchRuleHistoryService;
 import com.mcn.service.PunchRuleService;
 import com.mcn.service.PunchSettingService;
 
@@ -51,6 +52,9 @@ public class PunchRuleController extends BaseController{
 	
 	@Resource(name ="mcnPunchRuleBakService")
 	private PunchRuleBakService punchRuleBakService;
+	
+	@Resource(name ="mcnPunchRuleHistoryService")
+	private PunchRuleHistoryService punchRuleHistoryService;
 	
 	
 	/**
@@ -98,10 +102,10 @@ public class PunchRuleController extends BaseController{
 		if(d_id == null){
 			return "/mcnpage/user/punch/rule/PunchRuleHistoryList";
 		}
-		punchRuleBakService.getRow().put("org_id", org_id);
-		punchRuleBakService.getRow().put("depart_id", d_id);
-		punchRuleBakService.getRow().put("pageable", pageable);
-		Page page = punchRuleBakService.queryPageForCompany();
+		punchRuleHistoryService.getRow().put("org_id", org_id);
+		punchRuleHistoryService.getRow().put("depart_id", d_id);
+		punchRuleHistoryService.getRow().put("pageable", pageable);
+		Page page = punchRuleHistoryService.queryPageForCompany();
 		model.addAttribute("page", page);
 		return "/mcnpage/user/punch/rule/PunchRuleHistoryList";
 	}

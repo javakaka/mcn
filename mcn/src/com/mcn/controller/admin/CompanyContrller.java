@@ -357,5 +357,14 @@ public class CompanyContrller  extends BaseController{
         fs.close();
         stream.close();  
         return imgurl;
-    }       
+    }      
+	
+	
+	@RequestMapping(value = "/synUser")
+	public @ResponseBody
+	Message synUser(String org_id) {
+		Assert.notNull(org_id, "org_id can not be null...");
+		companyUserService.synUserFromMcnUsersToSmStaff(org_id);
+		return SUCCESS_MESSAGE;
+	}
 }

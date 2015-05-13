@@ -12,7 +12,6 @@ public class PunchRuleHistoryService extends Service{
 
 	/**
 	 * 分页查询
-	 * 
 	 * @Title: queryPage
 	 * @return Page
 	 */
@@ -48,7 +47,7 @@ public class PunchRuleHistoryService extends Service{
 		}
 		int startPos = (pageable.getPageNumber() - 1) * pageable.getPageSize();
 		sql += " limit " + startPos + " , " + pageable.getPageSize();
-		System.out.println("sqllll---->>"+sql);
+//		System.out.println("sqllll---->>"+sql);
 		dataSet = queryDataSet(sql);
 		page = new Page(dataSet, total, pageable);
 		return page;

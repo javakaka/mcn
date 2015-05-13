@@ -3,6 +3,7 @@ package com.mcn.service;
 import org.springframework.stereotype.Component;
 
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.util.Md5Util;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.utility.DateUtil;
@@ -144,5 +145,36 @@ public class CompanyUser extends Service{
 		+" and '"+cur_date+"'<=c.end_date ";
 		ds =queryDataSet(sql);
 		return ds;
+	}
+	
+	public void synUserFromMcnUsersToSmStaff(String org_id)
+	{
+		String sql ="select * from mcn_users where org_id='"+org_id+"' ";
+		DataSet ds =new DataSet();
+		ds =queryDataSet(sql);
+		for(int i=0;i<ds.size();i++)
+		{
+			Row row =(Row)ds.get(i);
+			String orgg_id =row.getString("org_id","");
+			String depart_id =row.getString("depart_id","");
+			String user_name =row.getString("username","");
+			String password =row.getString("password","");
+			String real_name =row.getString("name","");
+			String md5_pwd =Md5Util.Md5(password);
+			String sql2 ="select count(*) from sm_staff where bureau_no='"+org_id+"' and staff_name='"+user_name+"' ";
+			int count =Integer.parseInt(queryField(sql2));
+			if(count<=0)
+			{
+				int staff_no =getTableSequence("sm_staff", "staff_no", 10000);
+				String staffSql="insert into sm_staff (staff_no,bureau_no,site_no,staff_name,password,real_name) " +
+						"values ('"+staff_no+"','"+orgg_id+"','"+depart_id+"','"+user_name+"','"+md5_pwd+"','"+real_name+"')";
+				System.out.println("sqll====>>"+staffSql);
+				update(staffSql);
+			}
+			else
+			{
+				System.out.println("orgg_id:"+orgg_id+"   user_name:"+user_name+"  已经存在，不用同步");
+			}
+		}
 	}
 }
