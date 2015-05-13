@@ -5,6 +5,7 @@ import java.text.ParseException;
 import org.springframework.stereotype.Component;
 
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
@@ -12,14 +13,18 @@ import com.ezcloud.framework.vo.Row;
 public class CheckStatisService extends Service{
 	//查询公司总出勤
 	@SuppressWarnings("null")
-	public Row checkStatisCompany(String org_id,String time) throws ParseException {
+	public Row checkStatisCompany(String org_id,String time,String site_nos) throws ParseException {
 		String year = time.substring(0, 4);
 		System.out.println("year=="+year);
 		String month = time.substring(5, 7);
 		System.out.println("month=="+month);
 		DataSet dataSet = null;
 		Row row = new Row();
-		String sSql ="SELECT id from mcn_users;";
+		String sSql ="select id from mcn_users where 1=1 ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sSql +=" and depart_id in ("+site_nos+") ";
+		}
 		dataSet  = queryDataSet(sSql);
 		double allFunchDay = 0;//出勤总天数
 		double allLeaveDay = 0;//假期总记录
@@ -33,19 +38,35 @@ public class CheckStatisService extends Service{
 			allAddDay += getAddLeaveDay(org_id,r2.getString("id"),year,month);
 		}
 		*/
-		String sql = "SELECT SUM(day_status) as all_day from mcn_punch_log WHERE org_id='"+org_id+"' and punch_time like '"+year+"_"+month+"%'";
+		String sql = "SELECT SUM(day_status) as all_day from mcn_punch_log "
+				+ "WHERE org_id='"+org_id+"' and punch_time like '"+year+"_"+month+"%' ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql +=" and user_id in ( select id from mcn_users where depart_id in ("+site_nos+") ) ";
+		}
 		String all_day2 = queryField(sql);
 		if(all_day2 != null){
 			allFunchDay = Double.parseDouble(all_day2)/2;
 		}
 		
-		String sql2 = "select sum(sum_day) from mcn_leave_log WHERE org_id='"+org_id+"' and status='2' and leave_type in(1,2,3,5,6,7) and start_date like '"+year+"_"+month+"%'";
+		String sql2 = "select sum(sum_day) from mcn_leave_log "
+				+ "WHERE org_id='"+org_id+"' and status='2' and leave_type in(1,2,3,5,6,7) "
+						+ "and start_date like '"+year+"_"+month+"%' ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql2 +=" and user_id in ( select id from mcn_users where depart_id in ("+site_nos+") ) ";
+		}
 		String allLeaveDay2 = queryField(sql2);
 		if(allLeaveDay2 != null){
 			allLeaveDay = Double.parseDouble(allLeaveDay2);
 		}
-		
-		String sql3 = "select sum(sum_day) from mcn_leave_log WHERE org_id='"+org_id+"' and status='2' and leave_type in(4) and start_date like '"+year+"_"+month+"%'";
+		String sql3 = "select sum(sum_day) from mcn_leave_log "
+				+ "WHERE org_id='"+org_id+"' and status='2' "
+				+ "and leave_type in(4) and start_date like '"+year+"_"+month+"%' ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql3 +=" and user_id in ( select id from mcn_users where depart_id in ("+site_nos+") ) ";
+		}
 		String allAddDay2 = queryField(sql3);
 		if(allAddDay2 != null){
 			allAddDay = Double.parseDouble(allAddDay2);
@@ -54,7 +75,7 @@ public class CheckStatisService extends Service{
 		System.out.println("出勤总天数=="+allFunchDay);
 		System.out.println("假期总天数=="+allLeaveDay);
 		System.out.println("加班总天数=="+allAddDay);
-		sql = "select BUREAU_NAME as company_name from sm_bureau WHERE BUREAU_NO='"+org_id+"'";
+		sql = "select BUREAU_NAME as company_name from sm_bureau WHERE BUREAU_NO='"+org_id+"' ";
 		String company_name = queryField(sql);
 		row.put("company_name", company_name);
 		row.put("work_day", allFunchDay);
@@ -393,8 +414,8 @@ public class CheckStatisService extends Service{
 	}
 	
 	//企业看板查询
-	@SuppressWarnings({ "unchecked", "null" })
-	public DataSet companyModel(String org_id,String time) throws ParseException {
+	@SuppressWarnings("unchecked")
+	public DataSet companyModel(String org_id,String time,String site_nos) throws ParseException {
 		String year = time.substring(0, 4);
 		System.out.println("year=="+year);
 		String month = time.substring(5, 7);
@@ -403,33 +424,45 @@ public class CheckStatisService extends Service{
 		System.out.println("month=="+day);
 		DataSet dataSet = new DataSet();
 		DataSet data = null;
-		sql = "select SITE_NO as depart_id,SITE_NAME AS depart_name from sm_site where BUREAU_NO='"+org_id+"'";
+		String sql = "select SITE_NO as depart_id,SITE_NAME AS depart_name from sm_site "
+				+ "where BUREAU_NO='"+org_id+"' ";
+		if(StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql +=" site_no in ("+site_nos+") ";
+		}
 		data  = queryDataSet(sql);
-		
 		for(int i=0;i<data.size();i++) {
 			DataSet dataSet2 = new DataSet();
 			Row row = new Row();
 			row = (Row) data.get(i);
 			String depart_id = row.getString("depart_id");
-			sql = "select id,name as user_name from mcn_users WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"'";
+			sql = "select id,name as user_name from mcn_users "
+					+ "WHERE org_id='"+org_id+"' and depart_id='"+depart_id+"'";
 			DataSet data2 = queryDataSet(sql);
-			for(int j=0;j<data2.size();j++) { 
+			for(int j=0;j<data2.size();j++)
+			{ 
 				Row row2 = new Row();
 				row2 = (Row) data2.get(j);
 				String user_id = row2.getString("id");
-				sql = "select `status`,sum_day,leave_type,reason,start_date,end_date,reason from mcn_leave_log WHERE org_id='"+org_id+"' and user_id='"+user_id+"' and `status`='2' "+
- "and ((start_date like '"+time+"%' or end_date like '"+time+"%') or (UNIX_TIMESTAMP('"+time+"%') between UNIX_TIMESTAMP(start_date) and UNIX_TIMESTAMP(end_date))) LIMIT 0,1";
+				sql = "select `status`,sum_day,leave_type,reason,start_date,end_date,reason "
+						+ "from mcn_leave_log WHERE org_id='"+org_id+"' and user_id='"+user_id+"' "
+						+ "and `status`='2'  and ((start_date like '"+time+"%' or end_date like '"+time+"%') "
+						+ "or (UNIX_TIMESTAMP('"+time+"%') between UNIX_TIMESTAMP(start_date) "
+						+ "and UNIX_TIMESTAMP(end_date))) LIMIT 0,1";
 					Row row4 = new Row();
 					Row row3 = queryRow(sql);
-					if(row3 != null){
-					row4.put("depart_id", row.getString("depart_id"));//部门ID
-					row4.put("depart_name", row.getString("depart_name"));//部门名称
-					row4.put("user_name", row2.getString("user_name"));//员工姓名
-					row4.put("leave_day", row3.getString("sum_day"));//请假天数
-					row4.put("leave_type", row3.getString("leave_type"));//请假类别
-					row4.put("content", row3.getString("reason"));//请假事由
-					dataSet2.add(row4);
-					}else{
+					if(row3 != null)
+					{
+						row4.put("depart_id", row.getString("depart_id"));//部门ID
+						row4.put("depart_name", row.getString("depart_name"));//部门名称
+						row4.put("user_name", row2.getString("user_name"));//员工姓名
+						row4.put("leave_day", row3.getString("sum_day"));//请假天数
+						row4.put("leave_type", row3.getString("leave_type"));//请假类别
+						row4.put("content", row3.getString("reason"));//请假事由
+						dataSet2.add(row4);
+					}
+					else
+					{
 						row4.put("depart_id", row.getString("depart_id"));//部门ID
 						row4.put("depart_name", row.getString("depart_name"));//部门名称
 						row4.put("user_name", row2.getString("user_name"));//员工姓名
@@ -446,9 +479,14 @@ public class CheckStatisService extends Service{
 		return dataSet;
 	}
 	//查询企业部门名称
-	public DataSet companyModelName(String org_id) throws ParseException {
+	public DataSet companyModelName(String org_id,String site_nos) throws ParseException {
 		DataSet data = null;
-		sql = "select SITE_NO as depart_id,SITE_NAME AS depart_name from sm_site where BUREAU_NO='"+org_id+"'";
+		String sql = "select SITE_NO as depart_id,SITE_NAME AS depart_name from sm_site "
+				+ "where BUREAU_NO='"+org_id+"' ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql +=" and site_no in ("+site_nos+") ";
+		}
 		data  = queryDataSet(sql);
 		return data;
 	}

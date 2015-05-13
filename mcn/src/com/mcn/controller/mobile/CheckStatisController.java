@@ -15,6 +15,7 @@ import com.ezcloud.framework.vo.OVO;
 import com.ezcloud.framework.vo.Row;
 import com.ezcloud.framework.vo.VOConvert;
 import com.mcn.service.CheckStatisService;
+import com.mcn.service.CompanyUserPermission;
 
 /**
  * 手机端打卡接口
@@ -24,8 +25,13 @@ import com.mcn.service.CheckStatisService;
 @Controller("mobileCheckStatisController")
 @RequestMapping("/api/checkstatis")
 public class CheckStatisController extends BaseController {
+	
 	@Resource(name = "checkStatisService")
 	private CheckStatisService checkStatisService;
+	
+	@Resource(name = "mcnCompanyUserPermissionService")
+	private   CompanyUserPermission companyUserPermissionService;
+	
 	//查询公司所有统计信息
 	@RequestMapping("company")
 	public @ResponseBody String CheckList(HttpServletRequest request) throws JException, ParseException {
@@ -33,7 +39,20 @@ public class CheckStatisController extends BaseController {
 		System.out.println("通过token2="+ivo.getString("token",null));
 		String token = ivo.getString("token",null);
 		String date = ivo.getString("date",null);
-		Row row = checkStatisService.checkStatisCompany(token , date);
+		String user_id = ivo.getString("user_id","");
+		Row permissionRow =companyUserPermissionService.queryUserPeimissionFunIds(user_id);
+		String is_need_permission =permissionRow.getString("is_need_permission","");
+		String fun_ids =permissionRow.getString("fun_ids","");
+		Row row = null;
+		//不需要权限过滤，查询全部数据
+		if(is_need_permission.equals("0"))
+		{
+			row = checkStatisService.checkStatisCompany(token , date,"");
+		}
+		else if(is_need_permission.equals("1"))
+		{
+			row = checkStatisService.checkStatisCompany(token , date,fun_ids);
+		}
 		ovo =new OVO(0, "请求成功", "请求成功");
 		ovo.set("company_name",row.getString("company_name"));
 		ovo.set("work_day",row.getString("work_day"));
@@ -122,11 +141,26 @@ public class CheckStatisController extends BaseController {
 	@RequestMapping("companymodel")
 	public @ResponseBody String companyModel(HttpServletRequest request) throws JException, ParseException{
 		parseRequest(request);
+		DataSet dataSet=null;
+		DataSet dataSet2 =null;
 		System.out.println("通过token="+ivo.getString("token",null));
 		String token = ivo.getString("token",null);
 		String time = ivo.getString("date",null);
-		DataSet dataSet= checkStatisService.companyModel(token,time);
-		DataSet dataSet2 = checkStatisService.companyModelName(token);
+		String user_id = ivo.getString("user_id","");
+		Row permissionRow =companyUserPermissionService.queryUserPeimissionFunIds(user_id);
+		String is_need_permission =permissionRow.getString("is_need_permission","");
+		String fun_ids =permissionRow.getString("fun_ids","");
+		//不需要权限过滤，查询全部数据
+		if(is_need_permission.equals("0"))
+		{
+			dataSet= checkStatisService.companyModel(token,time,"");
+			dataSet2 = checkStatisService.companyModelName(token,"");
+		}
+		else if(is_need_permission.equals("1"))
+		{
+			dataSet= checkStatisService.companyModel(token,time,fun_ids);
+			dataSet2 = checkStatisService.companyModelName(token,fun_ids);
+		}
 		System.out.println("datasize=="+dataSet.size());
 		ovo =new OVO(0, "请求成功", "请求成功");
 		ovo.set("sum",dataSet.size());

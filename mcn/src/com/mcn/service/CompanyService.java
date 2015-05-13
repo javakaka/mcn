@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.Service;
+import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
 
@@ -135,7 +136,19 @@ public class CompanyService  extends Service{
 	public DataSet queryAllSites(String org_id)
 	{
 		DataSet ds =new DataSet();
-		sql="select site_no as id,SITE_NAME as name  from  sm_site  where BUREAU_NO='"+org_id+"'";
+		sql="select site_no as id,SITE_NAME as name  from  sm_site  where BUREAU_NO='"+org_id+"' ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
+	
+	public DataSet queryAllSites(String org_id,String site_nos)
+	{
+		DataSet ds =new DataSet();
+		String sql="select site_no as id,SITE_NAME as name  from  sm_site  where BUREAU_NO='"+org_id+"' ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql +=" and site_no in ("+site_nos+") ";
+		}
 		ds =queryDataSet(sql);
 		return ds;
 	}
@@ -143,7 +156,19 @@ public class CompanyService  extends Service{
 	public DataSet queryAllUsers(String org_id)
 	{
 		DataSet ds =new DataSet();
-		sql ="SELECT id,name,depart_id,telephone,position from mcn_users where org_id='"+org_id+"'";
+		String sql ="SELECT id,name,depart_id,telephone,position from mcn_users where org_id='"+org_id+"' ";
+		ds =queryDataSet(sql);
+		return ds;
+	}
+	
+	public DataSet queryAllUsers(String org_id,String site_nos)
+	{
+		DataSet ds =new DataSet();
+		String sql ="SELECT id,name,depart_id,telephone,position from mcn_users where org_id='"+org_id+"' ";
+		if(! StringUtils.isEmptyOrNull(site_nos))
+		{
+			sql +=" and depart_id in ("+site_nos+") ";
+		}
 		ds =queryDataSet(sql);
 		return ds;
 	}

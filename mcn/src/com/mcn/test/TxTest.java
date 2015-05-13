@@ -5,7 +5,8 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.mcn.service.CompanyUser;
+import com.ezcloud.framework.vo.Row;
+import com.mcn.service.CompanyUserPermission;
 
 /**   
  * @author shike001 
@@ -34,10 +35,17 @@ public class TxTest {
 //    	txService.testTx();
 //    }
     
+//    @Test
+//    public void testMakeGeographyFile() {
+//    	CompanyUser companyUserService = (CompanyUser)ctx.getBean("companyUserService");
+//    	companyUserService.synUserFromMcnUsersToSmStaff("10007");
+//    }
+    
     @Test
     public void testMakeGeographyFile() {
-    	CompanyUser companyUserService = (CompanyUser)ctx.getBean("companyUserService");
-    	companyUserService.synUserFromMcnUsersToSmStaff("10007");
+    	CompanyUserPermission service = (CompanyUserPermission)ctx.getBean("mcnCompanyUserPermissionService");
+    	Row row =service.queryUserPeimissionFunIds("160");
+    	System.out.println("row===>>"+row);
     }
 
 }

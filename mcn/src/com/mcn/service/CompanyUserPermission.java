@@ -6,7 +6,6 @@ import com.ezcloud.framework.service.Service;
 import com.ezcloud.framework.util.StringUtils;
 import com.ezcloud.framework.vo.DataSet;
 import com.ezcloud.framework.vo.Row;
-import com.ezcloud.utility.DateUtil;
 
 /**
  * 用户app权限处理业务类，查找用户拥有管理哪些部门的权限
@@ -34,14 +33,43 @@ public class CompanyUserPermission extends Service{
 		String fun_ids ="";
 		String role_ids ="";
 		DataSet ds =new DataSet();
-		if(user_id == null)
+		if(StringUtils.isEmptyOrNull(user_id))
 		{
 			row.put("is_need_permission", is_need_permission);
 			row.put("fun_ids", fun_ids);
 			row.put("role_ids", role_ids);
 			return row;
 		}
-		sql ="select * from sm_staff_app_role where staff_no='"+user_id+"'";
+		String sql ="select * from mcn_users where id='"+user_id+"'";
+		Row userRow =queryRow(sql);
+		if(userRow == null)
+		{
+			row.put("is_need_permission", is_need_permission);
+			row.put("fun_ids", fun_ids);
+			row.put("role_ids", role_ids);
+			return row;
+		}
+		String org_id =userRow.getString("org_id","");
+		String username =userRow.getString("username","");
+		//query sm_staff
+		sql ="select * from sm_staff where bureau_no='"+org_id+"' and staff_name='"+username+"' ";
+		Row staffRow =queryRow(sql);
+		if(staffRow == null)
+		{
+			row.put("is_need_permission", is_need_permission);
+			row.put("fun_ids", fun_ids);
+			row.put("role_ids", role_ids);
+			return row;
+		}
+		String staff_no =staffRow.getString("staff_no","");
+		if(StringUtils.isEmptyOrNull(staff_no))
+		{
+			row.put("is_need_permission", is_need_permission);
+			row.put("fun_ids", fun_ids);
+			row.put("role_ids", role_ids);
+			return row;
+		}
+		sql ="select * from sm_staff_app_role where staff_no='"+staff_no+"'";
 		ds =queryDataSet(sql);
 		if(ds == null || ds.size() == 0)
 		{
