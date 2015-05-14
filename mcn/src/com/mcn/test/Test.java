@@ -41,5 +41,13 @@ public class Test {
 		System.out.println("System.currentTimeMillis()2 --->>"+System.currentTimeMillis());
 		System.out.println("System.currentTimeMillis()3 --->>"+System.currentTimeMillis());
 //		System.currentTimeMillis() --->>1431152376348
+		String real_path="D:\\WORK_SYSTEM\\TOMCAT\\apache-tomcat-7.0.53\\webapps\\mcn\\resources";
+		String real_path1="D:\\WORK_SYSTEM\\TOMCAT\\apache-tomcat-7.0.53\\webapps\\mcn\\resources/10007/8h7hu7CRuafF.jpg";
+		real_path1 =real_path1.replace("\\", "/");
+		real_path1 =real_path1.replace("//", "/");
+		int iPos =real_path.indexOf("resources");
+		System.out.println("iPos --->>"+iPos);
+		System.out.println("real_path1 --->>"+real_path1);
+		System.out.println("real_path.substring(iPos) --->>"+real_path.substring(0,iPos));
 	}
 }

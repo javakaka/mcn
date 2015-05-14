@@ -1,5 +1,6 @@
 package com.mcn.service;
 
+import java.io.File;
 import java.text.ParseException;
 
 import org.springframework.stereotype.Component;
@@ -214,12 +215,12 @@ public class PunchLogService extends Service{
 							String punch_time3 = punch_time2.replace("月", "-");
 							String start_time = punch_time3.replace("日", "");
 							String end_time = start_time.substring(0,10)+" "+am_start+":00";
-							System.out.println("time======???======"+start_time+"================"+end_time);
+//							System.out.println("time======???======"+start_time+"================"+end_time);
 							java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
 							java.util.Date  beginDate = format.parse(end_time); 
 							java.util.Date endDate= format.parse(start_time);
 							Long day=(endDate.getTime()-beginDate.getTime())/(1000*60); 
-							System.out.println("相隔的分数="+day); 
+//							System.out.println("相隔的分数="+day); 
 							if(day > 0){
 							if(day < 10){
 								xshi++;
@@ -239,21 +240,31 @@ public class PunchLogService extends Service{
 							String punch_time2 = punch_time.replace("年", "-");
 							String punch_time3 = punch_time2.replace("月", "-");
 							String start_time = punch_time3.replace("日", "");
+							if(StringUtils.isEmptyOrNull(pm_start))
+							{
+								continue;
+							}
 							String end_time = start_time.substring(0,10)+" "+pm_start+":00";
-							System.out.println("time======???======"+start_time+"================"+end_time);
+//							System.out.println("time======???======"+start_time+"================"+end_time);
 							java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
 							java.util.Date  beginDate = format.parse(end_time); 
 							java.util.Date endDate= format.parse(start_time);
 							Long day=(endDate.getTime()-beginDate.getTime())/(1000*60); 
-							System.out.println("相隔的分数="+day); 
-							if(day > 0){
-							if(day < 10){
-								xshi++;
-							}else if(10 <= day && day < 30){
-								dshi++;
-							}else if(day > 30){
-								cshi++;
-							}
+//							System.out.println("相隔的分数="+day); 
+							if(day > 0)
+							{
+								if(day < 10)
+								{
+									xshi++;
+								}
+								else if(10 <= day && day < 30)
+								{
+									dshi++;
+								}
+								else if(day > 30)
+								{
+									cshi++;
+								}
 							}
 						}
 					}
@@ -830,10 +841,14 @@ public class PunchLogService extends Service{
 		return num;
 	}
 	
-	public DataSet queryUserPunchLog(String org_id,String depart_id,String user_id,String start_date,String end_date)
+	@SuppressWarnings("unchecked")
+	public DataSet queryUserPunchLog(String org_id,String depart_id,
+			String user_id,String start_date,String end_date,
+			String project_base_real_path)
 	{
 		DataSet ds =new DataSet();
-		String sql ="select b.`name` ,a.punch_time,a.punch_type,a.punch_result,a.place_name,c.site_name from mcn_punch_log a "
+		String sql ="select b.`name` ,a.punch_time,a.punch_type,a.punch_result,a.place_name," 
+		+ "a.img_path,c.site_name from mcn_punch_log a "
 		+" left join mcn_users b on a.user_id=b.id "
 		+" left join sm_site c on b.depart_id=c.site_no " 
 		+" where 1=1 ";
@@ -853,7 +868,6 @@ public class PunchLogService extends Service{
 		{
 			sql+=" and a.punch_time <='"+end_date+"' ";
 		}
-		System.out.println("sql----->>"+sql);
 		ds =queryDataSet(sql);
 		if(ds != null && ds.size()>0)
 		{
@@ -862,6 +876,7 @@ public class PunchLogService extends Service{
 				Row temp =(Row)ds.get(i);
 				String punch_type =temp.getString("punch_type","");
 				String punch_type_name ="";
+				String img_path =temp.getString("img_path","");
 				if(punch_type.equals("1"))
 				{
 					punch_type_name ="上午上班";
@@ -893,6 +908,25 @@ public class PunchLogService extends Service{
 				else if(punch_type.equals("8"))
 				{
 					punch_type_name ="签到";
+				}
+				if(! StringUtils.isEmptyOrNull(img_path))
+				{
+					img_path =project_base_real_path+"/"+img_path;
+					img_path =img_path.replace("\\", "/");
+					img_path =img_path.replace("//", "/");
+					File imgFile =new File(img_path);
+					if(imgFile.exists() && imgFile.isFile())
+					{
+						temp.put("img_path",img_path );
+					}
+					else
+					{
+						temp.put("img_path","" );
+					}
+				}
+				else
+				{
+					temp.put("img_path","" );
 				}
 				temp.put("punch_type_name",punch_type_name );
 				ds.set(i, temp);

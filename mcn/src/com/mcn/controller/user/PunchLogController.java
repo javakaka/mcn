@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 
 import javax.annotation.Resource;
@@ -27,7 +26,6 @@ import com.ezcloud.framework.exp.JException;
 import com.ezcloud.framework.page.jdbc.Page;
 import com.ezcloud.framework.page.jdbc.Pageable;
 import com.ezcloud.framework.service.system.SystemSite;
-import com.ezcloud.framework.util.DateUtils;
 import com.ezcloud.framework.util.ExcelUtil;
 import com.ezcloud.framework.util.Message;
 import com.ezcloud.framework.util.StringUtils;
@@ -412,7 +410,7 @@ public class PunchLogController extends BaseController{
 		System.out.println("out_path========>>>"+out_path);
 		System.out.println("file_path========>>>"+file_path);
     	String sheetName="企业考勤汇总表";
-    	ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+    	ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName,0);
 		InputStream is = new FileInputStream(file_path);
 		response.reset();
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -496,7 +494,7 @@ public class PunchLogController extends BaseController{
 		System.out.println("out_path========>>>"+out_path);
 		System.out.println("file_path========>>>"+file_path);
 		String sheetName="用户签到表";
-		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName,0);
 		InputStream is = new FileInputStream(file_path);
 		response.reset();
 		response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -548,7 +546,15 @@ public class PunchLogController extends BaseController{
 			end_date =end_date.replaceAll(" ", "");
 			end_date +=" 00:00:00";
 		}
-		pageSet = punchLogService.queryUserPunchLog(org_id,depart_id,user_id,start_date,end_date);
+		String real_path =request.getRealPath("resources");
+		int iPos =real_path.indexOf("resources");
+		String base_real_path =real_path;
+		if(iPos != -1)
+		{
+			base_real_path =real_path.substring(0,iPos);
+		}
+		
+		pageSet = punchLogService.queryUserPunchLog(org_id,depart_id,user_id,start_date,end_date,base_real_path);
 		DataSet titleDs =new DataSet();
 		titleDs.add("所属部门");
 		titleDs.add("用户姓名");
@@ -557,7 +563,6 @@ public class PunchLogController extends BaseController{
 		titleDs.add("打卡结果");
 		titleDs.add("打卡地址");
 		titleDs.add("用户头像");
-//		titleDs.add("用户图像");
 		DataSet keyDs =new DataSet();
 		keyDs.add("SITE_NAME");
 		keyDs.add("NAME");
@@ -571,10 +576,10 @@ public class PunchLogController extends BaseController{
 		String fileName ="用户打卡表.xls";
 		String out_path=basePath;
 		String file_path=basePath+"/"+fileName;
-		System.out.println("out_path========>>>"+out_path);
-		System.out.println("file_path========>>>"+file_path);
 		String sheetName="用户打卡表";
-		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName,1400);
+		//替换图片
+		ExcelUtil.replaceForColumnFromImgPathToImage(6, 1, file_path);
 		InputStream is = new FileInputStream(file_path);
 		response.reset();
 		response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -587,7 +592,6 @@ public class PunchLogController extends BaseController{
 			bos = new BufferedOutputStream(out);
 			byte[] buff = new byte[2048];
 			int bytesRead;
-			// Simple read/write loop.
 			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
 				bos.write(buff, 0, bytesRead);
 			}
@@ -599,6 +603,7 @@ public class PunchLogController extends BaseController{
 			if (bos != null)
 				bos.close();
 		}
+		
 		return null;
 	} 
 	
@@ -660,7 +665,7 @@ public class PunchLogController extends BaseController{
 		System.out.println("out_path========>>>"+out_path);
 		System.out.println("file_path========>>>"+file_path);
 		String sheetName="用户请假表";
-		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName);
+		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName,0);
 		InputStream is = new FileInputStream(file_path);
 		response.reset();
 		response.setContentType("application/vnd.ms-excel;charset=utf-8");
