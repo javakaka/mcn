@@ -354,6 +354,9 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 					<a href="javascript:;" class="sort" name="PLACE_NAME">打卡地址</a>
 				</th>
 				<th>
+					<a href="javascript:;" class="sort" name="MAP_VALID">位置有效性</a>
+				</th>
+				<th>
 					<a href="javascript:;" class="sort" name="IMG_PATH">头像</a>
 				</th>
 				<% if (exportToExcel == null) { %>
@@ -395,6 +398,16 @@ response.setHeader("Content-Disposition", "inline; filename=" + "excel.xls");//�
 						</c:choose>
 					</td>
 					<td>${row.PLACE_NAME}</td>
+					<td>
+						<c:choose>
+							<c:when test="${row.MAP_VALID == 0}">不用检测</c:when>
+							<c:when test="${row.MAP_VALID == 1}">有效</c:when>
+							<c:when test="${row.MAP_VALID == 2}">无效</c:when>
+							<c:otherwise> 
+								--
+							</c:otherwise>
+						</c:choose>
+					</td>
 					<% if (exportToExcel == null) { %>
 					<td><img src="<%=basePath %>${row.IMG_PATH}"  height="100px;"/></td>
 					<% }  %> 

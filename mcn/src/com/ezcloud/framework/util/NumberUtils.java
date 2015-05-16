@@ -91,10 +91,30 @@ public class NumberUtils {
 		randomNumber =100000+randomNumber;
 		return randomNumber;
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static int getDecimalLength(String number)
+	{
+		int length =0;
+		int iPos =number.indexOf(".");
+		if( iPos != -1 )
+		{
+			String subStr =number.substring(iPos+1,number.length());
+			if(subStr != null && subStr.replace(" ", "").length()>0)
+			{
+				length =subStr.length();
+			}
+		}
+		return length;
+	}
+	
 	
 	public static void main(String[] args) {
 		String str ="10000.0";
 		System.out.println(""+getTwoDecimal(str));
+		System.out.println(""+getDecimalLength(str));
 	}
 	
 }

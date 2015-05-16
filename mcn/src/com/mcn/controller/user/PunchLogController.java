@@ -562,6 +562,7 @@ public class PunchLogController extends BaseController{
 		titleDs.add("打卡时间");
 		titleDs.add("打卡结果");
 		titleDs.add("打卡地址");
+		titleDs.add("位置有效性");
 		titleDs.add("用户头像");
 		DataSet keyDs =new DataSet();
 		keyDs.add("SITE_NAME");
@@ -570,6 +571,7 @@ public class PunchLogController extends BaseController{
 		keyDs.add("PUNCH_TIME");
 		keyDs.add("PUNCH_RESULT");
 		keyDs.add("PlACE_NAME");
+		keyDs.add("MAP_VALID");
 		keyDs.add("IMG_PATH");
 		String basePath =request.getSession().getServletContext().getRealPath("/resources");
 		basePath +="/export_excel"+"/"+org_id;
@@ -579,7 +581,7 @@ public class PunchLogController extends BaseController{
 		String sheetName="用户打卡表";
 		ExcelUtil.writeExcel(titleDs, keyDs, pageSet, out_path,fileName,sheetName,1400);
 		//替换图片
-		ExcelUtil.replaceForColumnFromImgPathToImage(6, 1, file_path);
+		ExcelUtil.replaceForColumnFromImgPathToImage(7, 1, file_path);
 		InputStream is = new FileInputStream(file_path);
 		response.reset();
 		response.setContentType("application/vnd.ms-excel;charset=utf-8");

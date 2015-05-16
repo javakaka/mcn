@@ -848,7 +848,7 @@ public class PunchLogService extends Service{
 	{
 		DataSet ds =new DataSet();
 		String sql ="select b.`name` ,a.punch_time,a.punch_type,a.punch_result,a.place_name," 
-		+ "a.img_path,c.site_name from mcn_punch_log a "
+		+" a.img_path,a.map_valid,c.site_name from mcn_punch_log a "
 		+" left join mcn_users b on a.user_id=b.id "
 		+" left join sm_site c on b.depart_id=c.site_no " 
 		+" where 1=1 ";
@@ -877,6 +877,7 @@ public class PunchLogService extends Service{
 				String punch_type =temp.getString("punch_type","");
 				String punch_type_name ="";
 				String img_path =temp.getString("img_path","");
+				String map_valid =temp.getString("map_valid","");
 				if(punch_type.equals("1"))
 				{
 					punch_type_name ="上午上班";
@@ -927,6 +928,25 @@ public class PunchLogService extends Service{
 				else
 				{
 					temp.put("img_path","" );
+				}
+				if(! StringUtils.isEmptyOrNull(map_valid))
+				{
+					if(map_valid.equals("0"))
+					{
+						temp.put("map_valid","不要检测" );
+					}
+					else if(map_valid.equals("1"))
+					{
+						temp.put("map_valid","有效" );
+					}
+					else if(map_valid.equals("2"))
+					{
+						temp.put("map_valid","无效" );
+					}
+				}
+				else
+				{
+					temp.put("map_valid","--" );
 				}
 				temp.put("punch_type_name",punch_type_name );
 				ds.set(i, temp);

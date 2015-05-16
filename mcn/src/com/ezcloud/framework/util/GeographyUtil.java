@@ -1,4 +1,6 @@
 package com.ezcloud.framework.util;
+
+
 /**   
  * @author shike001 
  * E-mail:510836102@qq.com   
@@ -71,9 +73,12 @@ public class GeographyUtil {
 	}
 
 	public static void main(String args[]) {
-	double x1 = 13.957503;
-	double y1 = 49.77837;
-	double r[] = getRange(x1, y1, 100000);
+//	double x1 = 13.957503;
+//	double y1 = 49.77837;
+	double x1 = 114.085478;
+	double y1 = 22.599183;
+//	double r[] = getRange(x1, y1, 100000);
+	double r[] = getRange(x1, y1, 50);
 	System.out.println(r[0]);
 	System.out.println(r[1]);
 	System.out.println(r[2]);

@@ -2,6 +2,7 @@ package com.mcn.controller.mobile;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import com.mcn.service.CompanyUser;
 import com.mcn.service.MessageReadLogService;
 import com.mcn.service.PunchLogService;
 import com.mcn.service.PunchRuleService;
+import com.mcn.service.PunchZoneService;
 
 /**
  * 手机端打卡接口
@@ -46,6 +48,9 @@ public class PunchController extends BaseController{
 	
 	@Resource(name = "mcnMessageReadLogService")
 	private MessageReadLogService messageReadLogService;
+	
+	@Resource(name ="mcnPunchZoneService")
+	private PunchZoneService punchZoneService;
 	
 	//根据人员编号查询打卡时间
 	@RequestMapping("/times")
@@ -114,14 +119,14 @@ public class PunchController extends BaseController{
 				return VOConvert.ovoToJson(ovo);
 			}
 		}
-		else if(punch_type.equals("5") || punch_type.equals("6"))
-		{
-			if(StringUtils.isEmptyOrNull(overtime_id))
-			{
-				ovo =new OVO(-20000,"加班打卡必须关联加班申请单,leave_id参数不能为空","签到必须关联外出申请单,leave_id参数不能为空");
-				return VOConvert.ovoToJson(ovo);
-			}
-		}
+//		else if(punch_type.equals("5") || punch_type.equals("6"))
+//		{
+//			if(StringUtils.isEmptyOrNull(overtime_id))
+//			{
+//				ovo =new OVO(-20000,"加班打卡必须关联加班申请单,leave_id参数不能为空","签到必须关联外出申请单,leave_id参数不能为空");
+//				return VOConvert.ovoToJson(ovo);
+//			}
+//		}
 		//判断是否已经打过卡
 		else
 		{
@@ -169,9 +174,11 @@ public class PunchController extends BaseController{
 		String p_time =DateUtil.getCurrentDateTime();
 		String punch_result="";
 		String minus_time="";
+		//打卡位置是否有效；0表示不检验打卡位置，如签到、未设置区域检测；1表示打卡有效2表示打卡无效
+		String map_valid="0";
 		String errorMsg="";
 		Row pRow =null;
-		//签到不计算结果
+		//签到不计算打卡结果、位置有效性
 		if("123456".indexOf(punch_type) != -1)
 		{
 			if("1234".indexOf(punch_type) != -1)
@@ -191,6 +198,25 @@ public class PunchController extends BaseController{
 			}
 			punch_result =pRow.getString("punch_result","");
 			minus_time =pRow.getString("minus_time","");
+			//计算地理位置是否正确
+			boolean isNeedCheckZone =punchZoneService.isNeedZoneCheck(token);
+			boolean isValid =false;
+			if(isNeedCheckZone)
+			{
+				isValid =punchZoneService.isValid(token, Double.parseDouble(longitude), Double.parseDouble(latitude));
+				if(isValid)
+				{
+					map_valid ="1";
+				}
+				else
+				{
+					map_valid ="2";
+				}
+			}
+			else
+			{
+				map_valid ="0";
+			}
 		}
 		Row punchRow =new Row();
 		String imgpath = "resources/"+token+"/"+imgName+".jpg";
@@ -205,6 +231,7 @@ public class PunchController extends BaseController{
 		punchRow.put("user_id", id);
 		punchRow.put("img_path", imgpath);
 		punchRow.put("punch_status", "0");
+		punchRow.put("map_valid", map_valid);
 		if(! StringUtils.isEmptyOrNull(punch_result))
 		{
 			punchRow.put("punch_result", punch_result);
@@ -232,7 +259,7 @@ public class PunchController extends BaseController{
 			punch_overtime_row.put("o_id", overtime_id);
 			punchLogService.savePunchOvertimeRecord(punch_overtime_row);
 		}
-		//计算地理位置是否正确
+		
 		
 		ovo =new OVO(0,"success","");
 		json =VOConvert.ovoToJson(ovo);
